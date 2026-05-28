@@ -1,0 +1,129 @@
+---
+title: "Pedidos 🛒"
+description: "Ciclo de vida do pedido, conceito multi-seller e status de pedido, pacote e item."
+sidebarTitle: "Visão geral"
+---
+
+Passadas as etapas de autenticação, configurações e integração de produtos, vamos falar sobre o **fluxo de status do pedido**.
+
+<Note>
+  A cada alteração de status ou atualização do pedido, o seller recebe os dados pelos endpoints cadastrados no Webhook. Se ainda não configurou, [cadastre o webhook](/sellers/configuracoes#2-cadastro-de-webhooks-) para receber os pedidos no momento da criação.
+</Note>
+
+Veja o **Schema do pedido** na seção Pedidos para o JSON completo de um pedido.
+
+{/* TODO: link absoluto pra /sellers/pedidos/schema disparou falso-positivo em mint broken-links — restaurar quando o bug for resolvido upstream */}
+
+---
+
+## Pre-order 🐣
+
+Quando um pedido é realizado no marketplace, o item é reservado e recebe o status `PRE-ORDER`. Caso o cliente não escolha um método de pagamento em até **5 minutos**, este pedido é expirado — muda para `EXPIRED` e sua reserva de itens é estornada.
+
+<Info>
+  Um pedido em `PRE-ORDER` pode caminhar para `EXPIRED` (acima), `CANCELED`, `IN-PROCESSING`, `WAITING-PAYMENT` ou `PAID`.
+
+  - `CANCELED` e `IN-PROCESSING` são situações impostas por meio de endpoints — cancelamento é ordem expressa do marketplace em caso de qualquer erro entre a criação do pedido e seu pagamento. `IN-PROCESSING` indica que o pagamento já efetuado ainda está sendo processado pelo marketplace (evita o pedido expirar nesse meio tempo).
+  - `WAITING-PAYMENT` e `PAID` surgem com a escolha de um meio de pagamento assíncrono (PIX, boleto). Quando o pagamento é confirmado, o status migra para `PAID`.
+</Info>
+
+---
+
+## Paid 💵
+
+Após o pedido realizado, itens reservados e pagamento confirmado, os itens recebem a devida baixa de estoque — o pedido está pronto para receber as atualizações dos vendedores.
+
+A partir deste status o pedido pode caminhar para `CANCELED`, `BILLED` ou `PARTIALLY-BILLED`.
+
+Os pedidos no marketplace pela plataforma Mkplace são concebidos no que chamamos de **multi-seller** — um pedido pode ter mais de um vendedor, de acordo com os itens que o cliente final adquiriu e pagou.
+
+### Conceito multi-seller 🤝
+
+Um pedido que possui um ou mais itens pertencentes a vendedores diferentes é tratado internamente e recebido via Webhook **já com a separação de itens e pacotes**. Porém é necessário entender três níveis de status:
+
+#### Status geral do pedido
+
+O atributo `status` na raiz do objeto refere-se ao status do pedido **generalizado**, entre todos os itens e vendedores que a ele pertencem.
+
+Quando um vendedor `A` fatura seus itens, mas o vendedor `B` (que também possui itens no pedido) ainda não, o pedido temporariamente fica em `PARTIALLY-BILLED` — a forma de indicar que foi faturado, mas não em sua totalidade.
+
+Se o vendedor `A` então envia seus itens pela transportadora, o pedido vai para `PARTIALLY-SENT` — temos itens ainda nem faturados, mas parte enviada.
+
+A plataforma sempre dá ênfase ao status **mais alto**: se o vendedor `B` agora faturar seus itens, o pedido **não muda de status** — `SENT` é "superior" a `BILLED`.
+
+Então como o vendedor `B` sabe que seus itens foram faturados corretamente? Pelos próximos dois níveis: **status de pacote** e **status de item**.
+
+#### Status de pacote
+
+Quando o vendedor `A` faturou seus itens e o status geral foi para `PARTIALLY-BILLED`, o pedido sofreu outra alteração: a inclusão de um objeto na lista de `shipments` — atributo na raiz do objeto pedido que indica os **pacotes**.
+
+Cada pacote tem status próprio e uma lista de itens. Dentro do pacote ficam as informações de nota fiscal, dados do envio (tracking) e data de entrega.
+
+Em um pacote, o status nasce com o faturamento. Status puros são `BILLED`, `SENT` e `DELIVERED`, mas também pode ir para `CANCELED`, `RETURNED`, `REFUNDED` e `REPLACED` — voltaremos aos significados abaixo.
+
+No exemplo, quando o pedido estava em `PARTIALLY-SENT` e o vendedor `B` faturou seus itens, um pacote novo surge dentro de `shipments` contendo a nota fiscal, os itens faturados e status `BILLED` — assim `B` consegue identificar que seu faturamento foi feito com sucesso.
+
+E se `B` errou o faturamento e incluiu um item indevidamente? O pacote tem dois itens — como saber qual cancelar? Para isso existem status individuais por item.
+
+#### Status de item
+
+Quando um pacote é criado por um faturamento, os itens incluídos têm um campo `status` que, na maioria das vezes, caminha junto com o status do pacote. No exemplo, ambos itens nascem `BILLED`.
+
+Quando o vendedor `B` percebe o erro e cancela apenas 1 item do pacote, o status daquele item específico vai para `CANCELED` — o pedido fica coerente com a realidade.
+
+---
+
+## BILLED, SENT e DELIVERED 🚛
+
+Com o pedido em `PAID`, o vendedor pode tomar suas ações para faturar, enviar e informar a entrega. Endpoints em **Referência da API > Pedidos**:
+
+- `POST /sales/order/billing/{orderId}` — Faturar pedido
+- `POST /sales/order/tracking/{searchParameter}` — Enviar pedido
+- `POST /sales/order/delivered/{searchParameter}` — Entregar pedido
+
+<Warning>
+  Cada endpoint tem suas regras específicas. Consulte a Referência da API.
+</Warning>
+
+---
+
+## CANCELED, RETURNED, REFUNDED ⛔
+
+Nem todo pedido conseguirá realizar o "caminho feliz". Veja os fluxos:
+
+<AccordionGroup>
+  <Accordion title="PAID, BILLED — cancelamento" icon="ban">
+    Quando o pedido está `PAID` ou o pacote está `BILLED`, é possível cancelar o pacote ou os itens que o vendedor não conseguirá vender.
+
+    Endpoint: `POST /sales/order/cancel` — Cancelar pedido
+  </Accordion>
+
+  <Accordion title="SENT — retorno" icon="rotate-left">
+    Pacote marcado como enviado, mas ainda não nas mãos do cliente, e foi necessário retornar (extravio, pacote perdido, recusa do cliente). O vendedor primeiro informa que o pacote ou itens foram **retornados**.
+
+    Endpoint: `POST /sales/order/return` — Retornar pedido
+
+    Com status `RETURNED`, o vendedor tem duas escolhas: cancelar pela rota de cancelamento acima, ou faturar novamente os itens — útil quando o problema foi produto diferente do comprado ou avariado e o cliente ainda quer receber.
+  </Accordion>
+
+  <Accordion title="DELIVERED — devolução" icon="undo">
+    Pacote aceito pelo cliente e entrega informada. O cliente final ainda pode querer devolver o item — usamos o status `REFUNDED`.
+
+    Endpoint: `POST /sales/order/refund` — Devolução de pedido
+  </Accordion>
+</AccordionGroup>
+
+---
+
+Fluxograma das possibilidades — visão de pedido até `PAID` e depois visão de pacote:
+
+![Fluxograma de status do pedido](/images/pedidos-fluxograma.jpg)
+
+Para acompanhar um pedido:
+
+- `GET /sales/order/{orderId}` — Consultar pedido por id
+- `GET /sales/order` — Listar pedidos por filtros
+
+---
+
+[Próxima etapa: Conclusão →](/sellers/conclusao)

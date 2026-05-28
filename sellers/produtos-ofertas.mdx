@@ -1,8 +1,85 @@
 ---
-title: "Produtos e ofertas"
-description: "Sugestão de produto, curadoria, atualização de produto e atualização de oferta."
+title: "Produtos e ofertas 🏍️"
+description: "Sugestão de produto, processo de curadoria, atualização de produto e atualização de oferta."
 ---
 
-{/* TODO PR3: Migrar conteúdo de "3 - Produto e oferta.md" */}
+Para que o seller esteja apto a vender na plataforma, é necessária a aprovação dos produtos e suas respectivas ofertas (curadoria) antes de se integrar ao catálogo.
 
-Em construção.
+Os dados cadastrados — atributos, fotos, vídeos e demais — passam pela curadoria do marketplace e são acatados como produto novo ou associados a um produto igual, a depender da análise.
+
+## Criação de sugestão de produto 🚲
+
+Os produtos incluídos na plataforma são recepcionados pelo marketplace por meio de **sugestões de produtos**. Cada sugestão contém um único SKU (`variant.sellerSkuId`) e pode ter uma única oferta vinculada a este SKU.
+
+<Warning>
+  Em caso de duplicidade de SKUs (`variant.sellerSkuId`), o processo é interrompido. Sugestões que não possuírem todas as informações de cadastro ficam **pendentes** até correção pelo vendedor.
+</Warning>
+
+A sugestão é composta por atributos do produto, suas variações, e para cada variação, sua oferta — indicando preço e disponibilidade.
+
+Endpoint em **Referência da API > Catálogo**:
+
+- `POST /catalogue/suggestion` — Criar sugestão
+
+<Note>
+  Após a sugestão criada, é responsabilidade do marketplace analisar os dados enviados e decidir sobre a importação (ou não) ao catálogo.
+</Note>
+
+---
+
+## Processo de curadoria 🕵️
+
+Cada sugestão cadastrada pode ser importada pelo marketplace como produto do tipo **novo** ou **match** (já existente):
+
+- **Tipo novo** — os dados são validados pelo time de curadoria. Se aceitos, o produto é publicado e passa a integrar o catálogo.
+- **Tipo match** — o sistema combina os dados informados aos já existentes na plataforma e aponta para a criação/atualização da oferta automaticamente.
+
+Para consultar o status da sugestão:
+
+- `GET /catalogue/reports` — Consultar reports (relatórios sobre cada solicitação de importação)
+- `GET /catalogue/suggestion/id/{suggestionId}` — Consultar sugestão
+
+<Tip>
+  Após analisada e integrada ao catálogo do marketplace — seja pelo método de match automático ou pela adição feita pela curadoria — a manutenção do produto e da oferta se dá pela mesma sugestão.
+</Tip>
+
+---
+
+## Atualização de produtos e ofertas 🔁
+
+### Atualização de produtos
+
+Uma vez criada a sugestão, aceita pela curadoria e integrada ao catálogo, teremos um produto — e poderemos atualizá-lo sempre que necessário. Este processo deve ser feito pela **atualização da sugestão que originou este produto**, enviando o payload completo contendo as informações atualizadas, usando seu `ID`.
+
+<Note>
+  Em casos de sugestões com muitas variantes, é possível enviar uma variante por sugestão. No processo de curadoria, os cadastros são linkados via match e a oferta é criada.
+</Note>
+
+<Warning>
+  Ao atualizar um produto via sugestão, esta atualização **também passa por curadoria**.
+</Warning>
+
+Endpoints:
+
+- `PUT /catalogue/suggestion/id/{suggestionId}` — Atualizar sugestão
+- `GET /catalogue/suggestions` — Listar sugestões
+
+### Atualização de ofertas
+
+A atualização de ofertas é de responsabilidade do vendedor — e neste caso, os dados **não passam pela curadoria**.
+
+Este processo se destina à atualização de estoque, preço e disponibilidade de uma oferta pertencente a uma sugestão que gerou um produto e suas variantes no catálogo. Apenas esses dados, por serem de interesse exclusivo do vendedor, são passíveis de atualização direta.
+
+Endpoint:
+
+- `POST /catalogue/offer` — Atualizar oferta de uma sugestão
+
+<Info>
+  É possível atualizar uma oferta mesmo que a sugestão correspondente ainda não tenha sido aceita. A atualização é acatada e reflete na oferta quando o produto for publicado.
+
+  Caso a sugestão já esteja publicada como produto, a atualização também reflete na oferta correspondente assim que for enviada.
+</Info>
+
+---
+
+[Próxima etapa: Pedidos →](/sellers/pedidos)

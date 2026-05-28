@@ -1,9 +1,57 @@
 ---
-title: "Visão geral da integração de vendedores"
-description: "Manual de homologação para novos sellers integrarem-se à API Mkplace."
+title: "Manual de integração de Sellers"
+description: "Visão geral da jornada de homologação para integrar sua empresa à API Mkplace."
 sidebarTitle: "Visão geral"
 ---
 
-{/* TODO PR3: Migrar conteúdo de "0 - Introducao.md" do export Stoplight */}
+## Bem-vindo à Mkplace!
 
-Em construção. O conteúdo desta página será migrado a partir do manual de integração de vendedores no próximo PR.
+Este é o manual para que você possa integrar sua empresa à nossa plataforma e começar a usufruir das melhores soluções do mercado. Para melhor atendê-lo, oferecemos ferramentas para que você possa integrar seu produto ao nosso shopping.
+
+Estes serviços permitem aos vendedores credenciados disponibilizarem seus produtos dentro do marketplace por meio de nossa API.
+
+<Note>
+  Sugerimos que este documento seja lido com atenção, e usado como guia de referência no processo de homologação, bem como em caso de dúvidas ou para quaisquer mudanças nos sistemas. Também recomendamos que seja periodicamente revisitado, devido às suas constantes atualizações.
+</Note>
+
+### 🎯 Objetivo
+
+Esta documentação tem por objetivo orientar a integração de novos sellers à API Mkplace, descrevendo as funcionalidades e os métodos utilizados, listando informações a serem enviadas, recebidas e provendo exemplos.
+
+### 📋 Pré-requisitos
+
+<Tip>
+  Recomendamos que avaliem essa documentação com algum especialista em tecnologia da informação que entenda as regras de negócio e desafios tecnológicos da sua plataforma, para que encontrem soluções que se adequem ao que já existe e o que deverá ser criado para atender às etapas da homologação.
+</Tip>
+
+- Conhecimentos em alguma linguagem de programação que realize requisições HTTPS e manipulação de dados.
+- Postman (ou equivalente) para testar a integração — a coleção da API Mkplace estará disponível ao final desta documentação.
+
+### 🛠️ Etapas da homologação
+
+Para conseguirmos dizer que sua plataforma está inteiramente integrada com os processos e manutenções, precisamos passar pelas seguintes etapas:
+
+<Steps>
+  <Step title="Autenticação" icon="key">
+    Em cada requisição é necessário informar um token de autenticação. A etapa explica como obter `client_id` e `client_secret`, e como gerar e manter um token JWT durante todo o processo.
+
+    [Ir para Autenticação →](/sellers/autenticacao)
+  </Step>
+  <Step title="Cadastros e configurações" icon="gear">
+    Antes de incluir produtos, algumas configurações precisam ser feitas via API — pelo menos uma vez — para cadastrar warehouse, provedor de frete e webhooks.
+
+    [Ir para Configurações →](/sellers/configuracoes)
+  </Step>
+  <Step title="Produtos e ofertas" icon="box">
+    Com a chave de acesso em mãos, você passa para a entrada de produtos via sugestões: o time de curadoria da Mkplace avalia e decide o match com o catálogo existente ou cria um novo produto.
+
+    [Ir para Produtos e ofertas →](/sellers/produtos-ofertas)
+  </Step>
+  <Step title="Pedidos" icon="cart-shopping">
+    Com produtos cadastrados e configurações apontando para o caminho correto, integre sua loja à plataforma para receber, tratar, faturar, enviar, entregar, cancelar, retornar, trocar e devolver pedidos.
+
+    [Ir para Pedidos →](/sellers/pedidos)
+  </Step>
+</Steps>
+
+Para iniciar a homologação, vá para a [primeira etapa: Autenticação](/sellers/autenticacao).
