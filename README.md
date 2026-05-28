@@ -1,55 +1,55 @@
-# Mintlify Starter Kit
+# Mkplace Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Documentação técnica da plataforma Mkplace, hospedada em [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Estrutura
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+| Pasta / arquivo | Conteúdo |
+|---|---|
+| [index.mdx](index.mdx) | Landing — intro Mkplace e cards para os dois manuais |
+| [sellers/](sellers/) | Manual de Integração de Vendedores |
+| [stores/](stores/) | Manual de Integração de Lojas (em construção) |
+| [api-reference/openapi/](api-reference/openapi/) | Specs OpenAPI usados para gerar a referência da API |
+| [docs.json](docs.json) | Configuração global (navegação, tema, servidores, auth) |
+| [AGENTS.md](AGENTS.md) | Instruções para agentes de IA contribuindo no repo |
+| `.github/workflows/docs-check.yml` | CI que valida cada PR |
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
-
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
+## Rodando localmente
 
 ```bash
-npx skills add https://mintlify.com/docs
-```
-
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
-
-See the [AI tools guides](/ai-tools) for tool-specific setup.
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
 npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
 mint dev
 ```
 
-View your local preview at `http://localhost:3000`.
+Abre em `http://localhost:3000` com hot reload.
 
-## Publishing changes
+## CI
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+Todo pull request executa três verificações em `.github/workflows/docs-check.yml`:
 
-## Need help?
+- `mint validate` — schema do `docs.json`, frontmatter MDX, componentes, OpenAPI.
+- `mint broken-links` — links internos quebrados.
+- `mint a11y` — contraste de cores e alt text em imagens.
 
-### Troubleshooting
+PRs com qualquer falha bloqueiam o merge.
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+## Contribuindo
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+Para adicionar uma página:
+
+1. Criar `.mdx` na pasta apropriada (`sellers/` ou `stores/`).
+2. Frontmatter com `title` e `description`.
+3. Registrar em `docs.json` → `navigation.tabs[].groups[].pages`.
+4. Rodar `mint dev` e conferir o render.
+5. Abrir PR.
+
+Convenções de conteúdo (glossário, estilo, componentes Mintlify, boundaries) em [AGENTS.md](AGENTS.md).
+
+## Deploy
+
+Push para `main` dispara deploy automático no Mintlify Dashboard (via GitHub App).
+
+## Suporte
+
+- **Suporte geral**: [suporte@mkplace.com.br](mailto:suporte@mkplace.com.br)
+- **Integração técnica**: [ti@mkplace.com.br](mailto:ti@mkplace.com.br)
