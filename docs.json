@@ -4,8 +4,8 @@
   "name": "Mkplace",
   "colors": {
     "primary": "#0f0f1f",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "light": "#FFFFFF",
+    "dark": "#0f0f1f"
   },
   "favicon": {
     "light": "/favicon.svg",
@@ -33,12 +33,7 @@
     "dark": "/images/a46a27757e30601e5901df3f7d4a8abaf2d642a3_5dd5fba8c7515d2dc58448400png.png"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
       "label": "Dashboard",
@@ -47,22 +42,13 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
+    "view",
+    "mcp",
+    "vscode",
+    "download-spec",
+    "claude",
+    "chatgpt"
    ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
   },
   "background": {
     "color": {
@@ -72,5 +58,41 @@
   "appearance": {
     "default": "dark",
     "strict": true
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "metadata": {
+    "timestamp": false
+  },
+  "styling": {
+    "codeblocks": "dark"
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "search": {
+    "prompt": "Buscar ..."
+  },
+  "markdown": {
+    "schema": false
+  },
+  "api": {
+    "playground": {
+      "proxy": true
+    },
+    "examples": {
+      "defaults": "all"
+    },
+    "mdx": {
+      "auth": {
+        "method": "bearer",
+        "name": "Authorization"
+      },
+      "server": [
+        "https://api.main.mkplace.com",
+        "https://api.main.mkplace.com.br"
+      ]
+    }
   }
 }
