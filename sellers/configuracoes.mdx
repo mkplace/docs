@@ -1,0 +1,47 @@
+---
+title: "Cadastros e configurações da plataforma ⚙️"
+description: "Cadastro de warehouse e webhooks de pedidos — pré-requisitos antes de incluir produtos."
+sidebarTitle: "Visão geral"
+---
+
+Para que você consiga acompanhar o processo de criação de pedidos, é necessário configurar algumas funcionalidades da plataforma.
+
+## 1. Cadastro de warehouse 🏪
+
+Todo vendedor precisa informar seu estoque ou centro de distribuição — de onde as mercadorias saem. Para isso, cadastre warehouses informando dados como `nome`, `origem` e `crossdockingtime`.
+
+<Note>
+  Um vendedor pode ter mais de um centro de distribuição. A plataforma permite criar múltiplos warehouses, mas é necessário definir um padrão — quando um pedido é feito, a plataforma dá preferência ao escolhido.
+</Note>
+
+Endpoints disponíveis em **Referência da API > Warehouse**:
+
+- `POST /store/seller/warehouse` — Criar warehouse
+- `GET /store/seller/warehouse` — Listar warehouses
+- `PUT /store/seller/warehouse/{warehouseId}` — Atualizar warehouse
+- `DELETE /store/seller/warehouse/{warehouseId}` — Deletar warehouse
+
+---
+
+## 2. Cadastro de webhooks 📥
+
+Uma vez autenticado e configurado o centro de distribuição, é possível iniciar a inclusão de produtos e ofertas. Porém, para **receber e acompanhar os pedidos**, é necessário configurar um webhook.
+
+<Info>
+  **O que é webhook?** Recurso de comunicação entre ferramentas — fornece dados em tempo real por meio de uma URL de destino sempre que um evento acontece. Permite automatizar tarefas com mais agilidade.
+</Info>
+
+Para configurar um endpoint que receba os pedidos enviados pela Mkplace, consulte a página **Webhook de pedidos** na seção Configurações.
+
+{/* TODO: link absoluto pra /sellers/configuracoes/webhook-pedidos disparou falso-positivo em mint broken-links — restaurar quando o bug for resolvido upstream */}
+
+Com o endpoint pronto, cadastre-o e os eventos desejados em **Referência da API > Webhook-Sales**:
+
+- `POST /sales/webhook` — Criar configuração de webhook
+- `GET /sales/webhook` — Listar configurações
+- `PUT /sales/webhook/{webhookId}` — Atualizar configuração
+- `DELETE /sales/webhook/{webhookId}` — Deletar configuração
+
+---
+
+[Próxima etapa: Produtos e ofertas →](/sellers/produtos-ofertas)

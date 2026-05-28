@@ -3,6 +3,127 @@ title: "Cotação de frete via API"
 description: "Contrato do endpoint que o seller deve expor para receber requisições de cotação de frete da Mkplace."
 ---
 
-{/* TODO PR3: Migrar conteúdo de "2.1 - Cotacao-de-frete-via-API.md" */}
+Para integrar sua API Restful de cotação de frete com nossos serviços, é necessário criar um endpoint que receba o payload abaixo.
 
-Em construção.
+**Método:** `POST`
+
+**Headers:**
+
+```http
+Content-Type: application/json
+```
+
+## Corpo da requisição
+
+```json
+{
+  "title": "Cotação de frete - Body",
+  "type": "object",
+  "properties": {
+    "storeId": {
+      "type": "string",
+      "description": "Identificador do Marketplace na Mkplace."
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "Identificador do Vendedor na Mkplace."
+    },
+    "step": {
+      "type": "string",
+      "description": "Etapa da simulação de frete",
+      "enum": ["checkout", "catalogue"]
+    },
+    "zipCode": {
+      "type": "string",
+      "description": "CEP do cliente final, destinatário"
+    },
+    "items": {
+      "type": "array",
+      "description": "Itens a serem cotados o frete",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sellerSkuId": { "type": "string", "description": "Identificação da variante/sku no Vendedor" },
+          "storeId": { "type": "string", "description": "Identificador do Marketplace na Mkplace." },
+          "offerId": { "type": "string", "description": "Identificador da oferta" },
+          "sellerId": { "type": "string", "description": "Identificador do Vendedor na Mkplace." },
+          "skuId": { "type": "string", "description": "Identificador da variante/sku dentro da Mkplace" },
+          "warehouseId": { "type": "string", "description": "Identificador do centro de distribuição com estoque desta oferta" },
+          "category": { "type": ["string", "null"], "description": "Categoria da variante/sku" },
+          "unitPrice": { "type": "number", "minimum": 0, "description": "Preço unitário da variante/sku" },
+          "sourceZipcode": { "type": "string", "minLength": 7, "maxLength": 9, "description": "CEP do centro de distribuição" },
+          "crossdockingTime": { "type": "number", "minimum": 0, "description": "crossDockingTime do centro de distribuição" },
+          "quantity": { "type": "number", "minimum": 1, "default": 1, "description": "Quantidade da variante/sku a ser cotada" },
+          "weight": { "type": "number", "minimum": 0, "description": "Peso da variante/sku" },
+          "width": { "type": "number", "minimum": 0, "description": "Largura da variante/sku" },
+          "height": { "type": "number", "minimum": 0, "description": "Altura da variante/sku" },
+          "length": { "type": "number", "minimum": 0, "description": "Comprimento da variante/sku" }
+        },
+        "required": [
+          "storeId", "offerId", "sellerId", "skuId", "warehouseId",
+          "unitPrice", "sourceZipcode", "crossDockingTime",
+          "weight", "width", "height", "length"
+        ]
+      }
+    }
+  },
+  "required": ["storeId", "sellerId", "step", "zipCode"]
+}
+```
+
+### Observações
+
+Sobre o campo **`step`** — etapa em que a simulação se encontra:
+
+<AccordionGroup>
+  <Accordion title="checkout" icon="cart-shopping">
+    Última cotação antes do fechamento do pedido. Alguns vendedores podem fazer algo a mais nessa etapa — salvar a cotação para outro processo, ou passar por outros microsserviços para obter um valor mais coerente de frete.
+  </Accordion>
+  <Accordion title="catalogue" icon="grid">
+    Solicitação de cotação de itens que ainda estão no carrinho ou na página principal do marketplace. Buscamos uma resposta mais rápida e menos assertiva — para entregar ao cliente final uma resposta com baixa latência.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Resposta da cotação
+
+A resposta deve ser uma **lista de objetos**, onde cada objeto representa um pacote — dando liberdade para o vendedor já separar meios de entrega por itens.
+
+```json
+{
+  "title": "Cotação de frete - Response",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "properties": {
+      "deliveryOptions": {
+        "type": "array",
+        "description": "Opções de entrega para este pacote",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "deliveryMethodName": { "type": "string", "description": "Nome do método de entrega (Sedex, PAC, etc.)" },
+            "estimatedBusinessDays": { "type": "number", "description": "Entrega estimada em dias úteis" },
+            "finalShippingCost": { "type": "number", "description": "Custo final do frete com possíveis descontos" },
+            "estimatedExactDateISO": { "type": "string", "description": "Data estimada de entrega no padrão ISO", "examples": ["2023-05-24T13:54:08.204Z"] },
+            "logisticProviderName": { "type": "string", "description": "Nome do provedor logístico (Correios, Jadlog, etc.)" }
+          },
+          "required": ["deliveryMethodName", "estimatedBusinessDays", "finalShippingCost", "estimatedExactDateISO", "logisticProviderName"]
+        }
+      },
+      "items": {
+        "type": "array",
+        "description": "Itens deste pacote (mesma estrutura do body de entrada)",
+        "minItems": 1
+      }
+    },
+    "required": ["deliveryOptions", "items"]
+  }
+}
+```
+
+Com o body de entrada e a resposta no padrão acima, e a URL do endpoint em mãos, você está pronto para concluir as demais configurações.

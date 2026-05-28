@@ -1,8 +1,33 @@
 ---
-title: "Autenticação"
-description: "Como obter e usar o token OAuth2 para chamar as APIs Mkplace."
+title: "Autenticação 🔐"
+description: "Como obter as chaves de acesso e gerar o token OAuth2 para chamar a API Mkplace."
 ---
 
-{/* TODO PR3: Migrar conteúdo de "1 - Autenticacao.md" */}
+Antes de iniciar a implementação da autenticação, o vendedor precisa possuir suas chaves de acesso (`client_id` e `client_secret`), que devem ser solicitadas ao administrador do marketplace após a finalização do setup, pelo canal de suporte ([suporte@mkplace.com.br](mailto:suporte@mkplace.com.br)).
 
-Em construção.
+<Warning>
+  As chaves de acesso em **produção** serão fornecidas ao final da integração em homologação.
+</Warning>
+
+## Gerando token 🪪
+
+Usamos o padrão `OAuth2`. Após o cadastro do vendedor e com as chaves em mãos, devolvemos um token de acesso em formato JWT que deve estar no cabeçalho de todas as requisições aos nossos serviços.
+
+- [O que é um token JWT?](https://www.devmedia.com.br/como-o-jwt-funciona/40265)
+- [O que é o padrão OAuth 2.0?](https://www.treinaweb.com.br/blog/o-que-e-oauth-2)
+
+Fluxo:
+
+```mermaid
+sequenceDiagram
+    Vendedor->>+Mkplace: Solicita token informando<br/>client_id e client_secret
+    Mkplace->>+Vendedor: Devolve token com prazo de expiração
+    Vendedor->>+Mkplace: Requisita ação em dado protegido
+    Mkplace->>+Vendedor: Retorna dado protegido
+```
+
+Para requisitar um token, consulte o endpoint `POST /token` na **Referência da API**.
+
+---
+
+[Próxima etapa: Cadastros e configurações →](/sellers/configuracoes)

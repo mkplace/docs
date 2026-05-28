@@ -30,7 +30,7 @@
           {
             "group": "Configurações",
             "pages": [
-              "sellers/configuracoes/index",
+              "sellers/configuracoes",
               "sellers/configuracoes/cotacao-frete",
               "sellers/configuracoes/webhook-pedidos"
             ]
@@ -44,7 +44,7 @@
           {
             "group": "Pedidos",
             "pages": [
-              "sellers/pedidos/index",
+              "sellers/pedidos",
               "sellers/pedidos/schema"
             ]
           },
