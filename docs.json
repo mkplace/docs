@@ -5,25 +5,80 @@
   "colors": {
     "primary": "#0f0f1f",
     "light": "#FFFFFF",
-    "dark": "#0f0f1f"
+    "dark": "#6366F1"
   },
   "favicon": {
     "light": "/favicon.svg",
     "dark": "/favicon.svg"
   },
   "navigation": {
-    "pages": ["index", "quickstart"],
+    "tabs": [
+      {
+        "tab": "Introdução",
+        "pages": ["index"]
+      },
+      {
+        "tab": "Integração de Vendedores",
+        "groups": [
+          {
+            "group": "Começando",
+            "pages": [
+              "sellers/index",
+              "sellers/autenticacao"
+            ]
+          },
+          {
+            "group": "Configurações",
+            "pages": [
+              "sellers/configuracoes/index",
+              "sellers/configuracoes/cotacao-frete",
+              "sellers/configuracoes/webhook-pedidos"
+            ]
+          },
+          {
+            "group": "Catálogo",
+            "pages": [
+              "sellers/produtos-ofertas"
+            ]
+          },
+          {
+            "group": "Pedidos",
+            "pages": [
+              "sellers/pedidos/index",
+              "sellers/pedidos/schema"
+            ]
+          },
+          {
+            "group": "Encerramento",
+            "pages": [
+              "sellers/conclusao"
+            ]
+          },
+          {
+            "group": "Referência da API",
+            "openapi": "api-reference/openapi/plataforma-mkplace.json"
+          }
+        ]
+      },
+      {
+        "tab": "Integração de Lojas",
+        "groups": [
+          {
+            "group": "Começando",
+            "pages": [
+              "stores/index",
+              "stores/em-breve"
+            ]
+          }
+        ]
+      }
+    ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Site Mkplace",
+          "href": "https://www.mkplace.com.br/",
+          "icon": "globe"
         }
       ]
     }
@@ -33,22 +88,22 @@
     "dark": "/images/a46a27757e30601e5901df3f7d4a8abaf2d642a3_5dd5fba8c7515d2dc58448400png.png"
   },
   "navbar": {
-    "links": [],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    "links": [
+      {
+        "label": "Suporte",
+        "href": "mailto:suporte@mkplace.com.br"
+      }
+    ]
   },
   "contextual": {
     "options": [
-    "view",
-    "mcp",
-    "vscode",
-    "download-spec",
-    "claude",
-    "chatgpt"
-   ]
+      "view",
+      "mcp",
+      "vscode",
+      "download-spec",
+      "claude",
+      "chatgpt"
+    ]
   },
   "background": {
     "color": {

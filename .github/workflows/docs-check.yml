@@ -1,0 +1,29 @@
+name: docs-check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Mintlify CLI
+        run: npm i -g mint
+
+      - name: Validate docs.json and MDX schemas
+        run: mint validate
+
+      - name: Check internal broken links
+        run: mint broken-links
+
+      - name: Check accessibility
+        run: mint a11y
