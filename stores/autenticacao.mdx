@@ -1,0 +1,19 @@
+---
+title: "Autenticação"
+description: "Como a loja obtém credenciais e gera o token de acesso para chamar a API Mkplace."
+---
+
+<Warning>
+  Página em construção — esqueleto criado em PR #4.
+</Warning>
+
+## Tópicos planejados
+
+- Solicitação de `client_id` e `client_secret` para o perfil **Loja** (canal de suporte).
+- Fluxo OAuth2 `client_credentials` (igual ao do Seller, mesma base Keycloak).
+- Escopos/permissões aplicáveis ao perfil Loja vs Seller.
+- Cabeçalho `Authorization: Bearer <token>` em cada requisição.
+- Tratamento de expiração e renovação do token.
+- Exemplos de erro (401 `unauthorized_client`, 400 `invalid_client`).
+
+{/* TODO: descrever endpoint /token, escopos exclusivos do perfil Loja, e diferenças vs autenticação do Seller */}

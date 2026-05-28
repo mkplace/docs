@@ -67,7 +67,26 @@
             "group": "Começando",
             "pages": [
               "stores/index",
-              "stores/em-breve"
+              "stores/autenticacao"
+            ]
+          },
+          {
+            "group": "Consumo do catálogo",
+            "pages": [
+              "stores/catalogo"
+            ]
+          },
+          {
+            "group": "Compra",
+            "pages": [
+              "stores/checkout",
+              "stores/pedidos"
+            ]
+          },
+          {
+            "group": "Integração de retorno",
+            "pages": [
+              "stores/eventos"
             ]
           }
         ]

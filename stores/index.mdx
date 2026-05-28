@@ -1,11 +1,35 @@
 ---
-title: "Visão geral da integração de lojas"
-description: "Manual de integração para lojas (stores) — front-end do marketplace que consome catálogo e dispara checkout."
+title: "Manual de integração de Lojas"
+description: "Visão geral do processo de integração para lojas (stores) operando o front-end do marketplace Mkplace."
 sidebarTitle: "Visão geral"
 ---
 
-{/* TODO: conteúdo a definir junto com o time de produto */}
+<Warning>
+  Esta seção está **em construção**. As páginas abaixo são esqueletos que serão preenchidos junto com o time de produto. Conteúdo final pode mudar de estrutura.
+</Warning>
 
-Em construção.
+A **Loja** (store) é o produto que opera o front-end do marketplace Mkplace — consome o catálogo público, monta a vitrine, gerencia o carrinho e o checkout do consumidor final, e recebe eventos pós-venda.
 
-Esta seção descreverá o processo de integração para lojas (stores) — o produto que opera o front-end do marketplace, consome o catálogo público, monta a vitrine e gerencia o checkout do consumidor final.
+Este manual cobrirá:
+
+<Columns cols={2}>
+  <Card title="Autenticação" icon="key" href="/stores/autenticacao">
+    Como a loja obtém credenciais e gera o token de acesso para chamar a API.
+  </Card>
+  <Card title="Consumo do catálogo" icon="grid" href="/stores/catalogo">
+    Como consultar produtos, ofertas, categorias e disponibilidade.
+  </Card>
+  <Card title="Carrinho e checkout" icon="cart-shopping" href="/stores/checkout">
+    Construção do carrinho, cotação de frete, aplicação de cupom e finalização do pedido.
+  </Card>
+  <Card title="Pedidos" icon="receipt" href="/stores/pedidos">
+    Acompanhamento do pedido do ponto de vista do consumidor final.
+  </Card>
+  <Card title="Eventos" icon="bell" href="/stores/eventos">
+    Webhooks e mensageria transacional que a loja recebe.
+  </Card>
+</Columns>
+
+<Note>
+  Cada página acima possui um TODO indicando o tipo de conteúdo planejado. Contribua diretamente nelas via PR ou abra issue para discutir o roteiro.
+</Note>
