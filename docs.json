@@ -55,6 +55,10 @@
             ]
           },
           {
+            "group": "Referência da API — Autenticação",
+            "openapi": "api-reference/openapi/autenticacao.json"
+          },
+          {
             "group": "Referência da API",
             "openapi": "api-reference/openapi/plataforma-mkplace.json"
           }
