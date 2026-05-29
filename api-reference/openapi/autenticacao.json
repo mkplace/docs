@@ -52,7 +52,7 @@
                 "client_credentials": {
                   "value": {
                     "grant_type": "client_credentials",
-                    "client_id": "front-store",
+                    "client_id": "<seu_client_id>",
                     "client_secret": "<seu_client_secret>"
                   }
                 }
