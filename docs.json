@@ -31,8 +31,8 @@
             "group": "Configurações",
             "pages": [
               "sellers/configuracoes",
-              "sellers/configuracoes/cotacao-frete",
-              "sellers/configuracoes/webhook-pedidos"
+              "sellers/cotacao-frete",
+              "sellers/webhook-pedidos"
             ]
           },
           {
@@ -45,7 +45,7 @@
             "group": "Pedidos",
             "pages": [
               "sellers/pedidos",
-              "sellers/pedidos/schema"
+              "sellers/pedido-schema"
             ]
           },
           {
@@ -151,6 +151,11 @@
   "markdown": {
     "schema": false
   },
+  "redirects": [
+    { "source": "/sellers/configuracoes/cotacao-frete", "destination": "/sellers/cotacao-frete" },
+    { "source": "/sellers/configuracoes/webhook-pedidos", "destination": "/sellers/webhook-pedidos" },
+    { "source": "/sellers/pedidos/schema", "destination": "/sellers/pedido-schema" }
+  ],
   "api": {
     "playground": {
       "proxy": true
