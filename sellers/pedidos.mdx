@@ -7,7 +7,7 @@ sidebarTitle: "Visão geral"
 Passadas as etapas de autenticação, configurações e integração de produtos, vamos falar sobre o **fluxo de status do pedido**.
 
 <Note>
-  A cada alteração de status ou atualização do pedido, o seller recebe os dados pelos endpoints cadastrados no Webhook. Se ainda não configurou, [cadastre o webhook](/sellers/configuracoes#2-cadastro-de-webhooks-) para receber os pedidos no momento da criação.
+  A cada alteração de status ou atualização do pedido, o seller recebe os dados pelos endpoints cadastrados no Webhook. Se ainda não configurou, [cadastre o webhook](/sellers/configuracoes#3-cadastro-de-webhooks-) para receber os pedidos no momento da criação.
 </Note>
 
 Veja o [Schema do pedido](/sellers/pedido-schema) para o JSON completo de um pedido.
@@ -75,9 +75,9 @@ Quando o vendedor `B` percebe o erro e cancela apenas 1 item do pacote, o status
 
 Com o pedido em `PAID`, o vendedor pode tomar suas ações para faturar, enviar e informar a entrega. Endpoints em **Referência da API > Pedidos**:
 
-- `POST /sales/order/billing/{orderId}` — Faturar pedido
-- `POST /sales/order/tracking/{searchParameter}` — Enviar pedido
-- `POST /sales/order/delivered/{searchParameter}` — Entregar pedido
+- `POST /sales/order/billing/{orderId}` — [Faturar pedido](/api-reference/pedidos/faturar-pedido)
+- `POST /sales/order/tracking/{searchParameter}` — [Enviar pedido](/api-reference/pedidos/enviar-pedido)
+- `POST /sales/order/delivered/{searchParameter}` — [Entregar pedido](/api-reference/pedidos/entregar-pedido)
 
 <Warning>
   Cada endpoint tem suas regras específicas. Consulte a Referência da API.
@@ -93,13 +93,13 @@ Nem todo pedido conseguirá realizar o "caminho feliz". Veja os fluxos:
   <Accordion title="PAID, BILLED — cancelamento" icon="ban">
     Quando o pedido está `PAID` ou o pacote está `BILLED`, é possível cancelar o pacote ou os itens que o vendedor não conseguirá vender.
 
-    Endpoint: `POST /sales/order/cancel` — Cancelar pedido
+    Endpoint: `POST /sales/order/cancel` — [Cancelar pedido](/api-reference/pedidos/cancelar-pedido)
   </Accordion>
 
   <Accordion title="SENT — retorno" icon="rotate-left">
     Pacote marcado como enviado, mas ainda não nas mãos do cliente, e foi necessário retornar (extravio, pacote perdido, recusa do cliente). O vendedor primeiro informa que o pacote ou itens foram **retornados**.
 
-    Endpoint: `POST /sales/order/return` — Retornar pedido
+    Endpoint: `POST /sales/order/return` — [Retornar pedido](/api-reference/pedidos/retornar-pedido)
 
     Com status `RETURNED`, o vendedor tem duas escolhas: cancelar pela rota de cancelamento acima, ou faturar novamente os itens — útil quando o problema foi produto diferente do comprado ou avariado e o cliente ainda quer receber.
   </Accordion>
@@ -107,7 +107,7 @@ Nem todo pedido conseguirá realizar o "caminho feliz". Veja os fluxos:
   <Accordion title="DELIVERED — devolução" icon="undo">
     Pacote aceito pelo cliente e entrega informada. O cliente final ainda pode querer devolver o item — usamos o status `REFUNDED`.
 
-    Endpoint: `POST /sales/order/refund` — Devolução de pedido
+    Endpoint: `POST /sales/order/refund` — [Devolução de pedido](/api-reference/pedidos/devolucao-de-pedido)
   </Accordion>
 </AccordionGroup>
 
@@ -119,9 +119,5 @@ Fluxograma das possibilidades — visão de pedido até `PAID` e depois visão d
 
 Para acompanhar um pedido:
 
-- `GET /sales/order/{orderId}` — Consultar pedido por id
-- `GET /sales/order` — Listar pedidos por filtros
-
----
-
-[Próxima etapa: Conclusão →](/sellers/conclusao)
+- `GET /sales/order/{orderId}` — [Consultar pedido por id](/api-reference/pedidos/consultar-pedido-por-id)
+- `GET /sales/order` — [Listar pedidos por filtros](/api-reference/pedidos/listar-pedidos)

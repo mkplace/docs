@@ -1,0 +1,872 @@
+{
+    "$id": "https://schema.mkplace.com.br/sales/order.json",
+    "title": "Order",
+    "description": "An order reference",
+    "type": "object",
+    "properties": {
+        "_id": {
+          "description": "Order identifier for Mkplace",
+          "type": "string"
+        },
+        "summary": {
+            "description": "The representation of order's summary",
+            "type": "object",
+            "properties": {
+                "items": {
+                    "description": "SKU quantity",
+                    "type": "number",
+                    "minimum": 1
+                },
+                "total": {
+                    "description": "Sum of all prices.",
+                    "type": "number",
+                    "minimum": 0
+                },
+                "totalPriceDiscount": {
+                    "description": "Sum of all items' discounts.",
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0
+                },
+                "totalShippingCost": {
+                    "description": "Sum of all freight costs.",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "totalShippingDiscount": {
+                    "description": "Sum of all freight related discounts.",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "maxShippingTime": {
+                    "description": "Order's max shipping time",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "ordersDiscount": {
+                    "description": "A discount that applies to the whole order.",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "finalPrice": {
+                    "description": "The final price of the whole order.",
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0
+                }
+            },
+            "required": [
+                "items",
+                "total",
+                "totalPriceDiscount"
+            ]
+        },
+        "deliveryAddress": {
+            "description": "The representation of order's delivery address",
+            "type": "object",
+            "properties": {
+                "receiverName": {
+                    "description": "Name from person will receive order",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "street": {
+                    "description": "Street's name",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "city": {
+                    "description": "City's name",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "complement": {
+                    "description": "Address's complement",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "shortState": {
+                    "description": "Address's state abbreviation",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "state": {
+                    "description": "Address's state",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "number": {
+                    "description": "Address's number",
+                    "type": "string",
+                    "maxLength": 7,
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "zipcode": {
+                    "description": "Address's zipcode",
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 9,
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "countryCode": {
+                    "description": "Address's country code",
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 2,
+                    "default": "BR",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "neighborhood": {
+                    "description": "Address's neighborhood",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "metadata": {
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {}
+                }
+            },
+            "required": [
+                "receiverName",
+                "street",
+                "city",
+                "shortState",
+                "state",
+                "number",
+                "zipcode",
+                "countryCode",
+                "neighborhood"
+            ]
+        },
+        "parentOrderId": {
+            "description": "The id of the parent order that generated the current one.",
+            "type": "string"
+        },
+        "customer": {
+            "description": "The representation of order's customer",
+            "type": "object",
+            "properties": {
+                "ref": {
+                    "description": "Reference to the customer identification",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "name": {
+                    "description": "Customer's name",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "email": {
+                    "description": "Customer's e-mail",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "phone": {
+                    "description": "Customer's phone",
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "description": "Phone`s Id",
+                            "type": "string"
+                        },
+                        "countryCode": {
+                            "description": "Phone's country code",
+                            "type": "string",
+                            "transform": [
+                                "trim"
+                            ]
+                        },
+                        "areaCode": {
+                            "description": "Phone's area code",
+                            "type": "string",
+                            "transform": [
+                                "trim"
+                            ]
+                        },
+                        "number": {
+                            "description": "Phone's number",
+                            "type": "string",
+                            "pattern": "^((?=.*\\d)(?!.*[a-z])(?!.*[A-Z])).*$",
+                            "minLength": 8,
+                            "maxLength": 10,
+                            "transform": [
+                                "trim"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "areaCode",
+                        "countryCode",
+                        "number"
+                    ]
+                },
+                "document": {
+                    "description": "Customer's document",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "type": {
+                    "description": "Customer's type",
+                    "type": "string",
+                    "transform": [
+                        "trim"
+                    ]
+                },
+                "metadata": {
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {}
+                }
+            },
+            "required": [
+                "ref",
+                "name",
+                "email",
+                "phone",
+                "document",
+                "type"
+            ]
+        },
+        "items": {
+            "description": "The representation of order's items",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "offerId": {
+                        "description": "Offer's reference",
+                        "type": "string"
+                    },
+                    "skuId": {
+                        "description": "Product's variant reference",
+                        "type": "string"
+                    },
+                    "productName": {
+                        "description": "Product's name",
+                        "type": "string",
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "productSlug": {
+                        "description": "Product's slug",
+                        "type": "string",
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string",
+                        "transform": [
+                            "trim"
+                        ],
+                        "description": "Item´s slug"
+                    },
+                    "name": {
+                        "description": "Item's name",
+                        "type": "string",
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "thumbnail": {
+                        "description": "Item's thumbnail",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "quantity": {
+                        "description": "Item's quantity",
+                        "type": "number",
+                        "minimum": 1
+                    },
+                    "sellerName": {
+                        "description": "Seller's name",
+                        "type": "string",
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "sellerId": {
+                        "description": "Seller's identification reference",
+                        "type": "string"
+                    },
+                    "sellerSkuId": {
+                        "description": "Seller's reference to the product variant",
+                        "type": "string"
+                    },
+                    "warehouses": {
+                        "description": "Seller's warehouses reference to the SKU",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "_id": {
+                                    "description": "The reference to SKU id",
+                                    "type": "string",
+                                    "transform": [
+                                        "trim"
+                                    ]
+                                },
+                                "quantity": {
+                                    "description": "The item quantity",
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "_id",
+                                "quantity"
+                            ]
+                        }
+                    },
+                    "unitOriginalPrice": {
+                        "description": "Base SKU price without any discounts.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "unitPrice": {
+                        "description": "SKU unit price with discounts, if discounts exist.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "originalPrice": {
+                        "description": "'unitOriginalPrice' multiplied by the 'quantity'.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "finalPrice": {
+                        "description": "Item's final cost",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "unitFinancialDiscount": {
+                        "description": "Item's financial discount value",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "unitReversalValue": {
+                        "description": "Item's reversal discount value",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "priceDiscount": {
+                        "description": "Sum of the discounts multiplied by the 'quantity'.",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "price": {
+                        "description": "'unitPrice' multiplied by the 'quantity'.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "estimatedBusinessDays": {
+                        "description": "Shipping estimated business days",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "deliveryMethodName": {
+                        "description": "Product's shipping method name",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "shippingCost": {
+                        "description": "Product's shipping cost",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "shippingDiscount": {
+                        "description": "Product's shipping discount",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "finalShippingCost": {
+                        "description": "Product's final shipping cost",
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "logisticProviderName": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "transform": [
+                            "trim"
+                        ],
+                        "description": "Item´s logistic provider name"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {},
+                        "default": {},
+                        "description": "Item´s attributes"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {},
+                        "default": {}
+                    }
+                },
+                "required": [
+                    "offerId",
+                    "skuId",
+                    "productName",
+                    "productSlug",
+                    "slug",
+                    "name",
+                    "quantity",
+                    "sellerName",
+                    "sellerId",
+                    "sellerSkuId",
+                    "price",
+                    "priceDiscount",
+                    "originalPrice",
+                    "unitPrice",
+                    "unitOriginalPrice",
+                    "attributes"
+                ]
+            }
+        },
+        "discounts": {
+            "description": "The representation of order's discounts",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "skuId": {
+                        "description": "Product's variant identification reference",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "couponSlug": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "default": null
+                    },
+                    "origin": {
+                        "description": "Discount's origin ",
+                        "type": "string",
+                        "enum": [
+                            "COUPON"
+                        ],
+                        "default": "COUPON"
+                    },
+                    "amount": {
+                        "description": "Discount's applied amount",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "applyMethod": {
+                        "description": "Discount's applied method",
+                        "type": "string",
+                        "enum": [
+                            "order",
+                            "sku",
+                            "freight"
+                        ]
+                    },
+                    "isFreightFree": {
+                        "description": "Free shipping identifier",
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "origin",
+                    "amount",
+                    "applyMethod",
+                    "isFreightFree"
+                ]
+            }
+        },
+        "shipments": {
+            "description": "The representation of order's shipment",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "sellerId": {
+                        "type": "string",
+                        "description": "Shipment´s sellerId"
+                    },
+                    "originalShipmentId": {
+                        "description": "The id of the original shipment",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "BILLED",
+                            "SENT",
+                            "DELIVERED",
+                            "CANCELED",
+                            "REPLACED",
+                            "REFUNDED",
+                            "RETURNED"
+                        ],
+                        "transform": [
+                            "trim"
+                        ]
+                    },
+                    "event": {
+                        "description": "Shipment Event information",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "code": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "Code referring to the Shipment Event."
+                            },
+                            "reason": {
+                              "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "Reason for the event"
+                            },
+                            "description": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "Description for the event"
+                            }
+                        }
+                    },
+                    "deliveredDate": {
+                        "description": "The date on which the shipment was delivered",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "billing": {
+                        "description": "The billing object representation",
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "description": "Billing´s Id",
+                                "type": "string"
+                            },
+                            "protocol": {
+                                "description": "The billing protocol",
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "accessKey": {
+                                "description": "The billing accessKey",
+                                "type": "string"
+                            },
+                            "number": {
+                                "description": "The billing number",
+                                "type": "string"
+                            },
+                            "serial": {
+                                "description": "The billing serial",
+                                "type": "string"
+                            },
+                            "issueDate": {
+                                "description": "The billing issueDate",
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "xmlContent": {
+                                "description": "The billing xmlContent",
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "accessKey",
+                            "number",
+                            "serial",
+                            "issueDate"
+                        ]
+                    },
+                    "tracking": {
+                        "description": "The tracking reference",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "_id": {
+                                "description": "Tracking´s Id",
+                                "type": "string"
+                            },
+                            "sendDate": {
+                                "description": "The tracking sendDate",
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "protocol": {
+                                "description": "The tracking protocol",
+                                "type": "string",
+                                "transform": [
+                                    "trim"
+                                ]
+                            },
+                            "carrier": {
+                                "description": "The tracking carrier",
+                                "type": "string",
+                                "transform": [
+                                    "trim"
+                                ]
+                            },
+                            "deliveryMethod": {
+                                "description": "The tracking deliveryMethod",
+                                "type": "string",
+                                "transform": [
+                                    "trim"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "sendDate",
+                            "protocol",
+                            "carrier",
+                            "deliveryMethod"
+                        ]
+                    },
+                    "items": {
+                        "description": "The shipment items representation",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "_id": {
+                                    "description": "Shipment´s item Id",
+                                    "type": "string"
+                                },
+                                "skuId": {
+                                    "description": "The item SKU id",
+                                    "type": "string",
+                                    "transform": [
+                                        "trim"
+                                    ]
+                                },
+                                "sellerSkuId": {
+                                    "description": "The item SKU seller id",
+                                    "type": "string",
+                                    "transform": [
+                                        "trim"
+                                    ]
+                                },
+                                "quantity": {
+                                    "description": "The item quantity",
+                                    "type": "number"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "BILLED",
+                                        "SENT",
+                                        "DELIVERED",
+                                        "PARTIALLY-BILLED",
+                                        "PARTIALLY-SENT",
+                                        "PARTIALLY-DELIVERED",
+                                        "PARTIALLY-RETURNED",
+                                        "CANCELED",
+                                        "REPLACED",
+                                        "REFUNDED",
+                                        "RETURNED"
+                                    ],
+                                    "transform": [
+                                        "trim"
+                                    ]
+                                },
+                                "event": {
+                                    "description": "Shipment Item Event information",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
+                                    "properties": {
+                                        "code": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "description": "Code referring to the Shipment Item Event."
+                                        },
+                                        "description": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "description": "Description for the event"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "skuId",
+                                "sellerSkuId",
+                                "quantity",
+                                "status"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "billing",
+                    "items"
+                ]
+            }
+        },
+        "metadata": {
+            "type": [
+                "object",
+                "null"
+            ],
+            "properties": {}
+        },
+        "transactionId": {
+            "description": "The Id used for the payment transaction",
+            "type": "string"
+        },
+        "verifyToken": {
+            "description": "Represents the Order in encrypted form",
+            "type": "string"
+        },
+        "exceptionDetails": {
+            "description": "Message containing error information",
+            "type": "string"
+        },
+        "promotions": {
+            "description": "All promotion informations",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "event": {
+            "description": "Event information",
+            "type": [
+                "object",
+                "null"
+            ],
+            "properties": {
+                "code": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Code referring to the event."
+                },
+                "description": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Description for the event"
+                }
+            }
+        }
+    },
+    "required": [
+        "_id",
+        "items",
+        "customer",
+        "deliveryAddress",
+        "summary"
+    ]
+}

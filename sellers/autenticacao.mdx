@@ -26,8 +26,15 @@ sequenceDiagram
     Mkplace->>+Vendedor: Retorna dado protegido
 ```
 
-Para requisitar um token, consulte o endpoint `POST /token` na **Referência da API**.
+Para requisitar um token, faça um `POST` no endpoint de token do Keycloak. O contrato completo, com os campos e respostas, está em [Gerar token](/api-reference/auth/gerar-token).
 
----
+```bash
+curl --request POST \
+  --url https://idp.mkplace.com.br/realms/{realm}/protocol/openid-connect/token \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data grant_type=client_credentials \
+  --data client_id=<seu_client_id> \
+  --data client_secret=<seu_client_secret>
+```
 
-[Próxima etapa: Cadastros e configurações →](/sellers/configuracoes)
+O `realm`, o `client_id` e o `client_secret` são fornecidos pela Mkplace. O `access_token` retornado deve ser enviado no header `Authorization: Bearer <access_token>` em todas as requisições.

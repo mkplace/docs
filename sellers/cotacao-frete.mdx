@@ -53,7 +53,7 @@ Content-Type: application/json
           "category": { "type": ["string", "null"], "description": "Categoria da variante/sku" },
           "unitPrice": { "type": "number", "minimum": 0, "description": "Preço unitário da variante/sku" },
           "sourceZipcode": { "type": "string", "minLength": 7, "maxLength": 9, "description": "CEP do centro de distribuição" },
-          "crossdockingTime": { "type": "number", "minimum": 0, "description": "crossDockingTime do centro de distribuição" },
+          "crossdockingTime": { "type": "number", "minimum": 0, "description": "Tempo de crossdocking do centro de distribuição, em dias." },
           "quantity": { "type": "number", "minimum": 1, "default": 1, "description": "Quantidade da variante/sku a ser cotada" },
           "weight": { "type": "number", "minimum": 0, "description": "Peso da variante/sku" },
           "width": { "type": "number", "minimum": 0, "description": "Largura da variante/sku" },
@@ -62,7 +62,7 @@ Content-Type: application/json
         },
         "required": [
           "storeId", "offerId", "sellerId", "skuId", "warehouseId",
-          "unitPrice", "sourceZipcode", "crossDockingTime",
+          "unitPrice", "sourceZipcode",
           "weight", "width", "height", "length"
         ]
       }
@@ -117,8 +117,32 @@ A resposta deve ser uma **lista de objetos**, onde cada objeto representa um pac
       },
       "items": {
         "type": "array",
-        "description": "Itens deste pacote (mesma estrutura do body de entrada)",
-        "minItems": 1
+        "description": "Itens deste pacote — mesma estrutura dos itens do body de entrada.",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "sellerSkuId": { "type": "string", "description": "Identificação da variante/sku no Vendedor" },
+            "storeId": { "type": "string", "description": "Identificador do Marketplace na Mkplace." },
+            "offerId": { "type": "string", "description": "Identificador da oferta" },
+            "sellerId": { "type": "string", "description": "Identificador do Vendedor na Mkplace." },
+            "skuId": { "type": "string", "description": "Identificador da variante/sku dentro da Mkplace" },
+            "warehouseId": { "type": "string", "description": "Identificador do centro de distribuição com estoque desta oferta" },
+            "category": { "type": ["string", "null"], "description": "Categoria da variante/sku" },
+            "unitPrice": { "type": "number", "minimum": 0, "description": "Preço unitário da variante/sku" },
+            "sourceZipcode": { "type": "string", "minLength": 7, "maxLength": 9, "description": "CEP do centro de distribuição" },
+            "crossdockingTime": { "type": "number", "minimum": 0, "description": "Tempo de crossdocking do centro de distribuição, em dias." },
+            "quantity": { "type": "number", "minimum": 1, "default": 1, "description": "Quantidade da variante/sku a ser cotada" },
+            "weight": { "type": "number", "minimum": 0, "description": "Peso da variante/sku" },
+            "width": { "type": "number", "minimum": 0, "description": "Largura da variante/sku" },
+            "height": { "type": "number", "minimum": 0, "description": "Altura da variante/sku" },
+            "length": { "type": "number", "minimum": 0, "description": "Comprimento da variante/sku" }
+          },
+          "required": [
+            "sellerSkuId", "storeId", "offerId", "sellerId", "skuId", "warehouseId",
+            "unitPrice", "sourceZipcode", "weight", "width", "height", "length"
+          ]
+        }
       }
     },
     "required": ["deliveryOptions", "items"]
@@ -126,4 +150,4 @@ A resposta deve ser uma **lista de objetos**, onde cada objeto representa um pac
 }
 ```
 
-Com o body de entrada e a resposta no padrão acima, e a URL do endpoint em mãos, você está pronto para concluir as demais configurações.
+Com o body de entrada e a resposta no padrão acima, e a URL do endpoint em mãos, o próximo passo é **cadastrar esse endpoint como provedor de frete** (informando a URL em `configuration.endpoint`) — veja [Provedor de frete](/sellers/configuracoes#2-provedor-de-frete).

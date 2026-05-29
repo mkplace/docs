@@ -1,58 +1,59 @@
 {
   "openapi": "3.1.0",
-  "x-stoplight": {
-    "id": "0rmgogxxspcno"
-  },
   "info": {
     "version": "1.0",
     "title": "Autenticação",
-    "summary": "Autenticação"
+    "summary": "Geração de token de acesso da API Mkplace"
   },
   "servers": [
     {
-      "url": "https://auth2-keycloak.zup.me/realms/mkplace-itaushop-prd/protocol/openid-connect",
-      "description": "Produção"
-    },
-    {
-      "url": "http://itau-idp-stg.mkplace.com.br/realms/mkplace-itaushop-stg/protocol/openid-connect",
-      "description": "Homologação"
+      "url": "https://idp.mkplace.com.br/realms/{realm}/protocol/openid-connect",
+      "description": "Keycloak (IDP)",
+      "variables": {
+        "realm": {
+          "default": "shop-crmbonus",
+          "description": "Realm do Keycloak fornecido pela Mkplace."
+        }
+      }
     }
   ],
   "paths": {
     "/token": {
       "post": {
+        "tags": ["Autenticação"],
         "summary": "Gerar token",
-        "description": "### Gerando Token \n\nUtilizamos como padrão de token de acesso, o padrão `OAuth2`, sendo assim, após o cadastro do vendedor dentro da aplicação e com as chaves em mãos, devolvemos um token de acesso em formato JWT que deverá estar em todos os cabeçalhos de todas as requisições que forem feitas para os nossos serviços.\n\n* [O quê é um token JWT?](https://www.devmedia.com.br/como-o-jwt-funciona/40265)\n* [O quê é o padrão OAuth 2.0](https://www.treinaweb.com.br/blog/o-que-e-oauth-2#:~:text=OAuth%202%20%C3%A9%20um%20protocolo,n%C3%A3o%20o%20acesso%20%C3%A0%20aplica%C3%A7%C3%A3o.)\n\nPara exemplificar melhor, segue um fluxo abaixo:\n\n```mermaid\nsequenceDiagram\n    Vendedor->>+Mkplace: Solicita token informando <br/> client_id e client_secret\n    Mkplace->>+Vendedor: Devolve Token com prazo de expiração\n    Vendedor->>+Mkplace: Requisita uma ação de um dado protegido\n    Mkplace->>+Vendedor: Retorna dado protegido\n```",
         "operationId": "post-token",
+        "x-mint": { "href": "/api-reference/auth/gerar-token" },
+        "description": "Gera um token de acesso (JWT) via OAuth2 `client_credentials` no Keycloak da Mkplace. Envie o token retornado no header `Authorization: Bearer <access_token>` em todas as requisições aos serviços da Mkplace. O `realm`, o `client_id` e o `client_secret` são fornecidos pela Mkplace pelo canal de suporte; as chaves de produção são liberadas ao final da homologação.",
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "client_id": {
-                    "type": "string"
-                  },
-                  "client_secret": {
-                    "type": "string"
-                  },
                   "grant_type": {
                     "type": "string",
-                    "default": "client_credentials"
+                    "default": "client_credentials",
+                    "description": "Fluxo OAuth2 utilizado. Use `client_credentials`."
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Identificador do cliente, fornecido pela Mkplace."
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "Segredo do cliente, fornecido pela Mkplace. Mantenha-o seguro e nunca o exponha publicamente."
                   }
                 },
-                "required": [
-                  "client_id",
-                  "client_secret",
-                  "grant_type"
-                ]
+                "required": ["grant_type", "client_id", "client_secret"]
               },
               "examples": {
-                "Example 1": {
+                "client_credentials": {
                   "value": {
-                    "client_id": "Client_id",
-                    "client_secret": "client_secret",
-                    "grant_type": "client_credentials"
+                    "grant_type": "client_credentials",
+                    "client_id": "<seu_client_id>",
+                    "client_secret": "<seu_client_secret>"
                   }
                 }
               }
@@ -61,58 +62,47 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Token gerado com sucesso.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "access_token": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Token JWT a ser enviado no header `Authorization: Bearer`."
                     },
                     "expires_in": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Validade do token de acesso, em segundos."
                     },
                     "refresh_expires_in": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Validade do refresh token, em segundos (0 no fluxo client_credentials)."
                     },
                     "token_type": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Tipo do token. Sempre `Bearer`."
                     },
                     "not-before-policy": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Timestamp de política not-before do Keycloak."
                     },
                     "scope": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Escopos concedidos ao token."
                     }
                   },
-                  "required": [
-                    "access_token",
-                    "expires_in",
-                    "refresh_expires_in",
-                    "token_type",
-                    "not-before-policy",
-                    "scope"
-                  ],
-                  "x-examples": {
-                    "Example 1": {
-                      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJLeWJISHMyQzY0YWQzLVJJVmVLTXQ5ZE9EUzkxTUxzTWJ6bi1wYm5TQS1BIn0.eyJleHAiOjE2ODQ4NDgzNzcsImlhdCI6MTY4NDg0ODA3NywianRpIjoiZDU2MjVmZDUtM2Q0OC00ZDE5LWE0YzUtOWMwNmNiZDRjYmNjIiwiaXNzIjoiaHR0cHM6Ly9hdXRoMi1rZXljbG9hay56dXAubWUvcmVhbG1zL21rcGxhY2UtaXRhdXNob3AtcHJkIiwic3ViIjoiNDliZDJlY2YtOGUxMC00YjFhLWJlYTQtNDYyZWZjYzU2MTE4IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiNGQxNWQ4ODktY2EzMS00ZTY0LWEyODEtOTgxMTQwNDZlMTdkIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImFjY291bnRJZCI6ImU2Q3h6ZzF0dHEiLCJjbGllbnRIb3N0IjoiMjAxLjc1LjE3MC43NCIsImNsaWVudElkIjoiNGQxNWQ4ODktY2EzMS00ZTY0LWEyODEtOTgxMTQwNDZlMTdkIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwZXJtaXNzaW9ucyI6ImNhdGFsb2dfY29sbGVjdGlvbl91bnB1Ymxpc2ggY2F0YWxvZ19za3VfdW5wdWJsaXNoIGNhdGFsb2dfY2x1c3Rlcl91bnB1Ymxpc2ggY2F0YWxvZ19yZXBvcnRfcmVhZCBjYXRhbG9nX3N1Z2dlc3Rpb25fdXBkYXRlIGNhdGFsb2dfc2t1X3B1Ymxpc2ggY2F0YWxvZ19jbHVzdGVyX3B1Ymxpc2ggY2F0YWxvZ19jb2xsZWN0aW9uX3B1Ymxpc2ggdHJhbnNhY3Rpb25hbF9wcm92aWRlcl9jcmVhdGUgdHJhbnNhY3Rpb25hbF9wcm92aWRlcl9nZXQgdHJhbnNhY3Rpb25hbF9wcm92aWRlcl9kZWxldGUgdHJhbnNhY3Rpb25hbF90ZW1wbGF0ZV9jcmVhdGUgdHJhbnNhY3Rpb25hbF90ZW1wbGF0ZV9nZXQgdHJhbnNhY3Rpb25hbF90ZW1wbGF0ZV91cGRhdGUgdHJhbnNhY3Rpb25hbF90ZW1wbGF0ZV9kZWxldGUgdHJhbnNhY3Rpb25hbF9tZXNzYWdlX2NyZWF0ZSBjbXNfc2l0ZV9jcmVhdGUgY21zX3NpdGVfcmVhZCBjbXNfc2l0ZV91cGRhdGUgY21zX3NpdGVfZGVsZXRlIGNtc19iYW5uZXJfcmVhZCBjbXNfYmFubmVyX2NyZWF0ZSBjbXNfYmFubmVyX3VwZGF0ZSBjbXNfYmFubmVyX2RlbGV0ZSBjbXNfY29udGFpbmVyX2NyZWF0ZSBjbXNfY29udGFpbmVyX3JlYWQgY21zX2NvbnRhaW5lcl91cGRhdGUgY21zX2NvbnRhaW5lcl9kZWxldGUgY21zX2NvbnRlbnRzX2NyZWF0ZSBjbXNfY29udGVudHNfcmVhZCBjbXNfY29udGVudHNfdXBkYXRlIGNtc19jb250ZW50c19kZWxldGUgY21zX2NvbnRlbnRzVGVtcGxhdGVfY3JlYXRlIGNtc19jb250ZW50c1RlbXBsYXRlX3JlYWQgY21zX2NvbnRlbnRzVGVtcGxhdGVfdXBkYXRlIGNtc19jb250ZW50c1RlbXBsYXRlX2RlbGV0ZSBjYXRhbG9nX3Byb2R1Y3RfcmVhZCBjYXRhbG9nX3Byb2R1Y3RfY3JlYXRlIGNhdGFsb2dfcHJvZHVjdF9nZXQgY2F0YWxvZ19jb2xsZWN0aW9uX2NyZWF0ZSBjYXRhbG9nX2NvbGxlY3Rpb25fcmVhZCBjYXRhbG9nX2NvbGxlY3Rpb25fZGVsZXRlIGNhdGFsb2dfY29sbGVjdGlvbl91cGRhdGUgY2F0YWxvZ19yZXZpZXdfY3JlYXRlIGNhdGFsb2dfcmV2aWV3X3JlYWQgY2F0YWxvZ19yZXZpZXdfdXBkYXRlIGNhdGFsb2dfY2F0ZWdvcnlfcmVhZCBjYXRhbG9nX2NhdGVnb3J5X2RlbGV0ZSBjYXRhbG9nX2NhdGVnb3J5X3VwZGF0ZSBjYXRhbG9nX2NhdGVnb3J5X2NyZWF0ZSBjYXRhbG9nX3F1ZXN0aW9uYW5zd2VyX2NyZWF0ZVF1ZXN0aW9uIGNhdGFsb2dfcXVlc3Rpb25hbnN3ZXJfY3JlYXRlQW5zd2VyIGNhdGFsb2dfY2x1c3Rlcl9jcmVhdGUgY2F0YWxvZ19jbHVzdGVyX3JlYWQgY2F0YWxvZ19jbHVzdGVyX3VwZGF0ZSBjYXRhbG9nX2NsdXN0ZXJfZGVsZXRlIGNhdGFsb2dfc2t1X3JlYWQgY2F0YWxvZ19za3VfZGVsZXRlIGNhdGFsb2dfc2t1X3VwZGF0ZSBjYXRhbG9nX3NrdV9jcmVhdGUgb2F1dGhfdG9rZW5fZ2V0IG9hdXRoX3Rva2VuX2RlbGV0ZSBvYXV0aF91c2VyX3dyaXRlIG9hdXRoX3VzZXJfcmVhZCBvYXV0aF91c2VyX3Rva2VuIG9hdXRoX3VzZXJfcmVjb3ZlciBvYXV0aF91c2VyX2dldEFsbCBwYXltZW50X2NyZWRpdGNhcmRfcmVhZCBwYXltZW50X3Byb3ZpZGVyX2dldCBwYXltZW50X3Byb3ZpZGVyX2NyZWF0ZSBwYXltZW50J19yZWNlaXZlcl9nZXQgcGF5bWVudF90cmFuc2FjdGlvbl9jcmVhdGUgcGF5bWVudF90cmFuc2FjdGlvbl9yZWFkIHBheW1lbnRfdHJhbnNhY3Rpb25fdGltZWxpbmUgcGF5bWVudF93ZWJob29rX2xpc3QgcGF5bWVudF9vcHRpb24tIHBheW1lbnRfd2ViaG9va19jcmVhdGUgc2hvcHBpbmdfc2VsbGVyX2NyZWF0ZVNlbGxlciBzaG9wcGluZ19zZWxsZXJfcmVhZCBzaG9wcGluZ19zZWxsZXJfdXBkYXRlIHNob3BwaW5nX3NlbGxlcl9kZWxldGUgc2hvcHBpbmdfb2ZmZXJfc3RvY2sgc2hvcHBpbmdfY291cG9uX2NyZWF0ZSBzaG9wcGluZ19jb3Vwb25fdXBkYXRlIHNob3BwaW5nX2NvdXBvbl9yZWFkIHNob3BwaW5nX2NvdXBvbl9kZWxldGUgc2hvcHBpbmdfcmVtaW5kTWVfY3JlYXRlIHNob3BwaW5nX3JlbWluZE1lX3JlYWQgc2hvcHBpbmdfcmVtaW5kTWVfZGVsZXRlIHNob3BwaW5nX3Byb3ZpZGVyX2NyZWF0ZSBzaG9wcGluZ19wcm92aWRlcl91cGRhdGUgc2hvcHBpbmdfcHJvdmlkZXJfcmVhZCBzaG9wcGluZ19wcm92aWRlcl9kZWxldGUgc2FsZXNfb3JkZXJfd3JpdGUgc2FsZXNfb3JkZXJfcmVhZCBmcmVpZ2h0X3Byb3ZpZGVyX2NyZWF0ZSBmcmVpZ2h0X3Byb3ZpZGVyX3JlYWQgZnJlaWdodF9wcm92aWRlcl9kZWxldGUgY3VzdG9tZXJfbmV3c2xldHRlcl9nZXQgY3VzdG9tZXJfcHJvdmlkZXJfY3JlYXRlIGN1c3RvbWVyX3Byb3ZpZGVyX3JlYWQgY3VzdG9tZXJfcHJvdmlkZXJfZGVsZXRlIGFnZ3JlZ2F0b3JfcHJvdmlkZXJfY3JlYXRlIGFnZ3JlZ2F0b3JfcHJvdmlkZXJfcmVhZCBhZ2dyZWdhdG9yX3Byb3ZpZGVyX2RlbGV0ZSBzdG9yYWdlX2ZpbGVfdXBsb2FkIGNhdGFsb2dfc3VnZ2VzdGlvbl9wcm9jZXNzIGNhdGFsb2dfc3VnZ2VzdGlvbl9yZWFkIHByb21vdGlvbl9wcm9tb3Rpb25fY3JlYXRlIHByb21vdGlvbl9wcm9tb3Rpb25fcmVhZCBwcm9tb3Rpb25fcHJvbW90aW9uX3VwZGF0ZSBwcm9tb3Rpb25fcHJvbW90aW9uX2RlbGV0ZSBzaG9wcGluZ19wYXltZW50c09wdGlvbnNfcmVhZCBzaG9wcGluZ19wYXltZW50c09wdGlvbnNfdXBkYXRlIHByb21vdGlvbl9jb3Vwb25fY3JlYXRlIHByb21vdGlvbl9jb3Vwb25fcmVhZCBwcm9tb3Rpb25fY291cG9uX3VwZGF0ZSBzYWxlc19vcmRlcl9oYW5kbGVyIiwic2l0ZUlkIjoiMzJWbzVQWXY5MXpoViIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC00ZDE1ZDg4OS1jYTMxLTRlNjQtYTI4MS05ODExNDA0NmUxN2QiLCJzdG9yZUlkIjoiZTZDeHpnMXR0cSIsImNsaWVudEFkZHJlc3MiOiIyMDEuNzUuMTcwLjc0In0.PSVJ4yxYvzPiDfq9Kqmnp4NnN9vtnXzVi6v5wr1igmRmn0WtGYblCat7Qlitncc0Lfblcv3Cx6i41JdXFUQjDxIDtCc4u7paq4bhSpfqDmsSPrtb-fTiKTrY3UoUl5s-OWZW6Sz32erlJwjit-YNfbQnG0sYhYoGp3EN5pMc9LyKHq2N_kXxeNv8A3yQuzNCAK1fs6pTQi6nNHQzVdpgh8RaP-PGd-DsPoRYCGjYGTNpwA_8jjEdfD7f0WpheTTbKFXwFeJgStmNVhEnIJvd6XPngM_2etW0dg3yIfr6-WAV3nXTqjYwlSGxccE0LU6wexSWxyQ0iedV_KqTUyW_zQ",
-                      "expires_in": 300,
-                      "refresh_expires_in": 0,
-                      "token_type": "Bearer",
-                      "not-before-policy": 1662651813,
-                      "scope": "profile email"
-                    }
-                  }
+                  "required": ["access_token", "expires_in", "token_type"]
                 },
                 "examples": {
                   "Resposta OK": {
                     "value": {
-                      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cC...",
+                      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUI...",
                       "expires_in": 300,
                       "refresh_expires_in": 0,
                       "token_type": "Bearer",
-                      "not-before-policy": 1662651813,
+                      "not-before-policy": 0,
                       "scope": "profile email"
                     }
                   }
@@ -121,37 +111,17 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Requisição inválida.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "error_description": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "error_description"
-                  ],
-                  "x-examples": {
-                    "Example 1": {
-                      "error": "invalid_client",
-                      "error_description": "Invalid client credentials"
-                    }
+                    "error": { "type": "string" },
+                    "error_description": { "type": "string" }
                   }
                 },
                 "examples": {
-                  "Client id inválido": {
-                    "value": {
-                      "error": "invalid_client",
-                      "error_description": "Invalid client credentials"
-                    }
-                  },
                   "Grant type inválido": {
                     "value": {
                       "error": "unsupported_grant_type",
@@ -163,48 +133,28 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Credenciais inválidas.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "error_description": {
-                      "type": "string"
-                    }
-                  },
-                  "x-examples": {
-                    "Example 1": {
-                      "error": "unauthorized_client",
-                      "error_description": "Invalid client secret"
-                    }
+                    "error": { "type": "string" },
+                    "error_description": { "type": "string" }
                   }
                 },
                 "examples": {
-                  "Client secret não autorizado": {
+                  "Client secret inválido": {
                     "value": {
                       "error": "unauthorized_client",
-                      "error_description": "Invalid client secret"
+                      "error_description": "Invalid client or Invalid client credentials"
                     }
                   }
                 }
               }
             }
           }
-        },
-        "servers": [
-          {
-            "url": "https://auth2-keycloak.zup.me/realms/mkplace-itaushop-prd/protocol/openid-connect",
-            "description": "Produção"
-          },
-          {
-            "url": "http://itau-idp-stg.mkplace.com.br/realms/mkplace-itaushop-stg/protocol/openid-connect",
-            "description": "Homologação"
-          }
-        ]
+        }
       }
     }
   },

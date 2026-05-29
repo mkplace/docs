@@ -8,7 +8,14 @@ Para que você consiga acompanhar o processo de criação de pedidos, é necess�
 
 ## 1. Cadastro de warehouse 🏪
 
-Todo vendedor precisa informar seu estoque ou centro de distribuição — de onde as mercadorias saem. Para isso, cadastre warehouses informando dados como `nome`, `origem` e `crossdockingtime`.
+Todo vendedor precisa informar seu estoque ou centro de distribuição — de onde as mercadorias saem. Para isso, cadastre warehouses informando:
+
+| Campo | Tipo | Obrigatório | Descrição |
+| --- | --- | --- | --- |
+| `name` | string | Sim | Nome do warehouse (centro de distribuição). |
+| `sourceZipcode` | string | Sim | CEP de origem — de onde as mercadorias saem. |
+| `crossdockingTime` | number | Sim | Tempo estimado, em dias, para transferir produtos para outro warehouse. |
+| `preferentialWarehouse` | boolean | Não | Define se este é o warehouse padrão/preferencial. |
 
 <Note>
   Um vendedor pode ter mais de um centro de distribuição. A plataforma permite criar múltiplos warehouses, mas é necessário definir um padrão — quando um pedido é feito, a plataforma dá preferência ao escolhido.
@@ -16,14 +23,26 @@ Todo vendedor precisa informar seu estoque ou centro de distribuição — de on
 
 Endpoints disponíveis em **Referência da API > Warehouse**:
 
-- `POST /store/seller/warehouse` — Criar warehouse
-- `GET /store/seller/warehouse` — Listar warehouses
-- `PUT /store/seller/warehouse/{warehouseId}` — Atualizar warehouse
-- `DELETE /store/seller/warehouse/{warehouseId}` — Deletar warehouse
+- `POST /store/seller/warehouse` — [Criar warehouse](/api-reference/warehouse/criar-warehouse)
+- `GET /store/seller/warehouse` — [Listar warehouses](/api-reference/warehouse/listar-warehouses)
+- `PUT /store/seller/warehouse/{warehouseId}` — [Atualizar warehouse](/api-reference/warehouse/atualizar-warehouse)
+- `DELETE /store/seller/warehouse/{warehouseId}` — [Deletar warehouse](/api-reference/warehouse/deletar-warehouse)
 
 ---
 
-## 2. Cadastro de webhooks 📥
+## 2. Provedor de frete 🚚
+
+Para a Mkplace cotar o frete dos seus produtos, você expõe um endpoint de cotação e o registra como **provedor de frete**. O contrato do endpoint que você precisa expor (corpo da requisição e formato da resposta) está em [Cotação de frete via API](/sellers/cotacao-frete).
+
+Com a URL do seu endpoint em mãos, cadastre o provedor informando essa URL em `configuration.endpoint` (e eventuais headers de autenticação em `credentials`). Endpoints em **Referência da API > Frete**:
+
+- `PUT /freight/provider/{providerSlug}` — [Criar ou atualizar um provedor de frete](/api-reference/frete/criar-ou-atualizar-um-provedor-de-frete)
+- `GET /freight/provider` — [Listar provedores de frete](/api-reference/frete/listar-provedores-de-frete)
+- `DELETE /freight/provider/{providerSlug}` — [Deletar provedor de frete](/api-reference/frete/deletar-provedor-de-frete)
+
+---
+
+## 3. Cadastro de webhooks 📥
 
 Uma vez autenticado e configurado o centro de distribuição, é possível iniciar a inclusão de produtos e ofertas. Porém, para **receber e acompanhar os pedidos**, é necessário configurar um webhook.
 
@@ -35,11 +54,7 @@ Para configurar um endpoint que receba os pedidos enviados pela Mkplace, veja [W
 
 Com o endpoint pronto, cadastre-o e os eventos desejados em **Referência da API > Webhook-Sales**:
 
-- `POST /sales/webhook` — Criar configuração de webhook
-- `GET /sales/webhook` — Listar configurações
-- `PUT /sales/webhook/{webhookId}` — Atualizar configuração
-- `DELETE /sales/webhook/{webhookId}` — Deletar configuração
-
----
-
-[Próxima etapa: Produtos e ofertas →](/sellers/produtos-ofertas)
+- `POST /sales/webhook` — [Criar configuração de webhook](/api-reference/webhook-sales/criar-webhook)
+- `GET /sales/webhook` — [Listar configurações](/api-reference/webhook-sales/listar-webhooks)
+- `PUT /sales/webhook/{webhookId}` — [Atualizar configuração](/api-reference/webhook-sales/atualizar-webhook)
+- `DELETE /sales/webhook/{webhookId}` — [Deletar configuração](/api-reference/webhook-sales/deletar-webhook)
