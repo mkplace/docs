@@ -31,6 +31,8 @@
             "group": "Configurações",
             "pages": [
               "sellers/configuracoes",
+              "sellers/frete",
+              "sellers/tabela-frete",
               "sellers/cotacao-frete",
               "sellers/webhook-pedidos"
             ]

@@ -1,0 +1,65 @@
+---
+title: "Tabela de frete"
+description: "Como cadastrar a tabela de frete (worksheet) gerenciada pela Mkplace: tipos de área, modalidades de entrega e fluxo de cadastro."
+---
+
+A **tabela de frete** (internamente chamada de *worksheet*) é uma tabela de cotação que você cadastra na Mkplace. A partir dela, a plataforma resolve o frete **internamente**, sem chamar nenhum sistema externo. É uma alternativa ao [Provedor via API](/sellers/cotacao-frete).
+
+## Como é composta
+
+Uma worksheet tem duas partes:
+
+1. **Cabeçalho** — define o método de entrega: nome da worksheet, **serviço** (`service`, ex.: PAC/SEDEX), galpão de origem (`warehouseId`), tipo de área, modalidade e prazo de entrega, fator de cubagem e janelas de disponibilidade. Os campos `name`, `service`, `warehouseId`, `useCubageFactor`, `cubageFactor`, `deliveryAreaType`, `deliveryTimeType` e `deliveryType` são **obrigatórios**.
+2. **Linhas (tables)** — as faixas ou áreas atendidas, cada uma com seu preço e prazo. O formato das linhas depende do **tipo de área** definido no cabeçalho.
+
+## Tipos de área (`deliveryAreaType`)
+
+<CardGroup cols={3}>
+  <Card title="Faixa de CEP" icon="map-pin">
+    `zipCodeRange` — cada linha atende a uma faixa de CEP e a uma faixa de peso.
+  </Card>
+  <Card title="Raio" icon="circle-dot">
+    `radius` — cada linha atende a um raio (em km) a partir do galpão, até um limite de peso.
+  </Card>
+  <Card title="Polígono" icon="draw-polygon">
+    `polygon` — cada linha atende a uma área desenhada por coordenadas, no formato `[longitude, latitude]` e com no mínimo 4 pontos.
+  </Card>
+</CardGroup>
+
+## Modalidade de entrega (`deliveryType`)
+
+- **`STANDARD`** — entrega convencional (ex.: origem em SP entregando no RJ).
+- **`DELIVERY`** — entrega local, no estilo delivery (ex.: iFood).
+- **`PICKUP`** — retirada em loja.
+- **`DELIVERY_OWNER_STORE`** — entrega feita pela própria loja.
+
+## Prazo e disponibilidade
+
+O prazo das linhas é interpretado na unidade definida em `deliveryTimeType`: `DAYS` (dias corridos), `BUSINESS_DAYS` (dias úteis), `HOURS` ou `MINUTES`. O campo `additionalTime` acrescenta um tempo extra ao prazo, e `availabilities` define janelas de horário em que o método de entrega opera.
+
+<Note>
+  O **fator de cubagem** (`useCubageFactor` / `cubageFactor`) pode ser habilitado no cabeçalho para que o volume dos itens seja considerado na cotação.
+</Note>
+
+## Como cadastrar
+
+<Steps>
+  <Step title="Crie a worksheet (cabeçalho)">
+    Defina o método de entrega, o galpão, o tipo de área e a modalidade.
+
+    `POST /worksheet/v2` — [Criar ou atualizar worksheet](/api-reference/tabela-de-frete/criar-atualizar-worksheet)
+  </Step>
+  <Step title="Suba as linhas da tabela">
+    Envie as faixas ou áreas com preço e prazo, no formato do tipo de área escolhido.
+
+    `POST /worksheet/v2/{worksheetRef}/tables` — [Criar ou atualizar linhas da tabela](/api-reference/tabela-de-frete/criar-atualizar-linhas)
+  </Step>
+  <Step title="Gerencie quando precisar">
+    Consulte ou remova worksheets e linhas:
+
+    - [Listar worksheets](/api-reference/tabela-de-frete/listar-worksheets) · [Deletar worksheet](/api-reference/tabela-de-frete/deletar-worksheet)
+    - [Listar linhas](/api-reference/tabela-de-frete/listar-linhas) · [Deletar linhas](/api-reference/tabela-de-frete/deletar-linhas)
+  </Step>
+</Steps>
+
+Com a worksheet ativa, a Mkplace passa a cotar o frete dos seus produtos automaticamente com base nela.

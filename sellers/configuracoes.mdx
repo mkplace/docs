@@ -30,15 +30,9 @@ Endpoints disponíveis em **Referência da API > Warehouse**:
 
 ---
 
-## 2. Provedor de frete 🚚
+## 2. Frete 🚚
 
-Para a Mkplace cotar o frete dos seus produtos, você expõe um endpoint de cotação e o registra como **provedor de frete**. O contrato do endpoint que você precisa expor (corpo da requisição e formato da resposta) está em [Cotação de frete via API](/sellers/cotacao-frete).
-
-Com a URL do seu endpoint em mãos, cadastre o provedor informando essa URL em `configuration.endpoint` (e eventuais headers de autenticação em `credentials`). Endpoints em **Referência da API > Frete**:
-
-- `PUT /freight/provider/{providerSlug}` — [Criar ou atualizar um provedor de frete](/api-reference/frete/criar-ou-atualizar-um-provedor-de-frete)
-- `GET /freight/provider` — [Listar provedores de frete](/api-reference/frete/listar-provedores-de-frete)
-- `DELETE /freight/provider/{providerSlug}` — [Deletar provedor de frete](/api-reference/frete/deletar-provedor-de-frete)
+Defina como o frete dos seus produtos é cotado. Há dois modos: **Tabela de frete** (gerenciada pela Mkplace) ou **Provedor via API** (seu próprio motor de cotação). Entenda as diferenças e configure em [Frete](/sellers/frete).
 
 ---
 

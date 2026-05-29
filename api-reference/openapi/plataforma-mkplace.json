@@ -19,6 +19,368 @@
     }
   ],
   "paths": {
+    "/worksheet/v2": {
+      "post": {
+        "tags": ["Tabela de frete"],
+        "summary": "Criar ou atualizar worksheet",
+        "operationId": "post-worksheet-v2",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/criar-atualizar-worksheet" },
+        "description": "Cria uma worksheet (cabeçalho da tabela de frete) ou atualiza uma existente. Informe `worksheetId` para atualizar; omita para criar.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "worksheetId": { "type": "string", "description": "Id da worksheet a atualizar. Omita para criar uma nova." },
+                  "name": { "type": "string", "minLength": 3, "description": "Nome da worksheet (ex.: transportadora ou método)." },
+                  "isActive": { "type": "boolean", "default": true, "description": "Indica se a worksheet está ativa e disponível para cotação." },
+                  "logo": { "type": "string", "description": "URL do logo exibido para o método de entrega." },
+                  "useCubageFactor": { "type": "boolean", "default": true, "description": "Indica se a cotação considera o fator de cubagem." },
+                  "cubageFactor": { "type": "number", "minimum": 0, "description": "Fator de cubagem aplicado aos volumes." },
+                  "additionalTime": { "type": "number", "minimum": 0, "description": "Tempo adicional somado ao prazo de entrega." },
+                  "deliveryAreaType": {
+                    "type": "string",
+                    "enum": ["zipCodeRange", "radius", "polygon"],
+                    "description": "Tipo de área de entrega que define o formato das linhas da tabela: `zipCodeRange` (faixas de CEP), `radius` (raio a partir do galpão) ou `polygon` (área por coordenadas)."
+                  },
+                  "warehouseId": { "type": "string", "minLength": 3, "description": "Identificador do galpão (warehouse) de origem." },
+                  "service": { "type": "string", "minLength": 2, "description": "Nome do método/serviço de entrega (ex.: PAC, SEDEX)." },
+                  "deliveryTimeType": {
+                    "type": "string",
+                    "enum": ["DAYS", "BUSINESS_DAYS", "HOURS", "MINUTES"],
+                    "description": "Unidade do prazo de entrega: dias corridos, dias úteis, horas ou minutos."
+                  },
+                  "deliveryType": {
+                    "type": "string",
+                    "enum": ["STANDARD", "DELIVERY", "PICKUP", "DELIVERY_OWNER_STORE"],
+                    "description": "Modalidade de entrega: `STANDARD` (entrega convencional, ex.: origem em SP entregando no RJ), `DELIVERY` (entrega local, estilo iFood), `PICKUP` (retirada em loja) ou `DELIVERY_OWNER_STORE` (entrega pela própria loja)."
+                  },
+                  "deliveryMethodId": { "type": ["string", "null"], "description": "Identificador do método de entrega associado, quando houver." },
+                  "availabilities": {
+                    "type": "array",
+                    "description": "Janelas de disponibilidade (horários) em que o método de entrega opera.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "startHour": { "type": "number", "minimum": 0, "maximum": 23, "description": "Hora de início da janela (0–23)." },
+                        "startMinute": { "type": "number", "minimum": 0, "maximum": 59, "description": "Minuto de início da janela (0–59)." },
+                        "endHour": { "type": "number", "minimum": 0, "maximum": 23, "description": "Hora de fim da janela (0–23)." },
+                        "endMinute": { "type": "number", "minimum": 0, "maximum": 59, "description": "Minuto de fim da janela (0–59)." },
+                        "weekDays": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 6 }, "description": "Dias da semana em que a janela vale (0=domingo … 6=sábado)." },
+                        "label": { "type": "string", "description": "Rótulo da janela." },
+                        "price": { "type": "number", "minimum": 0, "description": "Preço associado à janela." },
+                        "time": { "type": "number", "minimum": 0, "description": "Tempo associado à janela." },
+                        "fixedTime": { "type": "string", "description": "Horário fixo de entrega da janela." },
+                        "nextBusinessDay": { "type": "boolean", "default": false, "description": "Indica se a entrega ocorre no próximo dia útil." },
+                        "overwrite": { "type": "boolean", "default": false, "description": "Indica se a janela sobrescreve preço/tempo da tabela." }
+                      },
+                      "required": ["startHour", "startMinute", "endHour", "endMinute"]
+                    }
+                  }
+                },
+                "required": ["name", "useCubageFactor", "cubageFactor", "deliveryAreaType", "warehouseId", "service", "deliveryTimeType", "deliveryType"]
+              },
+              "examples": {
+                "Worksheet": {
+                  "value": {
+                    "name": "Correios",
+                    "isActive": true,
+                    "logo": "https://xpto.com.br",
+                    "useCubageFactor": true,
+                    "cubageFactor": 11,
+                    "additionalTime": 0,
+                    "deliveryAreaType": "zipCodeRange",
+                    "warehouseId": "default",
+                    "service": "PAC",
+                    "deliveryTimeType": "DAYS",
+                    "deliveryType": "DELIVERY"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Worksheet criada ou atualizada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string", "description": "Identificador da worksheet." },
+                    "name": { "type": "string", "description": "Nome da worksheet." },
+                    "deliveryAreaType": { "type": "string", "description": "Tipo de área de entrega." },
+                    "warehouseId": { "type": "string", "description": "Galpão de origem." },
+                    "service": { "type": "string", "description": "Método de entrega." },
+                    "isActive": { "type": "boolean", "description": "Se a worksheet está ativa." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tabela de frete"],
+        "summary": "Listar worksheets",
+        "operationId": "get-worksheet-v2",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/listar-worksheets" },
+        "description": "Lista as worksheets cadastradas, de forma paginada.",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "number" }, "description": "Página (começa em 1)." },
+          { "name": "limit", "in": "query", "schema": { "type": "number" }, "description": "Quantidade de itens por página." },
+          { "name": "ref", "in": "query", "schema": { "type": "string" }, "description": "Filtra por `_id` ou por nome da worksheet." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de worksheets.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "docs": { "type": "array", "description": "Worksheets da página.", "items": { "type": "object" } },
+                    "total": { "type": "number", "description": "Total de worksheets." },
+                    "limit": { "type": "number", "description": "Itens por página." },
+                    "page": { "type": "number", "description": "Página atual." },
+                    "pages": { "type": "number", "description": "Total de páginas." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worksheet/v2/{worksheetRef}": {
+      "delete": {
+        "tags": ["Tabela de frete"],
+        "summary": "Deletar worksheet",
+        "operationId": "delete-worksheet-v2-worksheetRef",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/deletar-worksheet" },
+        "description": "Remove a worksheet e todas as suas linhas (tables) associadas.",
+        "parameters": [
+          { "name": "worksheetRef", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Id da worksheet a remover." }
+        ],
+        "responses": {
+          "200": { "description": "Worksheet removida." }
+        }
+      }
+    },
+    "/worksheet/v2/{worksheetRef}/tables": {
+      "post": {
+        "tags": ["Tabela de frete"],
+        "summary": "Criar ou atualizar linhas da tabela",
+        "operationId": "post-worksheet-v2-worksheetRef-tables",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/criar-atualizar-linhas" },
+        "description": "Insere ou atualiza, em lote, as linhas (tables) de uma worksheet. O formato de cada linha segue o `deliveryAreaType` da worksheet. Informe `_id` na linha para atualizar; omita para inserir.",
+        "parameters": [
+          { "name": "worksheetRef", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Id da worksheet dona das linhas." }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "worksheet": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Linhas da tabela. Cada item segue um dos formatos: faixa de CEP, raio ou polígono.",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "title": "Linha por faixa de CEP (zipCodeRange)",
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string", "description": "Id da linha (informe apenas para atualizar)." },
+                            "zipCodeStart": { "type": "number", "minimum": 0, "description": "Início da faixa de CEP." },
+                            "zipCodeEnd": { "type": "number", "minimum": 0, "description": "Fim da faixa de CEP." },
+                            "weightStart": { "type": ["number", "null"], "minimum": 0, "description": "Peso mínimo da faixa (kg)." },
+                            "weightEnd": { "type": ["number", "null"], "minimum": 0, "description": "Peso máximo da faixa (kg)." },
+                            "shippingCostClient": { "type": "number", "minimum": 0, "description": "Valor base do frete." },
+                            "deliveryTimeMin": { "type": "number", "minimum": 0, "description": "Prazo mínimo de entrega." },
+                            "deliveryTimeMax": { "type": "number", "minimum": 0, "description": "Prazo máximo de entrega." },
+                            "freightPercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentual de frete." },
+                            "trtFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de TRT (Taxa de Restrição de Trânsito)." },
+                            "tollFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de pedágio." },
+                            "insuranceFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de seguro." },
+                            "insurancePercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentual de seguro." },
+                            "taxesFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de impostos." },
+                            "taxesPercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentual de impostos." },
+                            "grisPercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentual de GRIS (Gerenciamento de Risco)." },
+                            "tdeFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de TDE (Taxa de Dificuldade de Entrega)." },
+                            "tdePercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percentual de TDE (Taxa de Dificuldade de Entrega)." },
+                            "cteFixed": { "type": "number", "minimum": 0, "description": "Valor fixo de emissão do CTe (Conhecimento de Transporte Eletrônico)." }
+                          },
+                          "required": ["zipCodeStart", "zipCodeEnd", "weightStart", "weightEnd", "shippingCostClient", "deliveryTimeMin", "deliveryTimeMax", "freightPercentage", "trtFixed", "tollFixed", "insuranceFixed", "insurancePercentage", "taxesFixed", "taxesPercentage", "grisPercentage", "tdeFixed", "tdePercentage", "cteFixed"]
+                        },
+                        {
+                          "title": "Linha por raio (radius)",
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string", "description": "Id da linha (informe apenas para atualizar)." },
+                            "radius": { "type": "number", "minimum": 0, "description": "Raio de atendimento a partir do galpão (km)." },
+                            "weightLimit": { "type": "number", "minimum": 0, "description": "Peso máximo aceito (kg)." },
+                            "price": { "type": "number", "minimum": 0, "description": "Valor do frete." },
+                            "deliveryTimeMax": { "type": "number", "minimum": 0, "description": "Prazo máximo de entrega." }
+                          },
+                          "required": ["radius", "weightLimit", "price", "deliveryTimeMax"]
+                        },
+                        {
+                          "title": "Linha por polígono (polygon)",
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string", "description": "Id da linha (informe apenas para atualizar)." },
+                            "deliveryArea": {
+                              "type": "array",
+                              "minItems": 4,
+                              "description": "Área de entrega como lista de coordenadas [longitude, latitude] (mínimo de 4 pontos).",
+                              "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+                            },
+                            "price": { "type": "number", "minimum": 0, "description": "Valor do frete." },
+                            "deliveryTimeMax": { "type": "number", "minimum": 0, "description": "Prazo máximo de entrega." }
+                          },
+                          "required": ["deliveryArea", "price", "deliveryTimeMax"]
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": ["worksheet"]
+              },
+              "examples": {
+                "Faixa de CEP": {
+                  "value": {
+                    "worksheet": [
+                      {
+                        "zipCodeStart": 0,
+                        "zipCodeEnd": 99999999,
+                        "weightStart": 1,
+                        "weightEnd": 999,
+                        "shippingCostClient": 0,
+                        "deliveryTimeMin": 1,
+                        "deliveryTimeMax": 4,
+                        "freightPercentage": 0,
+                        "trtFixed": 0,
+                        "tollFixed": 3,
+                        "insuranceFixed": 5,
+                        "insurancePercentage": 6,
+                        "taxesFixed": 0.56,
+                        "taxesPercentage": 27.5,
+                        "grisPercentage": 2,
+                        "tdeFixed": 0.14,
+                        "tdePercentage": 4,
+                        "cteFixed": 0.65
+                      }
+                    ]
+                  }
+                },
+                "Polígono": {
+                  "value": {
+                    "worksheet": [
+                      {
+                        "price": 15,
+                        "deliveryArea": [
+                          [-45.41780015814045, -23.630628781943187],
+                          [-45.42455992427094, -23.62859551964472],
+                          [-45.42974489837618, -23.636878975244997],
+                          [-45.41780015814045, -23.630628781943187]
+                        ],
+                        "deliveryTimeMax": 8
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resultado do upsert em lote.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "requested": { "type": "number", "description": "Quantidade de linhas recebidas." },
+                    "inserted": { "type": "number", "description": "Quantidade de linhas inseridas (inclui upserts)." },
+                    "updated": { "type": "number", "description": "Quantidade de linhas atualizadas." },
+                    "errors": {
+                      "type": "object",
+                      "description": "Erros por linha, quando houver.",
+                      "properties": {
+                        "total": { "type": "number", "description": "Total de linhas com erro." },
+                        "list": { "type": "array", "items": { "type": "string" }, "description": "Mensagens de erro." }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "OK": { "value": { "requested": 1, "inserted": 1, "updated": 0 } }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tabela de frete"],
+        "summary": "Listar linhas da tabela",
+        "operationId": "get-worksheet-v2-worksheetRef-tables",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/listar-linhas" },
+        "description": "Lista as linhas (tables) de uma worksheet, de forma paginada, com filtros por CEP, peso ou raio.",
+        "parameters": [
+          { "name": "worksheetRef", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Id da worksheet." },
+          { "name": "page", "in": "query", "schema": { "type": "number" }, "description": "Página (começa em 1)." },
+          { "name": "limit", "in": "query", "schema": { "type": "number" }, "description": "Itens por página." },
+          { "name": "_id", "in": "query", "schema": { "type": "string" }, "description": "Filtra por id da linha." },
+          { "name": "zip_has", "in": "query", "schema": { "type": "number" }, "description": "Linhas cuja faixa de CEP contém este CEP." },
+          { "name": "zip_between", "in": "query", "schema": { "type": "string" }, "description": "Linhas dentro de uma faixa de CEP (início e fim)." },
+          { "name": "weight_has", "in": "query", "schema": { "type": "number" }, "description": "Linhas cuja faixa de peso contém este peso." },
+          { "name": "weight_between", "in": "query", "schema": { "type": "string" }, "description": "Linhas dentro de uma faixa de peso." },
+          { "name": "radius_between", "in": "query", "schema": { "type": "string" }, "description": "Linhas dentro de uma faixa de raio." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de linhas da tabela.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "docs": { "type": "array", "description": "Linhas da página.", "items": { "type": "object" } },
+                    "total": { "type": "number", "description": "Total de linhas." },
+                    "limit": { "type": "number", "description": "Itens por página." },
+                    "page": { "type": "number", "description": "Página atual." },
+                    "pages": { "type": "number", "description": "Total de páginas." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tabela de frete"],
+        "summary": "Deletar linhas da tabela",
+        "operationId": "delete-worksheet-v2-worksheetRef-tables",
+        "x-mint": { "href": "/api-reference/tabela-de-frete/deletar-linhas" },
+        "description": "Remove linhas de uma worksheet. Informe `tableId` para remover uma linha específica; omita para remover todas as linhas da worksheet.",
+        "parameters": [
+          { "name": "worksheetRef", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Id da worksheet." },
+          { "name": "tableId", "in": "query", "schema": { "type": "string" }, "description": "Id de uma linha específica a remover (opcional)." }
+        ],
+        "responses": {
+          "200": { "description": "Linhas removidas." }
+        }
+      }
+    },
     "/store/seller/warehouse": {
       "post": {
         "tags": [
