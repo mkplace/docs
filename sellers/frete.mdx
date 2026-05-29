@@ -1,0 +1,30 @@
+---
+title: "Frete"
+description: "Os dois modos de cotação de frete na Mkplace — Tabela de frete e Provedor via API — e como escolher."
+sidebarTitle: "Frete: visão geral"
+---
+
+O frete dos seus produtos pode ser cotado de **dois modos**. Você escolhe **um ou outro**, conforme a sua operação:
+
+<CardGroup cols={2}>
+  <Card title="Tabela de frete" icon="table" href="/sellers/tabela-frete">
+    Você cadastra uma tabela de frete diretamente na Mkplace e a cotação é calculada **internamente**, sem chamadas a sistemas externos.
+  </Card>
+  <Card title="Provedor via API" icon="plug" href="/sellers/cotacao-frete">
+    Você integra seu próprio motor de cotação: a Mkplace chama, em tempo real, o endpoint que você expõe.
+  </Card>
+</CardGroup>
+
+## Qual escolher?
+
+<Info>
+  Sempre que possível, recomendamos a **Tabela de frete**.
+</Info>
+
+- **Desempenho** — a tabela é resolvida **dentro da plataforma**, então a cotação é mais rápida do que depender de uma chamada a uma rota externa (provedor), que adiciona latência de rede a cada cotação.
+- **Disponibilidade por geolocalização (sellerByScore)** — com a tabela de frete, seus produtos participam do **sellerByScore** considerando a **localização do cliente** (as tabelas são gerenciadas pela Mkplace). No modo provedor, o frete também entra no sellerByScore, porém com **score fixo** — sem avaliação por geolocalização, já que a cotação fica em um sistema externo.
+- **Provedor via API** — indicado quando você já possui um motor de frete próprio ou um contrato com transportadora cujo cálculo precisa rodar do seu lado.
+
+<Note>
+  Escolha **um** dos modos. Em seguida, configure-o na página correspondente.
+</Note>

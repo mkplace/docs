@@ -150,4 +150,14 @@ A resposta deve ser uma **lista de objetos**, onde cada objeto representa um pac
 }
 ```
 
-Com o body de entrada e a resposta no padrão acima, e a URL do endpoint em mãos, o próximo passo é **cadastrar esse endpoint como provedor de frete** (informando a URL em `configuration.endpoint`) — veja [Provedor de frete](/sellers/configuracoes#2-provedor-de-frete).
+## Cadastrando o provedor
+
+Com o body de entrada e a resposta no padrão acima, e a URL do endpoint em mãos, cadastre-o como **provedor de frete** — informando a URL em `configuration.endpoint` e eventuais headers de autenticação em `credentials`:
+
+- `PUT /freight/provider/{providerSlug}` — [Criar ou atualizar um provedor de frete](/api-reference/frete/criar-ou-atualizar-um-provedor-de-frete)
+- `GET /freight/provider` — [Listar provedores de frete](/api-reference/frete/listar-provedores-de-frete)
+- `DELETE /freight/provider/{providerSlug}` — [Deletar provedor de frete](/api-reference/frete/deletar-provedor-de-frete)
+
+<Note>
+  Prefere não manter um motor de cotação próprio? Considere a [Tabela de frete](/sellers/tabela-frete), gerenciada pela Mkplace.
+</Note>
