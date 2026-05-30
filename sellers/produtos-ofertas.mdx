@@ -9,17 +9,17 @@ Os dados cadastrados — atributos, fotos, vídeos e demais — passam pela cura
 
 ## Criação de sugestão de produto 🚲
 
-Os produtos incluídos na plataforma são recepcionados pelo marketplace por meio de **sugestões de produtos**. Cada sugestão contém um único SKU (`variant.sellerSkuId`) e pode ter uma única oferta vinculada a este SKU.
+Os produtos incluídos na plataforma são recepcionados pelo marketplace por meio de **sugestões de produtos**. Cada sugestão contém um único SKU (`sellerSkuId`) e uma oferta vinculada a este SKU.
 
 <Warning>
-  Em caso de duplicidade de SKUs (`variant.sellerSkuId`), o processo é interrompido. Sugestões que não possuírem todas as informações de cadastro ficam **pendentes** até correção pelo vendedor.
+  Em caso de duplicidade de SKUs (`sellerSkuId`), o processo é interrompido. Sugestões que não possuírem todas as informações de cadastro ficam **pendentes** até correção pelo vendedor.
 </Warning>
 
 A sugestão é composta por atributos do produto, suas variações, e para cada variação, sua oferta — indicando preço e disponibilidade.
 
 Endpoint em **Referência da API > Catálogo**:
 
-- `POST /catalogue/suggestion` — [Criar sugestão](/api-reference/catalogo/criar-sugestao)
+- `POST /catalog/suggestion` — [Criar sugestão](/api-reference/catalogo/criar-sugestao)
 
 <Note>
   Após a sugestão criada, é responsabilidade do marketplace analisar os dados enviados e decidir sobre a importação (ou não) ao catálogo.
@@ -36,8 +36,8 @@ Cada sugestão cadastrada pode ser importada pelo marketplace como produto do ti
 
 Para consultar o status da sugestão:
 
-- `GET /catalogue/reports` — [Consultar reports](/api-reference/catalogo/consultar-reports) (relatórios sobre cada solicitação de importação)
-- `GET /catalogue/suggestion/id/{suggestionId}` — [Consultar sugestão](/api-reference/catalogo/consultar-sugestao)
+- `GET /catalog/suggestion/{ref}` — [Consultar sugestão](/api-reference/catalogo/consultar-sugestao)
+- `GET /catalog/suggestion` — [Listar sugestões](/api-reference/catalogo/listar-sugestoes)
 
 <Tip>
   Após analisada e integrada ao catálogo do marketplace — seja pelo método de match automático ou pela adição feita pela curadoria — a manutenção do produto e da oferta se dá pela mesma sugestão.
@@ -49,7 +49,7 @@ Para consultar o status da sugestão:
 
 ### Atualização de produtos
 
-Uma vez criada a sugestão, aceita pela curadoria e integrada ao catálogo, teremos um produto — e poderemos atualizá-lo sempre que necessário. Este processo deve ser feito pela **atualização da sugestão que originou este produto**, enviando o payload completo contendo as informações atualizadas, usando seu `ID`.
+Uma vez criada a sugestão, aceita pela curadoria e integrada ao catálogo, teremos um produto — e poderemos atualizá-lo sempre que necessário. Este processo deve ser feito pela **atualização da sugestão que originou este produto**, identificando-a pelo seu `ref` e enviando apenas os campos que deseja alterar.
 
 <Note>
   Em casos de sugestões com muitas variantes, é possível enviar uma variante por sugestão. No processo de curadoria, os cadastros são linkados via match e a oferta é criada.
@@ -61,21 +61,31 @@ Uma vez criada a sugestão, aceita pela curadoria e integrada ao catálogo, tere
 
 Endpoints:
 
-- `PUT /catalogue/suggestion/id/{suggestionId}` — [Atualizar sugestão](/api-reference/catalogo/atualizar-sugestao)
-- `GET /catalogue/suggestions` — [Listar sugestões](/api-reference/catalogo/listar-sugestoes)
+- `PUT /catalog/suggestion/{ref}` — [Atualizar sugestão](/api-reference/catalogo/atualizar-sugestao)
+- `GET /catalog/suggestion` — [Listar sugestões](/api-reference/catalogo/listar-sugestoes)
 
 ### Atualização de ofertas
 
 A atualização de ofertas é de responsabilidade do vendedor — e neste caso, os dados **não passam pela curadoria**.
 
-Este processo se destina à atualização de estoque, preço e disponibilidade de uma oferta pertencente a uma sugestão que gerou um produto e suas variantes no catálogo. Apenas esses dados, por serem de interesse exclusivo do vendedor, são passíveis de atualização direta.
+Este processo se destina à atualização de estoque, preço e disponibilidade das ofertas. Apenas esses dados, por serem de interesse exclusivo do vendedor, são passíveis de atualização direta. A atualização é feita **em lote**, identificando cada oferta pelo seu `sellerSkuId`.
 
 Endpoint:
 
-- `POST /catalogue/offer` — [Atualizar oferta de uma sugestão](/api-reference/catalogo/atualizar-oferta-de-uma-sugestao)
+- `PUT /catalog/offer/update` — [Atualizar oferta](/api-reference/catalogo/atualizar-oferta)
 
 <Info>
   É possível atualizar uma oferta mesmo que a sugestão correspondente ainda não tenha sido aceita. A atualização é acatada e reflete na oferta quando o produto for publicado.
 
   Caso a sugestão já esteja publicada como produto, a atualização também reflete na oferta correspondente assim que for enviada.
 </Info>
+
+---
+
+## Remoção de sugestão 🗑️
+
+Sugestões que ainda **não** foram vinculadas a um produto do catálogo podem ser removidas. Sugestões já vinculadas (aceitas pela curadoria) não podem ser deletadas.
+
+Endpoint:
+
+- `DELETE /catalog/suggestion/{ref}` — [Deletar sugestão](/api-reference/catalogo/deletar-sugestao)
