@@ -55,6 +55,18 @@ Os pedidos no marketplace pela plataforma Mkplace são concebidos no que chamamo
 
 Um pedido que possui um ou mais itens pertencentes a vendedores diferentes é tratado internamente e recebido via Webhook **já com a separação de itens e pacotes**. Porém é necessário entender três níveis de status:
 
+```mermaid
+flowchart TD
+    O["Pedido — status geral (raiz)"]
+    O --> P1["Pacote · shipments[] — status do pacote"]
+    O --> P2["Pacote · shipments[] — status do pacote"]
+    P1 --> I1["Item — status"]
+    P1 --> I2["Item — status"]
+    P2 --> I3["Item — status"]
+```
+
+Cada nível tem seu próprio `status`: o da **raiz** generaliza o pedido inteiro, cada **pacote** (`shipments[]`) tem o seu, e cada **item** dentro do pacote também.
+
 #### Status geral do pedido
 
 O atributo `status` na raiz do objeto refere-se ao status do pedido **generalizado**, entre todos os itens e vendedores que a ele pertencem.
