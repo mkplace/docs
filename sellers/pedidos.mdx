@@ -27,6 +27,22 @@ Quando um pedido é realizado no marketplace, o item é reservado e recebe o sta
 
 ---
 
+## Waiting-payment ⏳
+
+Quando o cliente escolhe um meio de pagamento **assíncrono** (PIX ou boleto), o pedido sai de `PRE-ORDER` e passa para `WAITING-PAYMENT`, onde permanece **até a confirmação do pagamento** — momento em que migra para `PAID`. Se o pagamento não for confirmado dentro da janela configurada, o pedido expira (`EXPIRED`) ou é cancelado, e a reserva de itens é estornada.
+
+Você pode optar por **receber o pedido já em `WAITING-PAYMENT`**, e não apenas em `PAID`. Esse é o ponto de entrada inicial recomendado: antecipa o conhecimento do pedido e abre uma janela para o vendedor agir antes da confirmação do pagamento.
+
+<Tip>
+  `WAITING-PAYMENT` é o momento ideal para o vendedor **reservar o estoque** dos itens no seu próprio sistema. Reservando cedo, você reduz o risco de **rompimento de estoque** (vender o mesmo item em outro canal) e evita que o pedido chegue em `PAID` sem disponibilidade — situação que leva a cancelamentos por falta de estoque.
+</Tip>
+
+<Warning>
+  Em `WAITING-PAYMENT` o pagamento ainda não foi confirmado e o pedido pode expirar ou ser cancelado. Trate esse status como **reserva**, não como baixa: a baixa definitiva de estoque acontece somente em `PAID`.
+</Warning>
+
+---
+
 ## Paid 💵
 
 Após o pedido realizado, itens reservados e pagamento confirmado, os itens recebem a devida baixa de estoque — o pedido está pronto para receber as atualizações dos vendedores.
@@ -38,6 +54,18 @@ Os pedidos no marketplace pela plataforma Mkplace são concebidos no que chamamo
 ### Conceito multi-seller 🤝
 
 Um pedido que possui um ou mais itens pertencentes a vendedores diferentes é tratado internamente e recebido via Webhook **já com a separação de itens e pacotes**. Porém é necessário entender três níveis de status:
+
+```mermaid
+flowchart TD
+    O["Pedido — status geral (raiz)"]
+    O --> P1["Pacote · shipments[] — status do pacote"]
+    O --> P2["Pacote · shipments[] — status do pacote"]
+    P1 --> I1["Item — status"]
+    P1 --> I2["Item — status"]
+    P2 --> I3["Item — status"]
+```
+
+Cada nível tem seu próprio `status`: o da **raiz** generaliza o pedido inteiro, cada **pacote** (`shipments[]`) tem o seu, e cada **item** dentro do pacote também.
 
 #### Status geral do pedido
 

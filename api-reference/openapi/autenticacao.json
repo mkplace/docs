@@ -11,8 +11,8 @@
       "description": "Keycloak (IDP)",
       "variables": {
         "realm": {
-          "default": "shop-crmbonus",
-          "description": "Realm do Keycloak fornecido pela Mkplace."
+          "default": "<seu_realm>",
+          "description": "Realm do Keycloak fornecido pela Mkplace. Substitua pelo realm da sua integração."
         }
       }
     }

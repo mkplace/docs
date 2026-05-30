@@ -175,8 +175,7 @@
         "name": "Authorization"
       },
       "server": [
-        "https://api.main.mkplace.com",
-        "https://api.main.mkplace.com.br"
+        "https://api.main.mkplace.com"
       ]
     }
   }
