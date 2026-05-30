@@ -15,7 +15,7 @@
     }
   ],
   "paths": {
-    "/worksheet/v2": {
+    "/freight/worksheet/v2": {
       "post": {
         "tags": ["Tabela de frete"],
         "summary": "Criar ou atualizar worksheet",
@@ -151,7 +151,7 @@
         }
       }
     },
-    "/worksheet/v2/{worksheetRef}": {
+    "/freight/worksheet/v2/{worksheetRef}": {
       "delete": {
         "tags": ["Tabela de frete"],
         "summary": "Deletar worksheet",
@@ -166,7 +166,7 @@
         }
       }
     },
-    "/worksheet/v2/{worksheetRef}/tables": {
+    "/freight/worksheet/v2/{worksheetRef}/tables": {
       "post": {
         "tags": ["Tabela de frete"],
         "summary": "Criar ou atualizar linhas da tabela",

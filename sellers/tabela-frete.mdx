@@ -47,12 +47,12 @@ O prazo das linhas é interpretado na unidade definida em `deliveryTimeType`: `D
   <Step title="Crie a worksheet (cabeçalho)">
     Defina o método de entrega, o galpão, o tipo de área e a modalidade.
 
-    `POST /worksheet/v2` — [Criar ou atualizar worksheet](/api-reference/tabela-de-frete/criar-atualizar-worksheet)
+    `POST /freight/worksheet/v2` — [Criar ou atualizar worksheet](/api-reference/tabela-de-frete/criar-atualizar-worksheet)
   </Step>
   <Step title="Suba as linhas da tabela">
     Envie as faixas ou áreas com preço e prazo, no formato do tipo de área escolhido.
 
-    `POST /worksheet/v2/{worksheetRef}/tables` — [Criar ou atualizar linhas da tabela](/api-reference/tabela-de-frete/criar-atualizar-linhas)
+    `POST /freight/worksheet/v2/{worksheetRef}/tables` — [Criar ou atualizar linhas da tabela](/api-reference/tabela-de-frete/criar-atualizar-linhas)
   </Step>
   <Step title="Gerencie quando precisar">
     Consulte ou remova worksheets e linhas:
