@@ -27,6 +27,22 @@ Quando um pedido é realizado no marketplace, o item é reservado e recebe o sta
 
 ---
 
+## Waiting-payment ⏳
+
+Quando o cliente escolhe um meio de pagamento **assíncrono** (PIX ou boleto), o pedido sai de `PRE-ORDER` e passa para `WAITING-PAYMENT`, onde permanece **até a confirmação do pagamento** — momento em que migra para `PAID`. Se o pagamento não for confirmado dentro da janela configurada, o pedido expira (`EXPIRED`) ou é cancelado, e a reserva de itens é estornada.
+
+Você pode optar por **receber o pedido já em `WAITING-PAYMENT`**, e não apenas em `PAID`. Esse é o ponto de entrada inicial recomendado: antecipa o conhecimento do pedido e abre uma janela para o vendedor agir antes da confirmação do pagamento.
+
+<Tip>
+  `WAITING-PAYMENT` é o momento ideal para o vendedor **reservar o estoque** dos itens no seu próprio sistema. Reservando cedo, você reduz o risco de **rompimento de estoque** (vender o mesmo item em outro canal) e evita que o pedido chegue em `PAID` sem disponibilidade — situação que leva a cancelamentos por falta de estoque.
+</Tip>
+
+<Warning>
+  Em `WAITING-PAYMENT` o pagamento ainda não foi confirmado e o pedido pode expirar ou ser cancelado. Trate esse status como **reserva**, não como baixa: a baixa definitiva de estoque acontece somente em `PAID`.
+</Warning>
+
+---
+
 ## Paid 💵
 
 Após o pedido realizado, itens reservados e pagamento confirmado, os itens recebem a devida baixa de estoque — o pedido está pronto para receber as atualizações dos vendedores.
