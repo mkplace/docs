@@ -10,12 +10,8 @@
   },
   "servers": [
     {
-      "url": "https://api.main.mkplace.com.br",
-      "description": "Produção"
-    },
-    {
-      "url": "https://api.sandbox.mkplace.com.br",
-      "description": "Homologação"
+      "url": "https://api.main.mkplace.com",
+      "description": "Sandbox"
     }
   ],
   "paths": {
@@ -603,12 +599,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       },
@@ -757,12 +749,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -1043,12 +1031,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       },
@@ -1266,12 +1250,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -1606,12 +1586,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       },
@@ -1782,12 +1758,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -2062,12 +2034,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -2306,12 +2274,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       },
@@ -2687,12 +2651,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -3067,12 +3027,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       },
@@ -3232,12 +3188,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -3249,6 +3201,12 @@
         ],
         "summary": "Criar sugestão",
         "operationId": "post-catalog-suggestion",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/criar-sugestao"
         },
@@ -4503,6 +4461,12 @@
         ],
         "summary": "Listar sugestões",
         "operationId": "get-catalog-suggestions",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/listar-sugestoes"
         },
@@ -5463,6 +5427,12 @@
         ],
         "summary": "Consultar sugestão",
         "operationId": "get-catalog-suggestion-ref",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/consultar-sugestao"
         },
@@ -6218,6 +6188,12 @@
         ],
         "summary": "Atualizar sugestão",
         "operationId": "put-catalog-suggestion-ref",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/atualizar-sugestao"
         },
@@ -7366,6 +7342,12 @@
         ],
         "summary": "Deletar sugestão",
         "operationId": "delete-catalog-suggestion-ref",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/deletar-sugestao"
         },
@@ -7533,6 +7515,12 @@
         ],
         "summary": "Atualizar oferta",
         "operationId": "put-catalog-offer-update",
+        "servers": [
+          {
+            "url": "https://api.sandbox.mkplace.com.br",
+            "description": "Sandbox"
+          }
+        ],
         "x-mint": {
           "href": "/api-reference/catalogo/atualizar-oferta"
         },
@@ -8997,12 +8985,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -10129,12 +10113,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -11264,12 +11244,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -12273,12 +12249,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -13338,12 +13310,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -14460,12 +14428,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -15555,12 +15519,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
@@ -16491,12 +16451,8 @@
         ],
         "servers": [
           {
-            "url": "https://api.main.mkplace.com.br",
-            "description": "Produção"
-          },
-          {
-            "url": "https://api.sandbox.mkplace.com.br",
-            "description": "Homologação"
+            "url": "https://api.main.mkplace.com",
+            "description": "Sandbox"
           }
         ]
       }
