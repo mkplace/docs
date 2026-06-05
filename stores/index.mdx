@@ -50,8 +50,12 @@ Para estabelecer a comunicação segura entre os ambientes, a Mkplace fornece o 
 | `Chave Privada (.key / PEM)` | Usada pela sua aplicação para **assinar** os tokens JWT. Entregue em sigilo, individualmente, ao responsável técnico. |
 | `Store ID` | Identificador da loja no ecossistema Mkplace. |
 | `Account ID` | Identificador da conta associada à loja. |
-| `Client ID` | Identificador da aplicação cliente. |
-| `Client Secret` | Segredo da aplicação cliente. |
+| `Client ID` | Identificador da aplicação cliente. Usado quando o **front-end não é gerenciado pela Mkplace**. |
+| `Client Secret` | Segredo da aplicação cliente. Usado quando o **front-end não é gerenciado pela Mkplace**. |
+
+<Info>
+  **`Client ID` e `Client Secret`** aplicam-se ao cenário em que a **interface (front-end) é mantida pelo parceiro**, e não pela Mkplace. Eles autenticam a sua aplicação na comunicação com o ecossistema. Se o seu front-end é gerenciado pela Mkplace, esse par de credenciais não é necessário — fale com o time de onboarding em caso de dúvida sobre o seu cenário.
+</Info>
 
 <Warning>
   **A Chave Privada e o Client Secret devem ser armazenados estritamente em ambiente seguro** (AWS Secrets Manager, HashiCorp Vault ou equivalente) e **nunca** expostos ou trafegados no lado do cliente (frontend). Esses valores são entregues de forma individual e sigilosa — em caso de suspeita de vazamento, acione imediatamente o time de suporte para rotação.
