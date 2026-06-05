@@ -146,6 +146,7 @@
           }
         },
         "operationId": "listarWebhooks",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/listar-webhooks" },
         "description": "## Description\nList all webhooks created to the store.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/list` is required;\n- Context `storeId` is required.",
         "parameters": [
           {
@@ -189,6 +190,7 @@
       "post": {
         "summary": "Create New Webhook",
         "operationId": "criarWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/criar-webhook" },
         "responses": {
           "200": {
             "description": "OK",
@@ -331,6 +333,7 @@
       "delete": {
         "summary": "Delete Webhook by Id",
         "operationId": "excluirWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/excluir-webhook" },
         "responses": {
           "200": {
             "description": "OK",
@@ -892,6 +895,7 @@
           }
         },
         "operationId": "obterTransacaoPorId",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/obter-transacao-por-id" },
         "description": "## Description\nGet a transaction by `ref` or `id`.\n\n## Rules\n- Transaction must exists;\n- Authorization is required;\n- Scope `payment/transaction/read` is required;\n- `accountId` context is required;\n- `storeId` and `customerId` context are optional.\n",
         "tags": [
           "Webhooks de pagamentos"

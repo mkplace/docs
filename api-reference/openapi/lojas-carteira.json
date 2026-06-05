@@ -23,6 +23,7 @@
         "summary": "Consultar carteiras do cliente",
         "description": "Retorna as informações das carteiras de pontos (`wallets`) associadas a um cliente, incluindo saldos e limites.",
         "operationId": "getLoyaltyWallet",
+        "x-mint": { "href": "/api-reference/lojas-carteira/consultar-carteiras-do-cliente" },
         "tags": ["Carteira"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [

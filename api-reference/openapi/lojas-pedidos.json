@@ -27,6 +27,7 @@
       "get": {
         "summary": "Listar webhooks",
         "operationId": "listWebhooks",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/listar-webhooks" },
         "tags": ["Webhooks de pedidos"],
         "security": [{ "bearerAuth": [] }],
         "description": "## Descricao\n\nLista todos os webhooks do seller solicitante.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/read` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
@@ -140,6 +141,7 @@
       "post": {
         "summary": "Criar webhook",
         "operationId": "createWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/criar-webhook" },
         "tags": ["Webhooks de pedidos"],
         "security": [{ "bearerAuth": [] }],
         "description": "## Descricao\n\nCria um webhook para o seller solicitante.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/create` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
@@ -257,6 +259,7 @@
       "get": {
         "summary": "Buscar webhook por ID",
         "operationId": "getWebhookById",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/buscar-webhook-por-id" },
         "tags": ["Webhooks de pedidos"],
         "security": [{ "bearerAuth": [] }],
         "description": "## Descricao\n\nBusca um webhook pelo seu ID.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/read` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
@@ -337,6 +340,7 @@
       "put": {
         "summary": "Atualizar webhook",
         "operationId": "updateWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/atualizar-webhook" },
         "tags": ["Webhooks de pedidos"],
         "security": [{ "bearerAuth": [] }],
         "description": "## Descricao\n\nAtualiza o webhook com o ID informado.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/update` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
@@ -434,6 +438,7 @@
       "delete": {
         "summary": "Remover webhook",
         "operationId": "deleteWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/remover-webhook" },
         "tags": ["Webhooks de pedidos"],
         "security": [{ "bearerAuth": [] }],
         "description": "## Descricao\n\nRemove o webhook com o ID informado.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/delete` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",

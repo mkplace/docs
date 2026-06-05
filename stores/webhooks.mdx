@@ -11,17 +11,24 @@ Os **webhooks** permitem que a sua aplicação seja notificada automaticamente s
 
 ## Pedidos
 
-Notificações sobre o ciclo de vida dos pedidos.
+Notificações sobre o ciclo de vida dos pedidos. Endpoints de gerenciamento:
 
-- **Gerenciar webhooks de pedidos** — cadastro e consulta dos webhooks registrados.
-- **Payload da notificação** — corresponde ao recurso de pedido por ID.
+- [Criar webhook](/api-reference/lojas-webhooks-pedidos/criar-webhook)
+- [Listar webhooks](/api-reference/lojas-webhooks-pedidos/listar-webhooks)
+- [Buscar webhook por ID](/api-reference/lojas-webhooks-pedidos/buscar-webhook-por-id)
+- [Atualizar webhook](/api-reference/lojas-webhooks-pedidos/atualizar-webhook)
+- [Remover webhook](/api-reference/lojas-webhooks-pedidos/remover-webhook)
+
+O **payload da notificação** corresponde ao recurso de pedido (schema `Order`), detalhado nos contratos acima.
 
 ## Pagamentos
 
-Notificações sobre o ciclo de vida das transações de pagamento.
+Notificações sobre o ciclo de vida das transações de pagamento. Endpoints de gerenciamento e payload:
 
-- **Gerenciar webhooks de pagamentos** — cadastro e consulta dos webhooks registrados.
-- **Payload da notificação** — corresponde ao recurso de transação por ID.
+- [Listar webhooks](/api-reference/lojas-webhooks-pagamentos/listar-webhooks)
+- [Criar webhook](/api-reference/lojas-webhooks-pagamentos/criar-webhook)
+- [Excluir webhook](/api-reference/lojas-webhooks-pagamentos/excluir-webhook)
+- [Obter transação por ID](/api-reference/lojas-webhooks-pagamentos/obter-transacao-por-id) — payload da notificação de pagamento.
 
 ## Boas práticas
 
@@ -42,5 +49,5 @@ Notificações sobre o ciclo de vida das transações de pagamento.
 </Steps>
 
 <Note>
-  Os endpoints de gerenciamento, os parâmetros e os schemas dos payloads seguem a especificação dos contratos — consulte a **Referência da API — Webhooks de pedidos** e **Webhooks de pagamentos** desta seção.
+  Os parâmetros e os schemas completos dos payloads estão nos contratos linkados nas seções [Pedidos](#pedidos) e [Pagamentos](#pagamentos) acima.
 </Note>
