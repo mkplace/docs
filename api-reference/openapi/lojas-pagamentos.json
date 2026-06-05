@@ -170,11 +170,13 @@
                 "APPROVED",
                 "DISAPPROVED",
                 "WAITING-ANALYSIS",
-                "ERROR-GATEWAY"
+                "ERROR-GATEWAY",
+                "ERROR-REFUND",
+                "PARTIALLY-REFUNDED"
               ]
             },
             "in": "query",
-            "name": "status",
+            "name": "statusFilter",
             "description": "Filtra os webhooks pelo status de transacao monitorado."
           }
         ],
@@ -909,6 +911,15 @@
         "type": "object",
         "title": "BillingAddress",
         "description": "Endereco de cobranca associado a transacao ou ao cartao de credito.",
+        "required": [
+          "street",
+          "number",
+          "city",
+          "zipcode",
+          "state",
+          "shortState",
+          "neighborhood"
+        ],
         "properties": {
           "_id": {
             "type": "string",
@@ -1001,23 +1012,24 @@
             "description": "Payment's discount"
           },
           "discountReason": {
-            "type": "number",
+            "type": "string",
             "description": "Payment's discount reason"
           },
           "method": {
             "type": "string",
-            "enum": [
-              "PIX",
-              "BOLETO",
-              "CREDITCARD",
-              "KOIN"
-            ],
-            "description": "Payment's method"
+            "description": "Metodo de pagamento (texto livre, ex.: PIX, BOLETO, CREDITCARD)."
           },
           "installments": {
             "type": "number",
             "default": 1,
             "description": "Payment's number of installments"
+          },
+          "expiresIn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "default": null,
+            "description": "Data e hora de expiracao do pagamento (ex.: vencimento do boleto ou do PIX)."
           },
           "status": {
             "type": "string",
@@ -1034,7 +1046,9 @@
               "APPROVED",
               "DISAPPROVED",
               "WAITING-ANALYSIS",
-              "ERROR-GATEWAY"
+              "ERROR-GATEWAY",
+              "ERROR-REFUND",
+              "PARTIALLY-REFUNDED"
             ],
             "default": "CREATED",
             "description": "Payment's current status"
@@ -1129,6 +1143,11 @@
         "type": "object",
         "title": "Customer",
         "description": "Dados do cliente associado a transacao.",
+        "required": [
+          "email",
+          "name",
+          "document"
+        ],
         "properties": {
           "_id": {
             "type": "string",
@@ -1199,6 +1218,9 @@
         "type": "object",
         "title": "Item",
         "description": "Item que compoe a transacao.",
+        "required": [
+          "ref"
+        ],
         "properties": {
           "_id": {
             "type": "string",
@@ -1243,6 +1265,14 @@
           "shipping": {
             "type": "object",
             "description": "Dados de frete especificos do item.",
+            "required": [
+              "price",
+              "discount",
+              "carrierName",
+              "deliveryMethod",
+              "estimatedDate",
+              "estimatedWorkDays"
+            ],
             "properties": {
               "_id": {
                 "type": "string",
@@ -1309,6 +1339,12 @@
             "format": "uri",
             "description": "URL para a qual a notificacao do webhook sera enviada."
           },
+          "channelSlug": {
+            "type": "string",
+            "nullable": true,
+            "default": null,
+            "description": "Slug do canal de venda ao qual o webhook esta vinculado. Quando nulo, aplica-se a todos os canais."
+          },
           "statusFilter": {
             "type": "array",
             "description": "Lista de status de transacao que disparam o webhook. Caso vazia, todos os status sao considerados.",
@@ -1327,7 +1363,9 @@
                 "APPROVED",
                 "DISAPPROVED",
                 "WAITING-ANALYSIS",
-                "ERROR-GATEWAY"
+                "ERROR-GATEWAY",
+                "ERROR-REFUND",
+                "PARTIALLY-REFUNDED"
               ]
             }
           },
@@ -1366,6 +1404,11 @@
         "type": "object",
         "title": "Shipping",
         "description": "Dados de frete da transacao.",
+        "required": [
+          "totalShippingCost",
+          "totalShippingDiscount",
+          "maxEstimatedDays"
+        ],
         "properties": {
           "_id": {
             "type": "string",
@@ -1393,18 +1436,24 @@
       "TransactionResponse": {
         "type": "object",
         "required": [
-          "ref",
           "amount",
           "items",
           "customer",
           "billingAddress",
-          "shipping",
-          "payments"
+          "payments",
+          "status"
         ],
         "properties": {
           "ref": {
             "type": "string",
             "description": "Reference to any service or third party orders"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Lista de referencias externas adicionais associadas a transacao."
           },
           "amount": {
             "type": "number",
@@ -1446,11 +1495,9 @@
           },
           "metadata": {
             "type": "object",
+            "description": "Dados adicionais de estrutura livre associados a transacao.",
+            "additionalProperties": true,
             "nullable": true
-          },
-          "verifyToken": {
-            "type": "string",
-            "description": "Token stored in Redis used for verification purposes"
           },
           "_id": {
             "type": "string",
@@ -1459,6 +1506,10 @@
           "accountId": {
             "type": "string",
             "description": "Identificador da conta/loja dona da transacao."
+          },
+          "channelSlug": {
+            "type": "string",
+            "description": "Slug do canal de venda em que a transacao foi originada."
           },
           "status": {
             "type": "string",
@@ -1475,13 +1526,37 @@
               "APPROVED",
               "DISAPPROVED",
               "WAITING-ANALYSIS",
-              "ERROR-GATEWAY"
+              "ERROR-GATEWAY",
+              "ERROR-REFUND",
+              "PARTIALLY-REFUNDED"
             ],
             "description": "Status atual da transacao."
           },
           "pointsCurrencyAmount": {
             "type": "number",
             "description": "Valor em pontos utilizado na transacao."
+          },
+          "donation": {
+            "type": "number",
+            "description": "Valor de doacao incluido na transacao."
+          },
+          "event": {
+            "type": "object",
+            "description": "Ultimo evento de mudanca de estado da transacao.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Codigo do evento."
+              },
+              "description": {
+                "type": "string",
+                "description": "Descricao do evento."
+              }
+            }
+          },
+          "exceptionDetail": {
+            "type": "string",
+            "description": "Representacao em texto de eventuais erros ocorridos na transacao."
           },
           "createdAt": {
             "type": "string",

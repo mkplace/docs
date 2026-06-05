@@ -44,16 +44,22 @@
             "description": "Filtro de status associado ao webhook. E possivel enviar multiplos valores de statusFilter."
           },
           {
+            "schema": { "type": "string", "enum": ["keycloak", "no-auth"] },
+            "in": "query",
+            "name": "authType",
+            "description": "Filtra os webhooks pelo tipo de autenticacao."
+          },
+          {
+            "schema": { "type": "string" },
+            "in": "query",
+            "name": "sellerId",
+            "description": "Filtra os webhooks pelo ID do seller. Usado quando o seller nao esta no contexto do token."
+          },
+          {
             "schema": { "type": "string", "default": "1" },
             "in": "query",
             "name": "page",
             "description": "Pagina que sera listada"
-          },
-          {
-            "schema": { "type": "string", "default": "50" },
-            "in": "query",
-            "name": "limit",
-            "description": "Quantidade de webhooks carregados por pagina"
           }
         ],
         "responses": {
@@ -535,23 +541,59 @@
               "type": "string",
               "enum": [
                 "PRE-ORDER",
-                "WAITING-PAYMENT",
-                "IN-PROCESSING",
                 "EXPIRED",
-                "PARTIAL-PAID",
+                "CANCELED",
+                "WAITING-PAYMENT",
                 "PAID",
-                "PARTIALLY-BILLED",
                 "BILLED",
-                "PARTIALLY-SENT",
                 "SENT",
-                "PARTIALLY-DELIVERED",
                 "DELIVERED",
+                "PARTIALLY-SENT",
+                "PARTIALLY-DELIVERED",
+                "PARTIALLY-BILLED",
+                "IN-PROCESSING",
                 "REFUNDED",
                 "REPLACED",
-                "RETURNED",
-                "CANCELED"
+                "RETURNED"
               ]
             }
+          },
+          "authType": {
+            "type": "string",
+            "nullable": true,
+            "description": "Tipo de autenticacao usada nas requisicoes ao endpoint. Quando `keycloak`, o webhook obtem um token via client credentials antes de notificar.",
+            "enum": ["keycloak", "no-auth"]
+          },
+          "authEndpoint": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "URL do endpoint de autenticacao usado para obter o token. Obrigatorio quando `authType` for `keycloak`."
+          },
+          "credentials": {
+            "type": "object",
+            "nullable": true,
+            "description": "Credenciais usadas para autenticar a requisicao. `clientId` e `clientSecret` sao obrigatorios quando `authType` for `keycloak`.",
+            "properties": {
+              "clientId": {
+                "type": "string",
+                "description": "Client ID usado na autenticacao Keycloak."
+              },
+              "clientSecret": {
+                "type": "string",
+                "description": "Client Secret usado na autenticacao Keycloak."
+              }
+            }
+          },
+          "channelSlug": {
+            "type": "string",
+            "nullable": true,
+            "description": "Slug do canal ao qual o webhook esta associado."
+          },
+          "orderType": {
+            "type": "string",
+            "description": "Tipo de pedido filtrado pelo webhook.",
+            "enum": ["ORDER", "LOYALTY", "SUBSCRIPTION"]
           },
           "requestConfiguration": {
             "type": "object",
@@ -575,9 +617,12 @@
             "properties": {
               "_id": { "type": "string", "description": "Identificador do webhook." },
               "storeId": { "type": "string", "description": "ID da store a qual o webhook pertence." },
-              "sellerId": { "type": "string", "description": "ID do seller a qual o webhook pertence." }
+              "accountId": { "type": "string", "description": "ID da conta (account) a qual o webhook pertence." },
+              "sellerId": { "type": "string", "description": "ID do seller a qual o webhook pertence." },
+              "accessToken": { "type": "string", "description": "Token de acesso obtido na autenticacao Keycloak, reutilizado ate expirar." },
+              "expiresAt": { "type": "string", "format": "date-time", "description": "Data de expiracao do token de acesso." }
             },
-            "required": ["_id", "storeId", "sellerId"]
+            "required": ["_id", "storeId"]
           },
           { "$ref": "#/components/schemas/WebhookInput" },
           {
@@ -727,6 +772,10 @@
           "donations": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/Donations" }
+          },
+          "recurrenceRef": {
+            "type": "string",
+            "description": "Referencia da recorrencia (assinatura) que originou o pedido."
           },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
@@ -913,7 +962,7 @@
         "description": "Composicao de comissao e repasse do item.",
         "properties": {
           "sellerTransfer": { "$ref": "#/components/schemas/SellerTransfer" },
-          "storeComission": { "$ref": "#/components/schemas/StoreCommission" }
+          "storeCommission": { "$ref": "#/components/schemas/StoreCommission" }
         }
       },
       "Items": {
@@ -1003,7 +1052,31 @@
           "department": { "type": "string" },
           "subcategory": { "type": "string" },
           "brand": { "type": "string" },
-          "walletReversalPoints": { "type": "object" }
+          "walletReversalPoints": { "type": "object" },
+          "optInRecurrence": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indica se o item foi marcado para recorrencia (assinatura)."
+          },
+          "recurrence": {
+            "type": "object",
+            "description": "Configuracao de recorrencia do item quando ele faz parte de uma assinatura.",
+            "properties": {
+              "quantity": {
+                "type": "integer",
+                "description": "Quantidade do item a cada ciclo de recorrencia."
+              },
+              "frequency": {
+                "type": "string",
+                "description": "Frequencia da recorrencia.",
+                "enum": ["DAILY", "WEEKLY", "MONTHLY", "ANNUAL"]
+              },
+              "interval": {
+                "type": "integer",
+                "description": "Intervalo entre os ciclos, na unidade da frequencia."
+              }
+            }
+          }
         }
       },
       "Billing": {

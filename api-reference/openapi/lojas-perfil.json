@@ -40,20 +40,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Customer"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "verifyToken": {
-                          "type": "string",
-                          "description": "Token de verificação associado ao perfil do cliente."
-                        }
-                      }
-                    }
-                  ]
+                  "$ref": "#/components/schemas/CustomerProfile"
                 },
                 "examples": {
                   "CustomerResponse & verifyToken": {
@@ -150,7 +137,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Customer"
+                "$ref": "#/components/schemas/UpdateCustomerRequest"
               },
               "examples": {
                 "PartialCustomerProps": {
@@ -191,7 +178,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Customer"
+                  "$ref": "#/components/schemas/CustomerProfile"
                 },
                 "examples": {
                   "CustomerResponse": {
@@ -313,39 +300,37 @@
       }
     },
     "schemas": {
-      "Customer": {
+      "CustomerProfile": {
         "type": "object",
-        "title": "Customer",
-        "description": "Representação do cliente cadastrado na loja, contendo dados pessoais, telefones e endereços.",
+        "title": "CustomerProfile",
+        "description": "Perfil do cliente retornado na consulta (GET) e na atualização (PUT) do perfil, contendo dados pessoais, telefones, endereços e o token de verificação.",
+        "required": ["type", "document", "name", "email"],
         "properties": {
-          "type": {
+          "_id": {
             "type": "string",
-            "description": "Tipo do cliente (por exemplo, `individual` para pessoa física)."
+            "description": "Identificador único do cliente."
           },
-          "document": {
+          "storeId": {
             "type": "string",
-            "description": "Documento de identificação do cliente (por exemplo, CPF)."
-          },
-          "userId": {
-            "type": "string",
-            "description": "Identificador interno do usuário associado ao cliente."
+            "description": "Identificador da loja à qual o cliente pertence."
           },
           "name": {
             "type": "string",
             "description": "Nome completo do cliente."
-          },
-          "username": {
-            "type": "string",
-            "description": "Nome de usuário (login) do cliente."
           },
           "email": {
             "type": "string",
             "format": "email",
             "description": "Endereço de e-mail do cliente."
           },
-          "birthdate": {
+          "document": {
             "type": "string",
-            "description": "Data de nascimento do cliente, no formato `AAAA-MM-DD`."
+            "description": "Documento de identificação do cliente (CPF ou CNPJ)."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["individual", "company"],
+            "description": "Tipo do cliente: `individual` (pessoa física) ou `company` (pessoa jurídica)."
           },
           "phones": {
             "type": "array",
@@ -356,10 +341,89 @@
           },
           "addresses": {
             "type": "array",
+            "description": "Lista de endereços do cliente, cada um acompanhado de seu token de verificação.",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Address"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "verifyToken": {
+                      "type": "string",
+                      "description": "Token de verificação associado a este endereço."
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gênero do cliente."
+          },
+          "newsletter": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Indica se o cliente optou por receber newsletter."
+          },
+          "isFirstBuy": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Indica se é a primeira compra do cliente."
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "Data de nascimento do cliente, no formato `AAAA-MM-DD`."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadados adicionais do cliente para fins dinâmicos."
+          },
+          "verifyToken": {
+            "type": "string",
+            "description": "Token de verificação associado ao perfil do cliente."
+          }
+        }
+      },
+      "UpdateCustomerRequest": {
+        "type": "object",
+        "title": "UpdateCustomerRequest",
+        "description": "Corpo da requisição de atualização do perfil do cliente. Apenas os campos listados podem ser atualizados.",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome completo do cliente."
+          },
+          "phones": {
+            "type": "array",
+            "description": "Lista de telefones do cliente.",
+            "items": {
+              "$ref": "#/components/schemas/Phone"
+            }
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gênero do cliente."
+          },
+          "addresses": {
+            "type": "array",
             "description": "Lista de endereços do cliente.",
             "items": {
               "$ref": "#/components/schemas/Address"
             }
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "Data de nascimento do cliente, no formato `AAAA-MM-DD`."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadados adicionais do cliente para fins dinâmicos."
           }
         }
       },
@@ -367,6 +431,16 @@
         "type": "object",
         "title": "Address",
         "description": "Endereço que representa um dos vários que um cliente pode possuir.",
+        "required": [
+          "receiverName",
+          "street",
+          "city",
+          "shortState",
+          "state",
+          "number",
+          "zipcode",
+          "neighborhood"
+        ],
         "properties": {
           "isPrimary": {
             "type": "boolean",
@@ -386,6 +460,7 @@
           },
           "complement": {
             "type": "string",
+            "nullable": true,
             "description": "Complemento do endereço (por exemplo, apartamento ou ponto de referência)."
           },
           "shortState": {
@@ -411,6 +486,14 @@
           "neighborhood": {
             "type": "string",
             "description": "Bairro do endereço."
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo do endereço."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadados adicionais do endereço para fins dinâmicos."
           }
         }
       },
@@ -418,6 +501,7 @@
         "type": "object",
         "title": "Phone",
         "description": "Telefone que representa um dos vários que um cliente pode possuir.",
+        "required": ["countryCode", "areaCode", "number"],
         "properties": {
           "countryCode": {
             "type": "string",
@@ -433,6 +517,7 @@
           },
           "isWhatsapp": {
             "type": "boolean",
+            "default": false,
             "description": "Indica se o telefone possui WhatsApp."
           }
         }
