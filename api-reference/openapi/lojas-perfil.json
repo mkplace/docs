@@ -1,0 +1,458 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Perfil do Cliente",
+    "version": "1.0.0",
+    "description": "Operações de leitura e atualização do perfil do cliente sob custódia do parceiro."
+  },
+  "servers": [
+    {
+      "url": "https://<host-da-sua-aplicacao>",
+      "description": "Host exposto pela aplicação do parceiro (Customer Profile sob custódia)"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Perfil do cliente",
+      "description": "Consulta e atualização dos dados cadastrais do cliente."
+    }
+  ],
+  "paths": {
+    "/profile": {
+      "get": {
+        "tags": ["Perfil do cliente"],
+        "summary": "Obter perfil do cliente",
+        "operationId": "/profile/getCustomerProfile",
+        "description": "## Description\n\nEndpoint to get all information from the logged client via authorization context.\n\n### Rules\n\n- Authorization is required;\n- Scope `customer/customer/get` is required;\n- `customerId` context is required;\n- `storeId` context is required;\n- `clientId` context is required;",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil do cliente retornado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Customer"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "verifyToken": {
+                          "type": "string",
+                          "description": "Token de verificação associado ao perfil do cliente."
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "CustomerResponse & verifyToken": {
+                    "value": {
+                      "name": "Nome do Cliente",
+                      "email": "user@example.com",
+                      "document": "<document>",
+                      "type": "individual",
+                      "addresses": [
+                        {
+                          "isPrimary": false,
+                          "receiverName": "Nome do Destinatário",
+                          "street": "Rua de Exemplo",
+                          "city": "Cidade de Exemplo",
+                          "complement": "Complemento de Exemplo",
+                          "shortState": "EX",
+                          "state": "Estado de Exemplo",
+                          "number": "100",
+                          "zipcode": "00000-000",
+                          "countryCode": "BR",
+                          "neighborhood": "Bairro de Exemplo"
+                        }
+                      ],
+                      "phones": [
+                        {
+                          "countryCode": "55",
+                          "areaCode": "11",
+                          "number": "900000000",
+                          "isWhatsapp": true
+                        }
+                      ],
+                      "verifyToken": "<verifyToken>"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado. A requisição não possui permissão ou contexto suficiente para a operação.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Request Authorization without permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (customer/customer/get)"
+                    }
+                  },
+                  "Request Authorization without context": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts customerId, storeId are required for this operation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Perfil do cliente não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Customer not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "Customer profile not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Perfil do cliente"],
+        "summary": "Atualizar perfil do cliente",
+        "operationId": "/profile/updateCustomerProfile",
+        "description": "## Description\n\nEndpoint to update informations of `name`, `phones` and `addressess` from the logged customer via authorization context.\n\n### Rules\n\n- Authorization is required;\n- Scope `customer/customer/update` is required;\n- CustomerId context is required;\n- Fields [ `name`, `phones`, `addressess`] are required;",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              },
+              "examples": {
+                "PartialCustomerProps": {
+                  "value": {
+                    "name": "Nome do Cliente",
+                    "phones": [
+                      {
+                        "countryCode": "55",
+                        "areaCode": "11",
+                        "number": "900000000",
+                        "isWhatsapp": false
+                      }
+                    ],
+                    "addresses": [
+                      {
+                        "isPrimary": false,
+                        "receiverName": "Nome do Destinatário",
+                        "street": "Rua de Exemplo",
+                        "city": "Cidade de Exemplo",
+                        "complement": "Complemento de Exemplo",
+                        "shortState": "EX",
+                        "state": "Estado de Exemplo",
+                        "number": "100",
+                        "zipcode": "00000-000",
+                        "countryCode": "BR",
+                        "neighborhood": "Bairro de Exemplo"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil do cliente atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                },
+                "examples": {
+                  "CustomerResponse": {
+                    "value": {
+                      "name": "Nome do Cliente",
+                      "email": "user@example.com",
+                      "document": "<document>",
+                      "type": "individual",
+                      "addresses": [
+                        {
+                          "isPrimary": false,
+                          "receiverName": "Nome do Destinatário",
+                          "street": "Rua de Exemplo",
+                          "city": "Cidade de Exemplo",
+                          "complement": "Complemento de Exemplo",
+                          "shortState": "EX",
+                          "state": "Estado de Exemplo",
+                          "number": "100",
+                          "zipcode": "00000-000",
+                          "countryCode": "BR",
+                          "neighborhood": "Bairro de Exemplo"
+                        }
+                      ],
+                      "phones": [
+                        {
+                          "countryCode": "55",
+                          "areaCode": "11",
+                          "number": "900000000",
+                          "isWhatsapp": false
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição inválida. Pode representar um ou mais erros de validação com origens e motivos distintos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Required fields missing": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, error {field} {reason for the error}"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado. Credenciais de autenticação ausentes ou inválidas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado. A requisição não possui permissão ou contexto suficiente para a operação.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Request Authorization without permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (customer/customer/update)"
+                    }
+                  },
+                  "Request Authorization without context": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts customerId, storeId are required for this operation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Perfil do cliente não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "Customer not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "Customer profile not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Autenticação via token JWT. Envie o token no header `Authorization: Bearer <access_token>`."
+      }
+    },
+    "schemas": {
+      "Customer": {
+        "type": "object",
+        "title": "Customer",
+        "description": "Representação do cliente cadastrado na loja, contendo dados pessoais, telefones e endereços.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Tipo do cliente (por exemplo, `individual` para pessoa física)."
+          },
+          "document": {
+            "type": "string",
+            "description": "Documento de identificação do cliente (por exemplo, CPF)."
+          },
+          "userId": {
+            "type": "string",
+            "description": "Identificador interno do usuário associado ao cliente."
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome completo do cliente."
+          },
+          "username": {
+            "type": "string",
+            "description": "Nome de usuário (login) do cliente."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Endereço de e-mail do cliente."
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "Data de nascimento do cliente, no formato `AAAA-MM-DD`."
+          },
+          "phones": {
+            "type": "array",
+            "description": "Lista de telefones do cliente.",
+            "items": {
+              "$ref": "#/components/schemas/Phone"
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "description": "Lista de endereços do cliente.",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "title": "Address",
+        "description": "Endereço que representa um dos vários que um cliente pode possuir.",
+        "properties": {
+          "isPrimary": {
+            "type": "boolean",
+            "description": "Indica se este é o endereço principal do cliente."
+          },
+          "receiverName": {
+            "type": "string",
+            "description": "Nome da pessoa que receberá a entrega neste endereço."
+          },
+          "street": {
+            "type": "string",
+            "description": "Logradouro (rua, avenida etc.) do endereço."
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade do endereço."
+          },
+          "complement": {
+            "type": "string",
+            "description": "Complemento do endereço (por exemplo, apartamento ou ponto de referência)."
+          },
+          "shortState": {
+            "type": "string",
+            "description": "Sigla da unidade federativa (estado) do endereço."
+          },
+          "state": {
+            "type": "string",
+            "description": "Nome da unidade federativa (estado) do endereço."
+          },
+          "number": {
+            "type": "string",
+            "description": "Número do endereço."
+          },
+          "zipcode": {
+            "type": "string",
+            "description": "Código postal (CEP) do endereço."
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "Código do país do endereço."
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Bairro do endereço."
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "title": "Phone",
+        "description": "Telefone que representa um dos vários que um cliente pode possuir.",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "description": "Código do país do telefone (por exemplo, `55` para o Brasil)."
+          },
+          "areaCode": {
+            "type": "string",
+            "description": "Código de área (DDD) do telefone."
+          },
+          "number": {
+            "type": "string",
+            "description": "Número do telefone."
+          },
+          "isWhatsapp": {
+            "type": "boolean",
+            "description": "Indica se o telefone possui WhatsApp."
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "title": "ErrorResponse",
+        "description": "Estrutura padrão de resposta de erro.",
+        "required": ["exceptionType", "message"],
+        "properties": {
+          "exceptionType": {
+            "type": "string",
+            "description": "Classificação do erro (por exemplo, `ValidationError`, `ForbiddenError`, `NotFoundError`)."
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem descritiva do erro."
+          }
+        }
+      }
+    }
+  }
+}

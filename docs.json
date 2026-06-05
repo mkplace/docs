@@ -88,6 +88,22 @@
             "pages": [
               "stores/webhooks"
             ]
+          },
+          {
+            "group": "Referência da API — Perfil",
+            "openapi": "api-reference/openapi/lojas-perfil.json"
+          },
+          {
+            "group": "Referência da API — Carteira",
+            "openapi": "api-reference/openapi/lojas-carteira.json"
+          },
+          {
+            "group": "Referência da API — Webhooks de pedidos",
+            "openapi": "api-reference/openapi/lojas-pedidos.json"
+          },
+          {
+            "group": "Referência da API — Webhooks de pagamentos",
+            "openapi": "api-reference/openapi/lojas-pagamentos.json"
           }
         ]
       }
