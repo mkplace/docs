@@ -1,35 +1,88 @@
 ---
-title: "Manual de integração de Lojas"
-description: "Visão geral do processo de integração para lojas (stores) operando o front-end do marketplace Mkplace."
+title: "Integração de Lojas"
+description: "Visão geral da integração entre a sua aplicação e o ecossistema Mkplace: modalidades, parâmetros e fluxo recomendado."
 sidebarTitle: "Visão geral"
 ---
 
-<Warning>
-  Esta seção está **em construção**. As páginas abaixo são esqueletos que serão preenchidos junto com o time de produto. Conteúdo final pode mudar de estrutura.
-</Warning>
+Esta seção é destinada ao **desenvolvedor parceiro** que vai integrar sua aplicação (a **Loja**) ao ecossistema Mkplace — autenticando usuários da sua própria base, sincronizando o perfil do cliente, consultando a carteira de pontos e recebendo eventos operacionais via webhook.
 
-A **Loja** (store) é o produto que opera o front-end do marketplace Mkplace — consome o catálogo público, monta a vitrine, gerencia o carrinho e o checkout do consumidor final, e recebe eventos pós-venda.
+## Modalidades de integração
 
-Este manual cobrirá:
+A forma de integração depende de quem mantém a base de clientes e de quem constrói a camada de comunicação. Escolha a modalidade que corresponde ao seu cenário:
+
+<CardGroup cols={2}>
+  <Card title="Cliente assina o próprio token (JWT RS256)" icon="key" href="/stores/autenticacao">
+    A sua aplicação mantém a base de clientes e assina os tokens JWT com a **chave privada** fornecida pela Mkplace. É a modalidade documentada nesta seção.
+  </Card>
+  <Card title="Middleware fabricado pela Mkplace" icon="gears">
+    A Mkplace constrói a camada de integração (middleware) entre os ambientes. Indicado quando a sua equipe não vai manter a esteira de autenticação. Fale com o time de onboarding para avaliar a viabilidade.
+  </Card>
+</CardGroup>
+
+<Info>
+  O restante desta seção descreve a modalidade **Cliente assina o próprio token (JWT RS256)** de ponta a ponta.
+</Info>
+
+## O que esta integração cobre
 
 <Columns cols={2}>
-  <Card title="Autenticação" icon="key" href="/stores/autenticacao">
-    Como a loja obtém credenciais e gera o token de acesso para chamar a API.
+  <Card title="Autenticação" icon="lock" href="/stores/autenticacao">
+    Geração e assinatura do token JWT RS256, ciclo de vida e ativação da Webview.
   </Card>
-  <Card title="Consumo do catálogo" icon="grid" href="/stores/catalogo">
-    Como consultar produtos, ofertas, categorias e disponibilidade.
+  <Card title="Perfil do cliente" icon="id-card" href="/stores/perfil">
+    Endpoints de consulta e atualização cadastral sob a custódia da sua aplicação.
   </Card>
-  <Card title="Carrinho e checkout" icon="cart-shopping" href="/stores/checkout">
-    Construção do carrinho, cotação de frete, aplicação de cupom e finalização do pedido.
+  <Card title="Carteira de pontos" icon="wallet" href="/stores/carteira">
+    Consulta do saldo e das carteiras do cliente autenticado.
   </Card>
-  <Card title="Pedidos" icon="receipt" href="/stores/pedidos">
-    Acompanhamento do pedido do ponto de vista do consumidor final.
-  </Card>
-  <Card title="Eventos" icon="bell" href="/stores/eventos">
-    Webhooks e mensageria transacional que a loja recebe.
+  <Card title="Webhooks" icon="bell" href="/stores/webhooks">
+    Recebimento de eventos de pedidos e pagamentos para sincronização.
   </Card>
 </Columns>
 
+## Parâmetros de integração
+
+Para estabelecer a comunicação segura entre os ambientes, a Mkplace fornece o conjunto de parâmetros abaixo. **Todos os valores são fornecidos individualmente a cada parceiro** pelo time de onboarding — eles não são gerados pela sua aplicação e não devem ser compartilhados.
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `RS256 Key ID (kid)` | Identifica a chave pública correspondente que a Mkplace usa para validar a assinatura do seu token. |
+| `Chave Privada (.key / PEM)` | Usada pela sua aplicação para **assinar** os tokens JWT. Entregue em sigilo, individualmente, ao responsável técnico. |
+| `Store ID` | Identificador da loja no ecossistema Mkplace. |
+| `Account ID` | Identificador da conta associada à loja. |
+| `Client ID` | Identificador da aplicação cliente. Usado quando o **front-end não é gerenciado pela Mkplace**. |
+| `Client Secret` | Segredo da aplicação cliente. Usado quando o **front-end não é gerenciado pela Mkplace**. |
+
+<Info>
+  **`Client ID` e `Client Secret`** aplicam-se ao cenário em que a **interface (front-end) é mantida pelo parceiro**, e não pela Mkplace. Eles autenticam a sua aplicação na comunicação com o ecossistema. Se o seu front-end é gerenciado pela Mkplace, esse par de credenciais não é necessário — fale com o time de onboarding em caso de dúvida sobre o seu cenário.
+</Info>
+
+<Warning>
+  **A Chave Privada e o Client Secret devem ser armazenados estritamente em ambiente seguro** (AWS Secrets Manager, HashiCorp Vault ou equivalente) e **nunca** expostos ou trafegados no lado do cliente (frontend). Esses valores são entregues de forma individual e sigilosa — em caso de suspeita de vazamento, acione imediatamente o time de suporte para rotação.
+</Warning>
+
 <Note>
-  Cada página acima possui um TODO indicando o tipo de conteúdo planejado. Contribua diretamente nelas via PR ou abra issue para discutir o roteiro.
+  Ainda não recebeu suas credenciais? Solicite o provisionamento ao time de onboarding pelo canal de suporte ([suporte@mkplace.com.br](mailto:suporte@mkplace.com.br)).
 </Note>
+
+## Fluxo recomendado
+
+A esteira de implementação recomendada para colocar a integração em produção:
+
+<Steps>
+  <Step title="Provisionamento de credenciais">
+    Solicite e configure os parâmetros de integração (`kid`, Chave Privada, `Client ID`, `Client Secret`, `Store ID`, `Account ID`) junto ao time de onboarding.
+  </Step>
+  <Step title="Camada de autenticação">
+    Implemente a rotina de geração de tokens RS256, assinando-os com a Chave Privada e injetando o `kid` correto no header. Veja [Autenticação](/stores/autenticacao).
+  </Step>
+  <Step title="Ativação da Webview">
+    Após gerar um token válido, abra a Webview da Mkplace acoplando o token via query param (`?token=...`).
+  </Step>
+  <Step title="Resolução de perfil">
+    Exponha os endpoints de [perfil do cliente](/stores/perfil) sob a sua custódia para que a Mkplace consulte e atualize os dados cadastrais.
+  </Step>
+  <Step title="Carteira e webhooks">
+    Disponibilize a [consulta de carteira](/stores/carteira) e cadastre os [webhooks](/stores/webhooks) de pedidos e pagamentos com retry e idempotência.
+  </Step>
+</Steps>

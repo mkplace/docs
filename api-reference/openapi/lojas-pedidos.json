@@ -1,0 +1,1209 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Webhooks de Pedidos",
+    "version": "1.0.0",
+    "description": "Gerenciamento de webhooks de pedidos e referencia do payload do recurso Order (pedido) enviado nas notificacoes."
+  },
+  "servers": [
+    {
+      "url": "https://api.main.mkplace.com",
+      "description": "API Mkplace (gerenciamento de webhooks)"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Webhooks de pedidos",
+      "description": "Operacoes para gerenciar webhooks de pedidos do seller."
+    }
+  ],
+  "paths": {
+    "/webhook": {
+      "get": {
+        "summary": "Listar webhooks",
+        "operationId": "listWebhooks",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/listar-webhooks" },
+        "tags": ["Webhooks de pedidos"],
+        "security": [{ "bearerAuth": [] }],
+        "description": "## Descricao\n\nLista todos os webhooks do seller solicitante.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/read` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
+        "parameters": [
+          {
+            "schema": { "type": "string" },
+            "in": "query",
+            "name": "endpoint",
+            "description": "Endpoint do webhook"
+          },
+          {
+            "schema": { "type": "string" },
+            "in": "query",
+            "name": "statusFilter",
+            "description": "Filtro de status associado ao webhook. E possivel enviar multiplos valores de statusFilter."
+          },
+          {
+            "schema": { "type": "string", "enum": ["keycloak", "no-auth"] },
+            "in": "query",
+            "name": "authType",
+            "description": "Filtra os webhooks pelo tipo de autenticacao."
+          },
+          {
+            "schema": { "type": "string" },
+            "in": "query",
+            "name": "sellerId",
+            "description": "Filtra os webhooks pelo ID do seller. Usado quando o seller nao esta no contexto do token."
+          },
+          {
+            "schema": { "type": "string", "default": "1" },
+            "in": "query",
+            "name": "page",
+            "description": "Pagina que sera listada"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Lista paginada de webhooks.",
+                  "type": "object",
+                  "properties": {
+                    "docs": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": { "$ref": "#/components/schemas/Webhook" }
+                    },
+                    "total": { "type": "number" },
+                    "limit": { "type": "number" },
+                    "page": { "type": "string" },
+                    "pages": { "type": "number" }
+                  }
+                },
+                "examples": {
+                  "WebhookListResponse": {
+                    "value": {
+                      "docs": [
+                        {
+                          "_id": "webhookId",
+                          "storeId": "string",
+                          "sellerId": "string",
+                          "endpoint": "https://seller-endpoint.example.com/notification/test",
+                          "statusFilter": ["BILLED"],
+                          "requestConfiguration": {
+                            "headers": {
+                              "Content-Type": "application/json",
+                              "Authorization": "Bearer <TOKEN>"
+                            }
+                          },
+                          "createdAt": "2022-01-01T14:39:25.835Z",
+                          "updatedAt": "2022-01-01T17:23:59.897Z",
+                          "__v": 0
+                        }
+                      ],
+                      "total": 1,
+                      "limit": 50,
+                      "page": "1",
+                      "pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Request Authorization without permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (sales/webhook/read)"
+                    }
+                  },
+                  "Request Authorization without context": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId, sellerId are required for this operation"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar webhook",
+        "operationId": "createWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/criar-webhook" },
+        "tags": ["Webhooks de pedidos"],
+        "security": [{ "bearerAuth": [] }],
+        "description": "## Descricao\n\nCria um webhook para o seller solicitante.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/create` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
+        "requestBody": {
+          "description": "Dados do webhook a ser criado.",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WebhookInput" },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "endpoint": "https://seller-endpoint.example.com/notification",
+                    "statusFilter": ["PRE-ORDER"],
+                    "requestConfiguration": {
+                      "headers": {
+                        "Authorization": "Bearer <TOKEN>",
+                        "Content-Type": "application/json"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Webhook" },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "statusFilter": ["SENT", "CANCELED"],
+                      "requestConfiguration": {
+                        "headers": { "Content-Type": "application/json" }
+                      },
+                      "endpoint": "https://seller-endpoint.example.com/notification",
+                      "storeId": "9qAcdOluBG",
+                      "sellerId": "0RCMBSNbOl",
+                      "_id": "uKP9_BKkDf",
+                      "createdAt": "2022-04-18T17:58:12.023Z",
+                      "updatedAt": "2022-04-18T17:58:12.023Z",
+                      "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "When endpoint was not provided": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, error 'must have required property 'endpoint''"
+                    }
+                  },
+                  "When statusFilter was not provided": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, error 'must have required property 'statusFilter''"
+                    }
+                  },
+                  "When statusFilter array is empty": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, field '/statusFilter' error 'must NOT have fewer than 1 items'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Request does not have context permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (sales/webhook/create)"
+                    }
+                  },
+                  "Request without storeId or sellerId profile": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId, sellerId are required for this operation"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhook/id/{webhookId}": {
+      "parameters": [
+        {
+          "schema": { "type": "string" },
+          "name": "webhookId",
+          "in": "path",
+          "required": true,
+          "description": "ID do webhook que sera consultado"
+        }
+      ],
+      "get": {
+        "summary": "Buscar webhook por ID",
+        "operationId": "getWebhookById",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/buscar-webhook-por-id" },
+        "tags": ["Webhooks de pedidos"],
+        "security": [{ "bearerAuth": [] }],
+        "description": "## Descricao\n\nBusca um webhook pelo seu ID.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/read` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Webhook" },
+                "examples": {
+                  "Webhook Response": {
+                    "value": {
+                      "statusFilter": ["BILLED"],
+                      "requestConfiguration": {
+                        "headers": {
+                          "Content-Type": "application/json",
+                          "Authorization": "Bearer <TOKEN>"
+                        }
+                      },
+                      "_id": "webhookId",
+                      "endpoint": "https://seller-endpoint.example.com/notification/test",
+                      "storeId": "string",
+                      "sellerId": "string",
+                      "createdAt": "2022-01-01T14:39:25.835Z",
+                      "updatedAt": "2022-01-01T17:23:59.897Z",
+                      "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Request Authorization without permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (sales/webhook/read)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Webhook not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "Webhook not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhook/{webhookId}": {
+      "parameters": [
+        {
+          "schema": { "type": "string" },
+          "name": "webhookId",
+          "in": "path",
+          "required": true,
+          "description": "ID do webhook que sera atualizado ou removido"
+        }
+      ],
+      "put": {
+        "summary": "Atualizar webhook",
+        "operationId": "updateWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/atualizar-webhook" },
+        "tags": ["Webhooks de pedidos"],
+        "security": [{ "bearerAuth": [] }],
+        "description": "## Descricao\n\nAtualiza o webhook com o ID informado.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/update` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
+        "requestBody": {
+          "description": "Novos dados do webhook.",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WebhookInput" },
+              "examples": {
+                "Ok": {
+                  "value": {
+                    "endpoint": "https://seller-endpoint.example.com/notification",
+                    "statusFilter": ["PRE-ORDER"],
+                    "requestConfiguration": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Webhook" },
+                "examples": {
+                  "Ok": {
+                    "value": {
+                      "_id": "string",
+                      "storeId": "string",
+                      "sellerId": "string",
+                      "endpoint": "https://seller-endpoint.example.com/notification",
+                      "statusFilter": ["PRE-ORDER"],
+                      "requestConfiguration": {},
+                      "__v": 0,
+                      "createdAt": "string",
+                      "updatedAt": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "When endpoint is not uri format": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, field '/endpoint' error 'must match format \"uri\"'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Request does not have permission": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (sales/webhook/update)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Webhook not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "Webhook not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remover webhook",
+        "operationId": "deleteWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pedidos/remover-webhook" },
+        "tags": ["Webhooks de pedidos"],
+        "security": [{ "bearerAuth": [] }],
+        "description": "## Descricao\n\nRemove o webhook com o ID informado.\n\n### Regras\n\n- Autorizacao e obrigatoria;\n- O escopo `sales/webhook/delete` e obrigatorio;\n- O contexto de seller e store e obrigatorio.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "deleted": { "type": "boolean" } }
+                },
+                "examples": {
+                  "Successful deletion": { "value": { "deleted": true } }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Returns error if request doesn't provide a webhook Id": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, error 'must have required property 'webhookId''"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Returns error if storeId is not provided": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId, sellerId are required for this operation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "examples": {
+                  "Webhook ID was not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "Webhook not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token de acesso (Bearer) obrigatorio para todas as operacoes."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Estrutura padrao de erro retornada pela API.",
+        "properties": {
+          "exceptionType": { "type": "string", "description": "Tipo da excecao." },
+          "message": { "type": "string", "description": "Mensagem descritiva do erro." }
+        },
+        "required": ["exceptionType", "message"]
+      },
+      "WebhookInput": {
+        "type": "object",
+        "description": "Dados de entrada para criacao ou atualizacao de um webhook de pedidos.",
+        "required": ["endpoint", "statusFilter"],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL do endpoint do seller que recebera as notificacoes de pedido."
+          },
+          "statusFilter": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de status de pedido que disparam a notificacao no endpoint.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PRE-ORDER",
+                "EXPIRED",
+                "CANCELED",
+                "WAITING-PAYMENT",
+                "PAID",
+                "BILLED",
+                "SENT",
+                "DELIVERED",
+                "PARTIALLY-SENT",
+                "PARTIALLY-DELIVERED",
+                "PARTIALLY-BILLED",
+                "IN-PROCESSING",
+                "REFUNDED",
+                "REPLACED",
+                "RETURNED"
+              ]
+            }
+          },
+          "authType": {
+            "type": "string",
+            "nullable": true,
+            "description": "Tipo de autenticacao usada nas requisicoes ao endpoint. Quando `keycloak`, o webhook obtem um token via client credentials antes de notificar.",
+            "enum": ["keycloak", "no-auth"]
+          },
+          "authEndpoint": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "URL do endpoint de autenticacao usado para obter o token. Obrigatorio quando `authType` for `keycloak`."
+          },
+          "credentials": {
+            "type": "object",
+            "nullable": true,
+            "description": "Credenciais usadas para autenticar a requisicao. `clientId` e `clientSecret` sao obrigatorios quando `authType` for `keycloak`.",
+            "properties": {
+              "clientId": {
+                "type": "string",
+                "description": "Client ID usado na autenticacao Keycloak."
+              },
+              "clientSecret": {
+                "type": "string",
+                "description": "Client Secret usado na autenticacao Keycloak."
+              }
+            }
+          },
+          "channelSlug": {
+            "type": "string",
+            "nullable": true,
+            "description": "Slug do canal ao qual o webhook esta associado."
+          },
+          "orderType": {
+            "type": "string",
+            "description": "Tipo de pedido filtrado pelo webhook.",
+            "enum": ["ORDER", "LOYALTY", "SUBSCRIPTION"]
+          },
+          "requestConfiguration": {
+            "type": "object",
+            "nullable": true,
+            "description": "Configuracoes adicionais da requisicao enviada ao endpoint, como cabecalhos HTTP.",
+            "properties": {
+              "headers": {
+                "type": "object",
+                "description": "Cabecalhos HTTP enviados na notificacao.",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Webhook": {
+        "description": "Webhook de pedidos cadastrado para o seller.",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "_id": { "type": "string", "description": "Identificador do webhook." },
+              "storeId": { "type": "string", "description": "ID da store a qual o webhook pertence." },
+              "accountId": { "type": "string", "description": "ID da conta (account) a qual o webhook pertence." },
+              "sellerId": { "type": "string", "description": "ID do seller a qual o webhook pertence." },
+              "accessToken": { "type": "string", "description": "Token de acesso obtido na autenticacao Keycloak, reutilizado ate expirar." },
+              "expiresAt": { "type": "string", "format": "date-time", "description": "Data de expiracao do token de acesso." }
+            },
+            "required": ["_id", "storeId"]
+          },
+          { "$ref": "#/components/schemas/WebhookInput" },
+          {
+            "type": "object",
+            "properties": {
+              "createdAt": { "type": "string", "description": "Data de criacao." },
+              "updatedAt": { "type": "string", "description": "Data da ultima atualizacao." },
+              "__v": { "type": "number", "description": "Chave de versao do banco de dados." }
+            },
+            "required": ["createdAt", "updatedAt"]
+          }
+        ]
+      },
+      "Order": {
+        "type": "object",
+        "description": "Pedido. Corresponde ao payload enviado nas notificacoes de webhook de pedidos.",
+        "required": ["_id", "clientId", "storeId", "status", "items"],
+        "properties": {
+          "_id": { "type": "string" },
+          "clientId": { "type": "string" },
+          "storeId": { "type": "string" },
+          "accountId": { "type": "string" },
+          "customer": { "$ref": "#/components/schemas/Customer" },
+          "orderRef": { "type": "string" },
+          "isOrderModified": { "type": "boolean" },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "CANCELED",
+              "CREATED",
+              "ERROR",
+              "EXPIRED",
+              "PAID",
+              "PARTIAL-PAID",
+              "PRE-APPROVED",
+              "PRE-ORDER",
+              "REFUNDED",
+              "WAITING-PAYMENT"
+            ]
+          },
+          "payments": {
+            "type": "array",
+            "items": { "type": "object" }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PRE-ORDER",
+              "WAITING-PAYMENT",
+              "IN-PROCESSING",
+              "EXPIRED",
+              "PARTIAL-PAID",
+              "PAID",
+              "PARTIALLY-BILLED",
+              "BILLED",
+              "PARTIALLY-SENT",
+              "SENT",
+              "PARTIALLY-DELIVERED",
+              "DELIVERED",
+              "REFUNDED",
+              "REPLACED",
+              "RETURNED",
+              "CANCELED"
+            ]
+          },
+          "substatus": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "reason": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "_id": { "type": "string" },
+              "items": { "type": "integer" },
+              "total": { "type": "number" },
+              "finalPrice": { "type": "number" },
+              "totalPriceDiscount": { "type": "integer" },
+              "totalShippingCost": { "type": "integer" },
+              "totalShippingDiscount": { "type": "integer" },
+              "maxShippingTime": { "type": "integer" },
+              "deliveryTimeType": { "type": "string" },
+              "ordersDiscount": { "type": "integer" },
+              "taxes": { "type": "integer" },
+              "donationAmount": { "type": "integer" },
+              "points": {
+                "type": "object",
+                "properties": {
+                  "currencyAmount": { "type": "integer" },
+                  "amount": { "type": "integer" }
+                }
+              }
+            }
+          },
+          "deliveryAddress": {
+            "type": "object",
+            "properties": {
+              "_id": { "type": "string" },
+              "receiverName": { "type": "string" },
+              "street": { "type": "string" },
+              "city": { "type": "string" },
+              "complement": { "type": "string" },
+              "shortState": { "type": "string" },
+              "state": { "type": "string" },
+              "number": { "type": "string" },
+              "zipcode": { "type": "string" },
+              "countryCode": { "type": "string" },
+              "neighborhood": { "type": "string" },
+              "metadata": {
+                "type": "object",
+                "properties": { "type": { "type": "string" } }
+              }
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Items" }
+          },
+          "shipments": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Shipments" }
+          },
+          "transactionId": { "type": "string" },
+          "verifyToken": { "type": "string" },
+          "exceptionDetails": { "type": "string", "nullable": true },
+          "metadata": { "type": "object" },
+          "orderSource": { "type": "object" },
+          "parentOrderId": { "type": "string" },
+          "promotions": {
+            "type": "array",
+            "items": { "type": "object" }
+          },
+          "cartId": { "type": "string" },
+          "channelSlug": { "type": "string" },
+          "stockReservation": { "type": "boolean" },
+          "type": {
+            "type": "string",
+            "enum": ["ORDER", "LOYALTY", "SUBSCRIPTION"]
+          },
+          "points": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Points" }
+          },
+          "donations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Donations" }
+          },
+          "recurrenceRef": {
+            "type": "string",
+            "description": "Referencia da recorrencia (assinatura) que originou o pedido."
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "__v": { "type": "number" }
+        },
+        "example": {
+          "_id": "018f5d02-3c9b-7f66-9c10-3a5e7d2b8f91",
+          "clientId": "018f5d02-3c99-7d4f-8b27-2f6a9e1c3d45",
+          "storeId": "018f5d02-3c98-7a01-b692-5e1c8d3f7a60",
+          "accountId": "018f5d02-3c97-7c88-a1f5-9d3e6b2c4a19",
+          "customer": {
+            "_id": "018f5c9a-6b2d-7c31-9f42-6e8b1a3d5c77",
+            "name": "Cliente Exemplo",
+            "document": "000.000.000-00",
+            "email": "cliente@example.com",
+            "type": "individual",
+            "ref": "018f5c9a-6b2e-7a8f-b3d1-2c9e7f4a1b60",
+            "phone": {
+              "_id": "018f5c9a-6b2e-7a8f-b3d1-2c9e7f4a1b60",
+              "countryCode": "55",
+              "areaCode": "11",
+              "number": "900000000"
+            },
+            "metadata": { "campaign": "promotion" }
+          },
+          "orderRef": "018f5d02-3c9b-7f66-9c10-3a5e7d2b8f91",
+          "isOrderModified": false,
+          "paymentStatus": "PAID",
+          "payments": [{}],
+          "status": "DELIVERED",
+          "substatus": {
+            "code": "401",
+            "reason": "Order delivered to carrier",
+            "description": "Order delivered to receiver this morning"
+          },
+          "summary": {
+            "_id": "018f5c9a-6b32-71c8-b4e2-6a9d3f5b7c10",
+            "items": 1,
+            "total": 149.9,
+            "finalPrice": 149.9,
+            "totalPriceDiscount": 0,
+            "totalShippingCost": 0,
+            "totalShippingDiscount": 0,
+            "maxShippingTime": 7,
+            "deliveryTimeType": "DAYS",
+            "ordersDiscount": 0,
+            "taxes": 0,
+            "donationAmount": 0,
+            "points": { "currencyAmount": 0, "amount": 0 }
+          },
+          "deliveryAddress": {
+            "_id": "018f5c9a-6b31-7d5e-89ab-73f0c2d14e98",
+            "receiverName": "Cliente Exemplo",
+            "street": "Rua Exemplo",
+            "city": "Sao Paulo",
+            "complement": "Apto 101",
+            "shortState": "SP",
+            "state": "Sao Paulo",
+            "number": "1060",
+            "zipcode": "01000000",
+            "countryCode": "BR",
+            "neighborhood": "Centro",
+            "metadata": { "type": "work" }
+          },
+          "items": [
+            {
+              "_id": "018f5cb4-9a12-71e6-a93f-0c7d4b2e6a98",
+              "name": "Produto Exemplo GG",
+              "skuId": "MKU-0c7d4b2e6a98",
+              "offerId": "018f5cb4-9a13-7c55-9ab1-3e6f8d2c1b70",
+              "sellerName": "Seller Exemplo",
+              "sellerId": "018f5cb4-9a14-7a0d-b245-8f1c3e7a6d22",
+              "sellerSkuId": "0c7d4b2e6a98-8f1c3e7a6d22",
+              "price": 149.9,
+              "priceDiscount": 49.9,
+              "originalPrice": 199.8,
+              "unitPrice": 149.8,
+              "unitOriginalPrice": 199.8,
+              "quantity": 1,
+              "productName": "Produto Exemplo"
+            }
+          ],
+          "transactionId": "018f5d02-3c96-70df-9e36-4b8a2c7f1d53",
+          "verifyToken": "<TOKEN>",
+          "exceptionDetails": null,
+          "metadata": {},
+          "orderSource": {},
+          "type": "ORDER",
+          "createdAt": "2026-02-02T00:00:00Z",
+          "updatedAt": "2026-02-19T00:00:00Z",
+          "__v": 0
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "description": "Telefone de contato.",
+        "required": ["_id", "countryCode", "areaCode", "number"],
+        "properties": {
+          "_id": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "areaCode": { "type": "string" },
+          "number": { "type": "string" }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "description": "Cliente do pedido.",
+        "required": ["_id", "name", "document", "email", "type", "ref"],
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "document": { "type": "string" },
+          "email": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["individual", "company"]
+          },
+          "ref": { "type": "string" },
+          "phone": { "$ref": "#/components/schemas/Phone" },
+          "metadata": { "type": "object" }
+        }
+      },
+      "Substatus": {
+        "type": "object",
+        "description": "Detalhe de substatus.",
+        "properties": {
+          "code": { "type": "string" },
+          "reason": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "OverwrittenOffer": {
+        "type": "object",
+        "description": "Oferta sobrescrita aplicada ao item.",
+        "required": ["_id", "price", "originalPrice"],
+        "properties": {
+          "_id": { "type": "string" },
+          "price": { "type": "number" },
+          "originalPrice": { "type": "number" },
+          "warehouseId": { "type": "string" }
+        }
+      },
+      "SellerTransferDetails": {
+        "type": "object",
+        "description": "Detalhes do repasse ao seller.",
+        "properties": {
+          "grossTransfer": { "type": "number" },
+          "netTransfer": { "type": "number" }
+        }
+      },
+      "SellerTransfer": {
+        "type": "object",
+        "description": "Repasse ao seller.",
+        "properties": {
+          "total": { "type": "number" },
+          "details": { "$ref": "#/components/schemas/SellerTransferDetails" }
+        }
+      },
+      "StoreCommissionDetails": {
+        "type": "object",
+        "description": "Detalhes da comissao da store.",
+        "properties": {
+          "grossCommission": { "type": "number" },
+          "netCommission": { "type": "number" },
+          "catalogCommissionPercentage": { "type": "number" },
+          "appliedCommissionCatalog": { "type": "number" },
+          "freightCommissionPercentage": { "type": "number" },
+          "appliedCommissionFreight": { "type": "number" },
+          "promotionCommissionPercentage": { "type": "number" },
+          "appliedCommissionPromotion": { "type": "number" }
+        }
+      },
+      "StoreCommission": {
+        "type": "object",
+        "description": "Comissao da store.",
+        "properties": {
+          "total": { "type": "number" },
+          "details": { "$ref": "#/components/schemas/StoreCommissionDetails" }
+        }
+      },
+      "Commission": {
+        "title": "Commission",
+        "type": "object",
+        "description": "Composicao de comissao e repasse do item.",
+        "properties": {
+          "sellerTransfer": { "$ref": "#/components/schemas/SellerTransfer" },
+          "storeCommission": { "$ref": "#/components/schemas/StoreCommission" }
+        }
+      },
+      "Items": {
+        "type": "object",
+        "description": "Item do pedido.",
+        "required": [
+          "name",
+          "skuId",
+          "offerId",
+          "sellerName",
+          "sellerId",
+          "sellerSkuId",
+          "price",
+          "priceDiscount",
+          "originalPrice",
+          "unitPrice",
+          "unitOriginalPrice",
+          "quantity",
+          "productName"
+        ],
+        "properties": {
+          "_id": { "type": "string" },
+          "isVirtual": { "type": "boolean" },
+          "bonusUsage": { "type": "integer" },
+          "reversalValuePoints": { "type": "number" },
+          "reversalPoints": { "type": "number" },
+          "unitReversalValuePoints": { "type": "number" },
+          "unitReversalPoints": { "type": "number" },
+          "name": { "type": "string" },
+          "skuId": { "type": "string" },
+          "offerId": { "type": "string" },
+          "sellerName": { "type": "string" },
+          "sellerId": { "type": "string" },
+          "sellerSkuId": { "type": "string" },
+          "warehouses": {
+            "type": "object",
+            "required": ["_id", "quantity"],
+            "properties": {
+              "_id": { "type": "string" },
+              "quantity": { "type": "integer" },
+              "metadata": { "type": "object" }
+            }
+          },
+          "price": { "type": "number" },
+          "priceDiscount": { "type": "number" },
+          "originalPrice": { "type": "number" },
+          "unitPrice": { "type": "number" },
+          "unitOriginalPrice": { "type": "number" },
+          "sellerTransfer": { "type": "number" },
+          "commissionAmount": { "type": "number" },
+          "appliedPromotions": {
+            "type": "object",
+            "properties": {
+              "promotionId": { "type": "string" },
+              "quantity": { "type": "integer" },
+              "valueApplied": { "type": "number" }
+            }
+          },
+          "overwrittenOffer": { "$ref": "#/components/schemas/OverwrittenOffer" },
+          "quantity": { "type": "integer" },
+          "commission": { "$ref": "#/components/schemas/Commission" },
+          "productName": { "type": "string" },
+          "productSlug": { "type": "string" },
+          "thumbnail": { "type": "string" },
+          "slug": { "type": "string" },
+          "estimatedBusinessDays": { "type": "integer" },
+          "deliveryMethodId": { "type": "string" },
+          "deliveryMethodName": { "type": "string" },
+          "shippingCost": { "type": "number" },
+          "shippingDiscount": { "type": "number" },
+          "finalShippingCost": { "type": "number" },
+          "finalPrice": { "type": "number" },
+          "financialDiscount": { "type": "number" },
+          "unitFinancialDiscount": { "type": "number" },
+          "unitReversalValue": { "type": "number" },
+          "logisticProviderName": { "type": "string" },
+          "attributes": { "type": "object" },
+          "estimatedExactDateISO": { "type": "string", "format": "date-time" },
+          "estimatedTime": { "type": "integer" },
+          "deliveryType": { "type": "string" },
+          "deliveryTimeType": { "type": "string" },
+          "deliveryMethodRef": { "type": "string" },
+          "logisticProviderDocument": { "type": "string" },
+          "metadata": { "type": "object" },
+          "collectionSlugs": { "type": "string" },
+          "category": { "type": "string" },
+          "department": { "type": "string" },
+          "subcategory": { "type": "string" },
+          "brand": { "type": "string" },
+          "walletReversalPoints": { "type": "object" },
+          "optInRecurrence": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indica se o item foi marcado para recorrencia (assinatura)."
+          },
+          "recurrence": {
+            "type": "object",
+            "description": "Configuracao de recorrencia do item quando ele faz parte de uma assinatura.",
+            "properties": {
+              "quantity": {
+                "type": "integer",
+                "description": "Quantidade do item a cada ciclo de recorrencia."
+              },
+              "frequency": {
+                "type": "string",
+                "description": "Frequencia da recorrencia.",
+                "enum": ["DAILY", "WEEKLY", "MONTHLY", "ANNUAL"]
+              },
+              "interval": {
+                "type": "integer",
+                "description": "Intervalo entre os ciclos, na unidade da frequencia."
+              }
+            }
+          }
+        }
+      },
+      "Billing": {
+        "type": "object",
+        "description": "Dados de faturamento (nota fiscal).",
+        "required": ["_id", "accessKey", "number", "serial", "issueDate", "billingRequestedAt"],
+        "properties": {
+          "_id": { "type": "string" },
+          "protocol": { "type": "string" },
+          "accessKey": { "type": "string" },
+          "number": { "type": "string" },
+          "serial": { "type": "string" },
+          "issueDate": { "type": "string", "format": "date-time" },
+          "xmlContent": { "type": "string", "nullable": true },
+          "metadata": { "type": "object" },
+          "billingRequestedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Tracking": {
+        "type": "object",
+        "description": "Dados de rastreamento da entrega.",
+        "required": ["_id", "sendDate", "protocol", "carrier", "deliveryMethod"],
+        "properties": {
+          "_id": { "type": "string" },
+          "sendDate": { "type": "string", "format": "date-time" },
+          "protocol": { "type": "string" },
+          "carrier": { "type": "string" },
+          "deliveryMethod": { "type": "string" },
+          "trackingRequestedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ShipmentItem": {
+        "type": "object",
+        "description": "Item de um envio (shipment).",
+        "required": ["_id", "skuId", "sellerSkuId", "quantity", "status"],
+        "properties": {
+          "_id": { "type": "string" },
+          "skuId": { "type": "string" },
+          "sellerSkuId": { "type": "string" },
+          "quantity": { "type": "integer" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "BILLED",
+              "SENT",
+              "DELIVERED",
+              "PARTIALLY-BILLED",
+              "PARTIALLY-SENT",
+              "PARTIALLY-DELIVERED",
+              "PARTIALLY-RETURNED",
+              "CANCELED",
+              "REPLACED",
+              "REFUNDED",
+              "RETURNED"
+            ]
+          },
+          "substatus": { "$ref": "#/components/schemas/Substatus" },
+          "cashbackType": {
+            "type": "string",
+            "enum": ["DEFAULT", "POINTS"]
+          }
+        }
+      },
+      "Shipments": {
+        "type": "object",
+        "description": "Envio (shipment) do pedido.",
+        "properties": {
+          "_id": { "type": "string" },
+          "sellerId": { "type": "string" },
+          "originalShipmentId": { "type": "string" },
+          "shipmentRef": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "BILLED",
+              "SENT",
+              "DELIVERED",
+              "PARTIALLY-BILLED",
+              "PARTIALLY-SENT",
+              "PARTIALLY-DELIVERED",
+              "PARTIALLY-RETURNED",
+              "CANCELED",
+              "REPLACED",
+              "REFUNDED",
+              "RETURNED"
+            ]
+          },
+          "substatus": { "$ref": "#/components/schemas/Substatus" },
+          "deliveredDate": { "type": "string" },
+          "billing": { "$ref": "#/components/schemas/Billing" },
+          "tracking": { "$ref": "#/components/schemas/Tracking" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ShipmentItem" }
+          },
+          "rescheduledDeliveryDateISO": { "type": "string", "format": "date-time" },
+          "deliveryRequestedAt": { "type": "string", "format": "date-time" },
+          "receiver": { "type": "string" },
+          "metadata": { "type": "object" }
+        }
+      },
+      "Points": {
+        "type": "object",
+        "description": "Pontos de fidelidade associados ao pedido.",
+        "properties": {
+          "currencyAmount": { "type": "number" },
+          "amount": { "type": "number" },
+          "ref": { "type": "string" },
+          "wallets": {
+            "type": "array",
+            "items": { "type": "object", "properties": {} }
+          }
+        }
+      },
+      "Donations": {
+        "type": "object",
+        "description": "Doacao associada ao pedido.",
+        "properties": {
+          "value": { "type": "number" },
+          "campaignId": { "type": "string" }
+        }
+      }
+    }
+  }
+}

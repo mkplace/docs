@@ -77,23 +77,33 @@
             ]
           },
           {
-            "group": "Consumo do catálogo",
+            "group": "Perfil e carteira",
             "pages": [
-              "stores/catalogo"
+              "stores/perfil",
+              "stores/carteira"
             ]
           },
           {
-            "group": "Compra",
+            "group": "Webhooks",
             "pages": [
-              "stores/checkout",
-              "stores/pedidos"
+              "stores/webhooks"
             ]
           },
           {
-            "group": "Integração de retorno",
-            "pages": [
-              "stores/eventos"
-            ]
+            "group": "Referência da API — Perfil",
+            "openapi": "api-reference/openapi/lojas-perfil.json"
+          },
+          {
+            "group": "Referência da API — Carteira",
+            "openapi": "api-reference/openapi/lojas-carteira.json"
+          },
+          {
+            "group": "Referência da API — Webhooks de pedidos",
+            "openapi": "api-reference/openapi/lojas-pedidos.json"
+          },
+          {
+            "group": "Referência da API — Webhooks de pagamentos",
+            "openapi": "api-reference/openapi/lojas-pagamentos.json"
           }
         ]
       }

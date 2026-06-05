@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Carteira de Pontos",
+    "version": "1.0.0",
+    "description": "Consulta das carteiras de pontos (wallets) do cliente no ecossistema Mkplace."
+  },
+  "servers": [
+    {
+      "url": "https://api.main.mkplace.com",
+      "description": "API Mkplace"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Carteira",
+      "description": "Consulta de saldo e carteiras de pontos do cliente."
+    }
+  ],
+  "paths": {
+    "/loyalty/wallet": {
+      "get": {
+        "summary": "Consultar carteiras do cliente",
+        "description": "Retorna as informações das carteiras de pontos (`wallets`) associadas a um cliente, incluindo saldos e limites.",
+        "operationId": "getLoyaltyWallet",
+        "x-mint": { "href": "/api-reference/lojas-carteira/consultar-carteiras-do-cliente" },
+        "tags": ["Carteira"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": false,
+            "description": "ID interno do cliente (opcional).",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorno das carteiras do cliente.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/IWalletResponse" },
+                "example": {
+                  "ref": "wallet-123456",
+                  "pointConversionRate": 0.01,
+                  "items": [
+                    {
+                      "walletType": {
+                        "walletTypeId": "wt-001",
+                        "code": "POINTS",
+                        "name": "Pontos Fidelidade",
+                        "unitSingularName": "ponto",
+                        "unitPluralName": "pontos",
+                        "active": true,
+                        "isDefault": true,
+                        "createdAt": "2025-10-07T12:00:00.000Z",
+                        "limits": {}
+                      },
+                      "createdAt": "2025-10-07T12:00:00.000Z",
+                      "account": {
+                        "earnedUnits": 1000,
+                        "transferredUnits": 50,
+                        "spentUnits": 200,
+                        "activeUnits": 750,
+                        "lockedUnits": 0,
+                        "blockedUnits": 0,
+                        "expiredUnits": 0,
+                        "currencyAmount": 7.5,
+                        "currency": "BRL"
+                      },
+                      "unitsLimitUsed": 250,
+                      "unitsLimitRemaining": 750
+                    }
+                  ],
+                  "total": { "all": 1, "filtered": 1 }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "IWalletResponse": {
+        "type": "object",
+        "required": ["ref"],
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "Referência da carteira do cliente."
+          },
+          "pointConversionRate": {
+            "type": "number",
+            "description": "Taxa de conversão de pontos para moeda.",
+            "example": 0.01
+          },
+          "items": {
+            "type": "array",
+            "description": "Lista de carteiras do cliente.",
+            "items": { "$ref": "#/components/schemas/IWallet" }
+          },
+          "total": {
+            "type": "object",
+            "description": "Totalizadores de carteiras.",
+            "properties": {
+              "all": { "type": "integer", "description": "Total de carteiras." },
+              "filtered": { "type": "integer", "description": "Total de carteiras após filtro." }
+            }
+          }
+        }
+      },
+      "IWallet": {
+        "type": "object",
+        "description": "Carteira de pontos do cliente.",
+        "properties": {
+          "walletType": {
+            "type": "object",
+            "description": "Tipo da carteira.",
+            "properties": {
+              "walletTypeId": { "type": "string", "description": "Identificador do tipo de carteira." },
+              "code": { "type": "string", "description": "Código do tipo de carteira." },
+              "name": { "type": "string", "description": "Nome do tipo de carteira." },
+              "unitSingularName": { "type": "string", "description": "Nome da unidade no singular." },
+              "unitPluralName": { "type": "string", "description": "Nome da unidade no plural." },
+              "active": { "type": "boolean", "description": "Indica se o tipo de carteira está ativo." },
+              "isDefault": { "type": "boolean", "description": "Indica se é o tipo de carteira padrão." },
+              "createdAt": { "type": "string", "format": "date-time", "description": "Data de criação do tipo de carteira." },
+              "limits": { "type": "object", "description": "Limites aplicáveis à carteira." }
+            }
+          },
+          "createdAt": { "type": "string", "format": "date-time", "description": "Data de criação da carteira." },
+          "account": {
+            "type": "object",
+            "description": "Saldos e movimentações da carteira.",
+            "required": ["activeUnits"],
+            "properties": {
+              "earnedUnits": { "type": "number", "description": "Unidades acumuladas." },
+              "transferredUnits": { "type": "number", "description": "Unidades transferidas." },
+              "spentUnits": { "type": "number", "description": "Unidades gastas." },
+              "activeUnits": { "type": "number", "description": "Unidades ativas disponíveis." },
+              "lockedUnits": { "type": "number", "description": "Unidades bloqueadas temporariamente." },
+              "blockedUnits": { "type": "number", "description": "Unidades bloqueadas." },
+              "expiredUnits": { "type": "number", "description": "Unidades expiradas." },
+              "currencyAmount": { "type": "number", "description": "Valor equivalente em moeda." },
+              "currency": { "type": "string", "description": "Moeda de referência (ex.: BRL)." }
+            }
+          },
+          "unitsLimitUsed": { "type": "number", "description": "Limite de unidades já utilizado." },
+          "unitsLimitRemaining": { "type": "number", "description": "Limite de unidades restante." }
+        }
+      }
+    }
+  }
+}

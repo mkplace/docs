@@ -1,0 +1,21 @@
+---
+title: "Carteira de pontos"
+description: "Consulta do saldo e das carteiras de pontos do cliente autenticado no ecossistema Mkplace."
+---
+
+A integração permite consultar a **carteira de pontos** do cliente autenticado. A sua aplicação expõe (ou consome) o endpoint de consulta conforme o contrato da Mkplace, sempre autenticado com o token JWT.
+
+<Info>
+  A consulta usa o mesmo token JWT RS256 descrito em [Autenticação](/stores/autenticacao). O cliente é identificado pelo `customerId` presente no token.
+</Info>
+
+## Consulta de carteira
+
+Retorna as carteiras e o saldo de pontos do cliente.
+
+```http
+GET /loyalty/wallet
+Authorization: Bearer <token>
+```
+
+Contrato completo (parâmetros e schema da resposta): [Consultar carteiras do cliente](/api-reference/lojas-carteira/consultar-carteiras-do-cliente).

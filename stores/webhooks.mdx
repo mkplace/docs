@@ -1,0 +1,62 @@
+---
+title: "Webhooks"
+description: "Recebimento de eventos de pedidos e pagamentos do ecossistema Mkplace para sincronização com a sua aplicação."
+---
+
+Os **webhooks** permitem que a sua aplicação seja notificada automaticamente sobre eventos operacionais do ecossistema Mkplace — alterações em **pedidos** e em **pagamentos** — mantendo os dois ambientes em sincronia.
+
+<Info>
+  O cadastro e o gerenciamento dos webhooks seguem os contratos da Mkplace. Cada categoria (pedidos e pagamentos) tem seu próprio endpoint de gerenciamento e seu payload de notificação.
+</Info>
+
+## Pedidos
+
+Notificações sobre o ciclo de vida dos pedidos. Endpoints de gerenciamento:
+
+- [Criar webhook](/api-reference/lojas-webhooks-pedidos/criar-webhook)
+- [Listar webhooks](/api-reference/lojas-webhooks-pedidos/listar-webhooks)
+- [Buscar webhook por ID](/api-reference/lojas-webhooks-pedidos/buscar-webhook-por-id)
+- [Atualizar webhook](/api-reference/lojas-webhooks-pedidos/atualizar-webhook)
+- [Remover webhook](/api-reference/lojas-webhooks-pedidos/remover-webhook)
+
+O **payload da notificação** é o objeto **Order** — o mesmo enviado no webhook de pedidos da Integração de Vendedores:
+
+<CardGroup cols={2}>
+  <Card title="Schema do pedido" icon="file-code" href="/sellers/pedido-schema">
+    Estrutura formal do objeto `Order`, com campos, tipos e obrigatoriedades.
+  </Card>
+  <Card title="Baixar exemplo de payload" icon="download" href="/examples/exemplo-pedido-sales.jsonc">
+    Pedido completo em `PRE-ORDER` (~64 KB, JSONC com comentários por campo).
+  </Card>
+</CardGroup>
+
+## Pagamentos
+
+Notificações sobre o ciclo de vida das transações de pagamento. Endpoints de gerenciamento e payload:
+
+- [Listar webhooks](/api-reference/lojas-webhooks-pagamentos/listar-webhooks)
+- [Criar webhook](/api-reference/lojas-webhooks-pagamentos/criar-webhook)
+- [Excluir webhook](/api-reference/lojas-webhooks-pagamentos/excluir-webhook)
+- [Obter transação por ID](/api-reference/lojas-webhooks-pagamentos/obter-transacao-por-id) — payload da notificação de pagamento.
+
+## Boas práticas
+
+<Warning>
+  Cadastre os endpoints de webhook **em produção** apenas após validar o recebimento em homologação.
+</Warning>
+
+<Steps>
+  <Step title="Idempotência">
+    Trate cada evento de forma idempotente — o mesmo evento pode ser entregue mais de uma vez. Use o identificador do recurso para evitar processamento duplicado.
+  </Step>
+  <Step title="Retry">
+    Responda rapidamente com `2xx` ao receber o evento e processe de forma assíncrona. Implemente reprocessamento para falhas temporárias.
+  </Step>
+  <Step title="Validação de origem">
+    Valide a autenticidade da requisição recebida antes de processá-la.
+  </Step>
+</Steps>
+
+<Note>
+  Os parâmetros e os schemas completos dos payloads estão nos contratos linkados nas seções [Pedidos](#pedidos) e [Pagamentos](#pagamentos) acima.
+</Note>

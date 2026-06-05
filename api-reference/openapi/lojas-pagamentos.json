@@ -1,0 +1,1627 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Webhooks de Pagamentos",
+    "version": "1.0",
+    "description": "API para gerenciamento de webhooks de pagamentos e consulta do payload de transacao entregue ao parceiro."
+  },
+  "servers": [
+    {
+      "url": "https://api.main.mkplace.com",
+      "description": "API Mkplace (gerenciamento de webhooks)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Webhooks de pagamentos",
+      "description": "Gerenciamento de webhooks de pagamentos e consulta do payload de transacao."
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/webhook": {
+      "get": {
+        "summary": "List all Webhooks",
+        "tags": [
+          "Webhooks de pagamentos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "docs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Webhook"
+                      }
+                    },
+                    "totalDocs": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "pagingCounter": {
+                      "type": "number"
+                    },
+                    "hasPrevPage": {
+                      "type": "boolean"
+                    },
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "prevPage": {
+                      "type": "number",
+                      "nullable": true
+                    },
+                    "nextPage": {
+                      "type": "number",
+                      "nullable": true
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "docs": [
+                        {
+                          "endpoint": "http://example.com",
+                          "statusFilter": [
+                            "WAITING-PAYMENT",
+                            "PAID"
+                          ],
+                          "requestConfiguration": {}
+                        }
+                      ],
+                      "totalDocs": 1,
+                      "limit": 10,
+                      "totalPages": 1,
+                      "page": 1,
+                      "pagingCounter": 1,
+                      "hasPrevPage": false,
+                      "hasNextPage": false,
+                      "prevPage": null,
+                      "nextPage": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "No storeId in request": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId are required for this operation"
+                    }
+                  },
+                  "No permission in request": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (payment/webhook/list)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Database error": {
+                    "value": {
+                      "exceptionType": "FatalError",
+                      "message": "Error occurred when tried to connect on database to list all webhook."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "listarWebhooks",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/listar-webhooks" },
+        "description": "## Description\nList all webhooks created to the store.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/list` is required;\n- Context `storeId` is required.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ERROR",
+                "CREATED",
+                "PRE-APPROVED",
+                "WAITING-PAYMENT",
+                "PAID",
+                "CANCELED",
+                "REFUNDED",
+                "EXPIRED",
+                "PARTIAL-PAID",
+                "APPROVED",
+                "DISAPPROVED",
+                "WAITING-ANALYSIS",
+                "ERROR-GATEWAY",
+                "ERROR-REFUND",
+                "PARTIALLY-REFUNDED"
+              ]
+            },
+            "in": "query",
+            "name": "statusFilter",
+            "description": "Filtra os webhooks pelo status de transacao monitorado."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create New Webhook",
+        "operationId": "criarWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/criar-webhook" },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                },
+                "examples": {
+                  "CreateWebhook-Response": {
+                    "value": {
+                      "statusFilter": [
+                        "CREATED",
+                        "PAID"
+                      ],
+                      "requestConfiguration": {
+                        "headers": {
+                          "Content-Type": "application/json"
+                        }
+                      },
+                      "endpoint": "https://api.mkplace.com.br/notification/test",
+                      "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Validation Error": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "There are validations errors, field '/endpoint' error 'must be string'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "No storeId in request": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId are required for this operation"
+                    }
+                  },
+                  "No permission in request": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (payment/webhook/create)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Database error": {
+                    "value": {
+                      "exceptionType": "FatalError",
+                      "message": "Error occurred when tried to connect on database to create a webhook."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "## Description\nCreate a Webhook to pool information from the transaction's event changes, requesting the endpoint previously created linked to the store.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/create` is required;\n- Context `storeId` is required.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Webhook"
+              },
+              "examples": {
+                "CreateWebhook-Request": {
+                  "value": {
+                    "statusFilter": [
+                      "CREATED",
+                      "PAID"
+                    ],
+                    "requestConfiguration": {
+                      "headers": {
+                        "Content-Type": "application/json"
+                      }
+                    },
+                    "endpoint": "https://api.mkplace.com.br/notification/test"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "parameters": [],
+        "tags": [
+          "Webhooks de pagamentos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/webhook/{webhookId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "webhookId",
+          "in": "path",
+          "required": true,
+          "description": "Webhook unique identifier"
+        }
+      ],
+      "delete": {
+        "summary": "Delete Webhook by Id",
+        "operationId": "excluirWebhook",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/excluir-webhook" },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                },
+                "examples": {
+                  "Response OK": {
+                    "value": true
+                  },
+                  "Error deleting Webhook": {
+                    "value": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Database error": {
+                    "value": {
+                      "exceptionType": "FatalError",
+                      "message": "Error occurred when tried to connect on database to find and delete webhook by Id."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "## Description\nDelete a previously created Webhook by `id`.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/delete` is required;\n- Context `storeId` is required;\n- `webhookId` is required.",
+        "parameters": [],
+        "tags": [
+          "Webhooks de pagamentos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/transaction/{transactionId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "transactionId",
+          "in": "path",
+          "description": "Reference or Transaction ID",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Transaction by Id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                },
+                "examples": {
+                  "Response - CREDITCARD": {
+                    "value": {
+                      "status": "WAITING-PAYMENT",
+                      "currency": "BRL",
+                      "taxes": 0.87,
+                      "pointsCurrencyAmount": 0,
+                      "_id": "ceiXS4BRGB6W-Md3Vv5nt",
+                      "accountId": "loja-exemplo",
+                      "ref": "MTKU2617278884",
+                      "amount": 44.12,
+                      "payments": [
+                        {
+                          "paidAmount": 0,
+                          "discount": 0,
+                          "installments": 8,
+                          "status": "PRE-APPROVED",
+                          "method": "CREDITCARD",
+                          "amount": 44.12,
+                          "metadata": {
+                            "creditCard": {
+                              "lastDigits": "0044",
+                              "holderName": "Nome do Portador",
+                              "cardBrand": "visa",
+                              "hash": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.PLACEHOLDER.PLACEHOLDER"
+                            },
+                            "remoteStatus": "pending",
+                            "chargeId": "ch_8yEm12v7hyiG1xMX",
+                            "antiFraudProvider": "clearsale",
+                            "antiFraudId": "53a2cdce-aea6-4eaa-8404-22cd164862a0",
+                            "antiFraudScore": null,
+                            "antiFraudStatus": "AMA"
+                          },
+                          "provider": "pagarme",
+                          "split": [
+                            {
+                              "receiverId": "m6FyyxNYSrM384023qxu6",
+                              "receiverRef": "loja-exemplo",
+                              "receiverName": "loja-exemplo",
+                              "amount": 5.2,
+                              "_id": "C4LXaUTcOoCELmlp25H6L"
+                            },
+                            {
+                              "receiverId": "iK-e4B0QiMjNs41hGvADr",
+                              "receiverRef": "YK0AAVjzjJ",
+                              "receiverName": "seller-exemplo",
+                              "amount": 38.92,
+                              "_id": "BsA-vaIKLfyTPxJGC-TcV"
+                            }
+                          ],
+                          "_id": "fWcUBYDFV46dZS2GhVOUP",
+                          "createdAt": "2024-04-10T21:04:55.115Z",
+                          "updatedAt": "2024-04-10T21:04:56.573Z",
+                          "gatewayIdentify": "or_G3MNaO0CW1IQjd0L"
+                        }
+                      ],
+                      "customer": {
+                        "type": "individual",
+                        "_id": "KdIKIRtfHVtpoIgmxZEbS",
+                        "ref": "rMScmfeqhv",
+                        "email": "cliente@exemplo.com",
+                        "name": "Nome do Cliente",
+                        "document": "00000000000",
+                        "phone": {
+                          "countryCode": "55",
+                          "_id": "_wDKQ66oEQR3xaX4uVugL",
+                          "number": "900000000",
+                          "areaCode": "31"
+                        }
+                      },
+                      "shipping": {
+                        "totalShippingCost": 3.25,
+                        "totalShippingDiscount": 0,
+                        "maxEstimatedDays": 13,
+                        "_id": "6FCUYydjBw-SJ76EvbgyO"
+                      },
+                      "billingAddress": {
+                        "countryCode": "BR",
+                        "_id": "sx2fTqVLTSDb_E1tXVgPC",
+                        "street": "RUA LAGOSTA",
+                        "number": "SN",
+                        "city": "GOIANIA",
+                        "zipcode": "11674470",
+                        "state": "GO",
+                        "shortState": "GO",
+                        "neighborhood": "JD ATLANTICO",
+                        "complement": "teste"
+                      },
+                      "items": [
+                        {
+                          "price": 40,
+                          "discount": 0,
+                          "quantity": 1,
+                          "commissionAmount": 4.33,
+                          "sellerTransfer": 38.92,
+                          "ref": "MKU-ubvSqaggArCxC",
+                          "name": "variant catalogue",
+                          "description": "molestiae nihil dolores quidem in",
+                          "shipping": {
+                            "price": 3.25,
+                            "discount": 0,
+                            "_id": "3Y45EAN8aZAVVJRe7YShG",
+                            "carrierName": "deliveryV2",
+                            "deliveryMethod": "Provider Standard Shipping",
+                            "estimatedDate": "2024-04-29T03:00:00.000Z",
+                            "estimatedWorkDays": 13
+                          },
+                          "sellerId": "YK0AAVjzjJ",
+                          "_id": "Moolp0CKBdJUTnpTGLSgA"
+                        }
+                      ],
+                      "createdAt": "2024-04-10T21:04:55.116Z",
+                      "updatedAt": "2024-04-30T18:23:35.147Z"
+                    }
+                  },
+                  "Response - BOLETO": {
+                    "value": {
+                      "status": "PAID",
+                      "currency": "BRL",
+                      "taxes": 0,
+                      "pointsCurrencyAmount": 0,
+                      "_id": "rXauQbSzc3hlh21iLKW37",
+                      "accountId": "loja-exemplo",
+                      "ref": "XKT3013330499",
+                      "amount": 44.3,
+                      "payments": [
+                        {
+                          "paidAmount": 44.3,
+                          "discount": 0,
+                          "installments": 1,
+                          "status": "PAID",
+                          "method": "BOLETO",
+                          "amount": 44.3,
+                          "metadata": {
+                            "remoteStatus": "PAID",
+                            "boletoId": "PCea9Zwpgx",
+                            "boletoGatewayId": "i0qgpjvpZS8N",
+                            "boletoPdf": "https://google.com.br?format=pdf",
+                            "boletoUrl": "https://google.com.br",
+                            "boletoLine": "1234 5678",
+                            "boletoBarCode": "https://api.pagar.me/core/v5/transactions/tran_qX4xG56hvher1k9e/barcode",
+                            "boletoQrCode": "https://api.pagar.me/core/v5/transactions/tran_qX4xG56hvher1k9e/qrcode"
+                          },
+                          "provider": "provider-fake",
+                          "_id": "JWmpime97mrnZ7gsQE8XL",
+                          "split": [],
+                          "createdAt": "2024-01-30T13:44:03.833Z",
+                          "updatedAt": "2024-01-30T14:14:59.967Z",
+                          "gatewayIdentify": "wvAjw6lt9mcxmqah"
+                        }
+                      ],
+                      "customer": {
+                        "type": "individual",
+                        "_id": "0dy3mUdE43ubpOjwyTPEk",
+                        "ref": "rMScmfeqhv",
+                        "email": "cliente@exemplo.com",
+                        "name": "Nome do Cliente",
+                        "document": "00000000000",
+                        "phone": {
+                          "countryCode": "55",
+                          "_id": "Tqf4qqkqVJM0tSEO7tPRB",
+                          "number": "900000000",
+                          "areaCode": "31"
+                        }
+                      },
+                      "shipping": {
+                        "totalShippingCost": 4.3,
+                        "totalShippingDiscount": 0,
+                        "maxEstimatedDays": 10,
+                        "_id": "Ueo-YvPNmvoOiP00ZrzTc"
+                      },
+                      "billingAddress": {
+                        "countryCode": "BR",
+                        "_id": "_F8SvSGcA9Da4YV0uX_b_",
+                        "street": "Rua Francisco Ricardo da Silva",
+                        "number": "339",
+                        "city": "Betim",
+                        "zipcode": "32604-178",
+                        "state": "MG",
+                        "shortState": "MG",
+                        "neighborhood": "Angola",
+                        "complement": ""
+                      },
+                      "items": [
+                        {
+                          "price": 40,
+                          "discount": 0,
+                          "quantity": 1,
+                          "commissionAmount": 4.43,
+                          "sellerTransfer": 39.87,
+                          "ref": "MKU-ubvSqaggArCxC",
+                          "name": "variant catalogue",
+                          "description": "molestiae nihil dolores quidem in",
+                          "shipping": {
+                            "price": 4.3,
+                            "discount": 0,
+                            "_id": "UYpa70OJdT3b9I9X-kfSW",
+                            "carrierName": "deliveryV2",
+                            "deliveryMethod": "Provider Standard Shipping",
+                            "estimatedDate": "2024-02-13T03:00:00.000Z",
+                            "estimatedWorkDays": 10
+                          },
+                          "sellerId": "YK0AAVjzjJ",
+                          "_id": "qOWRefXrvjzLZdO3ArKtQ"
+                        }
+                      ],
+                      "createdAt": "2024-01-30T13:44:03.834Z",
+                      "updatedAt": "2024-01-30T14:14:59.967Z",
+                      "metadata": {
+                        "test": "WAITING-PAYMENT"
+                      }
+                    }
+                  },
+                  "Response - PIX": {
+                    "value": {
+                      "status": "PAID",
+                      "currency": "BRL",
+                      "taxes": 0,
+                      "pointsCurrencyAmount": 0,
+                      "_id": "8jKUyuo1icWc7I0r2x0XU",
+                      "accountId": "loja-exemplo",
+                      "ref": "WLA19021587309",
+                      "amount": 65.04,
+                      "payments": [
+                        {
+                          "paidAmount": 962.4599999999999,
+                          "discount": 897.42,
+                          "installments": 1,
+                          "status": "PAID",
+                          "amount": 962.4599999999999,
+                          "method": "PIX",
+                          "metadata": {
+                            "TXID": "mPT5rB4N8h9fkUvztZ8cc",
+                            "remoteStatus": "PAID",
+                            "textQrCode": "00020101021226870014br.gov.bcb.pix2565qrcodepix-h.bb.com.br/pix/v2/00000000-0000-0000-0000-0000000000005204000053039865802BR5913NOME RECEBEDOR6008BRASILIA62070503***63040000"
+                          },
+                          "_id": "Do6nRM14Vv7Xo_eGdBGBx",
+                          "split": [],
+                          "createdAt": "2023-06-22T15:13:27.405Z",
+                          "updatedAt": "2023-06-22T15:18:30.251Z",
+                          "provider": "provider-fake",
+                          "gatewayIdentify": "mPT5rB4N8h9fkUvztZ8cc"
+                        }
+                      ],
+                      "customer": {
+                        "type": "individual",
+                        "_id": "rgzTjyl5XcyDeJhuDwtVm",
+                        "ref": "rMScmfeqhv",
+                        "name": "Nome do Cliente",
+                        "document": "00000000000",
+                        "email": "cliente@exemplo.com",
+                        "phone": {
+                          "countryCode": "55",
+                          "_id": "LLZaWsuK6I7X9Ab4yFdZg",
+                          "areaCode": "19",
+                          "number": "900000000"
+                        }
+                      },
+                      "shipping": {
+                        "totalShippingCost": 39.18,
+                        "totalShippingDiscount": 26.12,
+                        "maxEstimatedDays": 6,
+                        "_id": "cZl8lu7bwiiAo7QVWMZM7"
+                      },
+                      "billingAddress": {
+                        "countryCode": "BR",
+                        "_id": "gMX4P-c4ljfY5EEj_F5vL",
+                        "street": "Avenida Independência",
+                        "neighborhood": "Vila Olivo",
+                        "number": "765",
+                        "zipcode": "13276-030",
+                        "city": "Valinhos",
+                        "state": "SP",
+                        "shortState": "SP",
+                        "complement": "AP 73"
+                      },
+                      "items": [
+                        {
+                          "price": 149.9,
+                          "discount": 155.89689488097747,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-6WW3L9IeTfLSx",
+                          "name": "Calça Legging MIBR Essencial Preto G",
+                          "description": "Calça Legging MIBR Essencial",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 6.53,
+                            "_id": "ukh1GNCOI9XnkFxfJf2RN",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "DycUKd51Je3s3ETp3wXoV"
+                        },
+                        {
+                          "price": 149.9,
+                          "discount": 155.89689488097747,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-NlUrGAzHGsb8x",
+                          "name": "Calça Legging MIBR Essencial Preto GG",
+                          "description": "Calça Legging MIBR Essencial",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 6.53,
+                            "_id": "XqxL9exLudj809AVPgFlP",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "1IeI_i3EtTzMgfxFS-HOV"
+                        },
+                        {
+                          "price": 119.9,
+                          "discount": 94.7177164524963,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-MKnAwja4g0X9d",
+                          "name": "Boné 920 ST MIBR/New Era 2022 Verde Único",
+                          "description": "Boné 920 ST MIBR/New Era 2022",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 0,
+                            "_id": "7c0mcxA4DsGK4LQ8P6bQ9",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "knvHizkmdixw16NdpPCXB"
+                        },
+                        {
+                          "price": 139.9,
+                          "discount": 145.4971687381504,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-sarir2HcbAmz2",
+                          "name": "Calça Moletom MIBR Coleção Essencial 2022 Azul GG",
+                          "description": "Calça Moletom MIBR Coleção Essencial 2022",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 6.53,
+                            "_id": "_a17P4I52iUodqPO7f1To",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "EdDg6McBOpow0O1dJuGRA"
+                        },
+                        {
+                          "price": 149.9,
+                          "discount": 155.89689488097747,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-WNHrDC80r2IYB",
+                          "name": "Blusa Moletom MIBR Coleção Essencial 2022 Azul P",
+                          "description": "Blusa Moletom MIBR Coleção Essencial 2022",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 6.53,
+                            "_id": "Ig-IfzdeNrStlQrqk1_Ws",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "Cb8pF3pob2QsmlLhPZ0_m"
+                        },
+                        {
+                          "price": 239.9,
+                          "discount": 189.51443016642088,
+                          "quantity": 1,
+                          "commissionAmount": 0,
+                          "sellerTransfer": 0,
+                          "ref": "MKU-j0MbhEeKXGEi3",
+                          "name": "Camiseta Manga Longa MIBR Champion Preto P",
+                          "description": "Camiseta Manga Longa MIBR Champion",
+                          "shipping": {
+                            "price": 6.53,
+                            "discount": 0,
+                            "_id": "jPHicxrJuRxZdGTve6lLs",
+                            "carrierName": "JadLog",
+                            "deliveryMethod": "JadLog Standard - Expressa",
+                            "estimatedDate": "2022-04-06T13:42:02.921Z",
+                            "estimatedWorkDays": 6
+                          },
+                          "_id": "bQn0_Zmorj4bu1UtG8eo8"
+                        }
+                      ],
+                      "createdAt": "2023-06-22T15:13:27.405Z",
+                      "updatedAt": "2023-06-22T15:18:30.251Z",
+                      "metadata": {
+                        "test": "WAITING-PAYMENT"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "transactionId not sent": {
+                    "value": {
+                      "exceptionType": "ValidationError",
+                      "message": "Field 'transactionId' is required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "No store in request context": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "Contexts storeId, accountId are required for this operation"
+                    }
+                  },
+                  "No permission in request context": {
+                    "value": {
+                      "exceptionType": "ForbiddenError",
+                      "message": "You have not permission for this operation (payment/transaction/read)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Transaction not found": {
+                    "value": {
+                      "exceptionType": "NotFoundError",
+                      "message": "No Transaction was found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Database error": {
+                    "value": {
+                      "exceptionType": "FatalError",
+                      "message": "Error occurred when tried to connect on database to get a transaction by Id."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "obterTransacaoPorId",
+        "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/obter-transacao-por-id" },
+        "description": "## Description\nGet a transaction by `ref` or `id`.\n\n## Rules\n- Transaction must exists;\n- Authorization is required;\n- Scope `payment/transaction/read` is required;\n- `accountId` context is required;\n- `storeId` and `customerId` context are optional.\n",
+        "tags": [
+          "Webhooks de pagamentos"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BillingAddress": {
+        "type": "object",
+        "title": "BillingAddress",
+        "description": "Endereco de cobranca associado a transacao ou ao cartao de credito.",
+        "required": [
+          "street",
+          "number",
+          "city",
+          "zipcode",
+          "state",
+          "shortState",
+          "neighborhood"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Identificador unico do endereco."
+          },
+          "street": {
+            "type": "string",
+            "description": "Logradouro."
+          },
+          "number": {
+            "type": "string",
+            "description": "Numero."
+          },
+          "complement": {
+            "type": "string",
+            "nullable": true,
+            "description": "Complemento."
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Bairro."
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade."
+          },
+          "state": {
+            "type": "string",
+            "description": "Estado por extenso."
+          },
+          "shortState": {
+            "type": "string",
+            "description": "Sigla do estado (UF)."
+          },
+          "zipcode": {
+            "type": "string",
+            "description": "CEP."
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "Codigo do pais (ISO)."
+          }
+        },
+        "example": {
+          "countryCode": "BR",
+          "street": "Rua Exemplo",
+          "number": "100",
+          "complement": null,
+          "neighborhood": "Centro",
+          "city": "Sao Paulo",
+          "state": "Sao Paulo",
+          "shortState": "SP",
+          "zipcode": "01000-000"
+        }
+      },
+      "PaymentProps": {
+        "type": "object",
+        "required": [
+          "_id",
+          "amount",
+          "method",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Payment unique identifier"
+          },
+          "gatewayIdentify": {
+            "type": "string",
+            "description": "Id that represents the payment alongside its provider"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Provider's name"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Payment's total amount"
+          },
+          "paidAmount": {
+            "type": "number",
+            "default": 0,
+            "description": "Payment's total already paid amount"
+          },
+          "discount": {
+            "type": "number",
+            "default": 0,
+            "description": "Payment's discount"
+          },
+          "discountReason": {
+            "type": "string",
+            "description": "Payment's discount reason"
+          },
+          "method": {
+            "type": "string",
+            "description": "Metodo de pagamento (texto livre, ex.: PIX, BOLETO, CREDITCARD)."
+          },
+          "installments": {
+            "type": "number",
+            "default": 1,
+            "description": "Payment's number of installments"
+          },
+          "expiresIn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "default": null,
+            "description": "Data e hora de expiracao do pagamento (ex.: vencimento do boleto ou do PIX)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ERROR",
+              "CREATED",
+              "PRE-APPROVED",
+              "WAITING-PAYMENT",
+              "PAID",
+              "CANCELED",
+              "REFUNDED",
+              "EXPIRED",
+              "PARTIAL-PAID",
+              "APPROVED",
+              "DISAPPROVED",
+              "WAITING-ANALYSIS",
+              "ERROR-GATEWAY",
+              "ERROR-REFUND",
+              "PARTIALLY-REFUNDED"
+            ],
+            "default": "CREATED",
+            "description": "Payment's current status"
+          },
+          "errorDetail": {
+            "type": "string",
+            "description": "Representation in text of any errors that payment could have"
+          },
+          "exceptionDetail": {
+            "type": "string",
+            "description": "Representation in text of any errors that payment could have"
+          },
+          "split": {
+            "type": "array",
+            "description": "Represents how the amount should be split among each receiver",
+            "items": {
+              "type": "object",
+              "required": [
+                "_id",
+                "receiverId",
+                "receiverRef",
+                "receiverName"
+              ],
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Split unique identifier"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "The split's absolute amount of payment's total amount"
+                },
+                "receiverId": {
+                  "type": "string",
+                  "description": "The reference to a previously created Receiver"
+                },
+                "receiverRef": {
+                  "type": "string",
+                  "description": "The reference to a previously created Receiver"
+                },
+                "receiverName": {
+                  "type": "string",
+                  "description": "The reference to a previously created Receiver"
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Dados adicionais especificos do provedor/metodo de pagamento (ex.: dados do cartao, boleto ou PIX). Estrutura livre.",
+            "properties": {
+              "creditCard": {
+                "type": "object",
+                "properties": {
+                  "hash": {
+                    "type": "string",
+                    "description": "Hash do cartao de credito (token)."
+                  },
+                  "lastDigits": {
+                    "type": "string",
+                    "description": "Ultimos digitos do cartao."
+                  },
+                  "holderName": {
+                    "type": "string",
+                    "description": "Nome do portador do cartao."
+                  },
+                  "cardBrand": {
+                    "type": "string",
+                    "description": "Bandeira do cartao."
+                  }
+                }
+              }
+            },
+            "additionalProperties": true,
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date and time when the document was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date and time when the document was last updated"
+          },
+          "__v": {
+            "type": "number",
+            "description": "Version key used by Mongoose for handling document versions"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "title": "Customer",
+        "description": "Dados do cliente associado a transacao.",
+        "required": [
+          "email",
+          "name",
+          "document"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Identificador unico do cliente."
+          },
+          "ref": {
+            "type": "string",
+            "description": "Referencia externa ou identificador do cliente."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail do cliente."
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do cliente."
+          },
+          "document": {
+            "type": "string",
+            "description": "Documento do cliente (CPF ou CNPJ, apenas numeros)."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "individual",
+              "company"
+            ],
+            "description": "Tipo de cliente: pessoa fisica (individual) ou juridica (company)."
+          },
+          "phone": {
+            "type": "object",
+            "description": "Telefone do cliente.",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Identificador unico do telefone."
+              },
+              "countryCode": {
+                "type": "string",
+                "description": "Codigo do pais."
+              },
+              "areaCode": {
+                "type": "string",
+                "description": "Codigo de area (DDD)."
+              },
+              "number": {
+                "type": "string",
+                "description": "Numero do telefone."
+              }
+            }
+          }
+        },
+        "example": {
+          "type": "individual",
+          "ref": "cliente-ref",
+          "email": "cliente@exemplo.com",
+          "name": "Nome do Cliente",
+          "document": "00000000000",
+          "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "900000000"
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "title": "Item",
+        "description": "Item que compoe a transacao.",
+        "required": [
+          "ref"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Identificador unico do item."
+          },
+          "ref": {
+            "type": "string",
+            "description": "Referencia externa do item (SKU/variante)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Descricao do item."
+          },
+          "price": {
+            "type": "number",
+            "description": "Preco unitario do item."
+          },
+          "discount": {
+            "type": "number",
+            "description": "Desconto aplicado ao item."
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantidade."
+          },
+          "commissionAmount": {
+            "type": "number",
+            "description": "Valor de comissao do marketplace sobre o item."
+          },
+          "sellerTransfer": {
+            "type": "number",
+            "description": "Valor a ser repassado ao seller pelo item."
+          },
+          "sellerId": {
+            "type": "string",
+            "description": "Identificador do seller responsavel pelo item."
+          },
+          "shipping": {
+            "type": "object",
+            "description": "Dados de frete especificos do item.",
+            "required": [
+              "price",
+              "discount",
+              "carrierName",
+              "deliveryMethod",
+              "estimatedDate",
+              "estimatedWorkDays"
+            ],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Identificador unico do frete do item."
+              },
+              "price": {
+                "type": "number",
+                "description": "Valor do frete do item."
+              },
+              "discount": {
+                "type": "number",
+                "description": "Desconto de frete do item."
+              },
+              "carrierName": {
+                "type": "string",
+                "description": "Nome da transportadora."
+              },
+              "deliveryMethod": {
+                "type": "string",
+                "description": "Metodo de entrega."
+              },
+              "estimatedDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Data estimada de entrega."
+              },
+              "estimatedWorkDays": {
+                "type": "number",
+                "description": "Prazo estimado de entrega, em dias uteis."
+              }
+            }
+          }
+        },
+        "example": {
+          "ref": "SKU-EXEMPLO",
+          "name": "Produto de exemplo",
+          "description": "Descricao do produto de exemplo",
+          "price": 40,
+          "discount": 0,
+          "quantity": 1,
+          "commissionAmount": 4.33,
+          "sellerTransfer": 38.92,
+          "sellerId": "seller-id",
+          "shipping": {
+            "price": 3.25,
+            "discount": 0,
+            "carrierName": "Transportadora",
+            "deliveryMethod": "Entrega padrao",
+            "estimatedDate": "2024-04-29T03:00:00.000Z",
+            "estimatedWorkDays": 13
+          }
+        }
+      },
+      "Webhook": {
+        "type": "object",
+        "title": "Webhook",
+        "description": "Configuracao de webhook de pagamentos. A cada mudanca de status de uma transacao cujo status esteja em statusFilter, a plataforma envia uma requisicao HTTP para o endpoint cadastrado, com o payload da transacao (ver schema TransactionResponse).",
+        "required": [
+          "endpoint"
+        ],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL para a qual a notificacao do webhook sera enviada."
+          },
+          "channelSlug": {
+            "type": "string",
+            "nullable": true,
+            "default": null,
+            "description": "Slug do canal de venda ao qual o webhook esta vinculado. Quando nulo, aplica-se a todos os canais."
+          },
+          "statusFilter": {
+            "type": "array",
+            "description": "Lista de status de transacao que disparam o webhook. Caso vazia, todos os status sao considerados.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ERROR",
+                "CREATED",
+                "PRE-APPROVED",
+                "WAITING-PAYMENT",
+                "PAID",
+                "CANCELED",
+                "REFUNDED",
+                "EXPIRED",
+                "PARTIAL-PAID",
+                "APPROVED",
+                "DISAPPROVED",
+                "WAITING-ANALYSIS",
+                "ERROR-GATEWAY",
+                "ERROR-REFUND",
+                "PARTIALLY-REFUNDED"
+              ]
+            }
+          },
+          "requestConfiguration": {
+            "type": "object",
+            "description": "Configuracoes adicionais da requisicao enviada ao endpoint, como cabecalhos HTTP customizados.",
+            "properties": {
+              "headers": {
+                "type": "object",
+                "description": "Cabecalhos HTTP enviados na notificacao.",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "__v": {
+            "type": "number",
+            "description": "Chave de versao utilizada pelo Mongoose para controle de versoes do documento."
+          }
+        },
+        "example": {
+          "endpoint": "https://exemplo.com/notificacoes/pagamentos",
+          "statusFilter": [
+            "CREATED",
+            "PAID"
+          ],
+          "requestConfiguration": {
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          }
+        }
+      },
+      "Shipping": {
+        "type": "object",
+        "title": "Shipping",
+        "description": "Dados de frete da transacao.",
+        "required": [
+          "totalShippingCost",
+          "totalShippingDiscount",
+          "maxEstimatedDays"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Identificador unico do frete."
+          },
+          "totalShippingCost": {
+            "type": "number",
+            "description": "Custo total de frete da transacao."
+          },
+          "totalShippingDiscount": {
+            "type": "number",
+            "description": "Desconto total de frete da transacao."
+          },
+          "maxEstimatedDays": {
+            "type": "number",
+            "description": "Prazo maximo estimado de entrega, em dias."
+          }
+        },
+        "example": {
+          "totalShippingCost": 3.25,
+          "totalShippingDiscount": 0,
+          "maxEstimatedDays": 13
+        }
+      },
+      "TransactionResponse": {
+        "type": "object",
+        "required": [
+          "amount",
+          "items",
+          "customer",
+          "billingAddress",
+          "payments",
+          "status"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "Reference to any service or third party orders"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Lista de referencias externas adicionais associadas a transacao."
+          },
+          "amount": {
+            "type": "number",
+            "description": "The total amount of a transaction",
+            "default": 0,
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "description": "The atual currency of the transaction",
+            "default": "BRL"
+          },
+          "taxes": {
+            "type": "number",
+            "description": "Financial taxes of the transaction",
+            "default": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/BillingAddress"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/Shipping"
+          },
+          "payments": {
+            "type": "array",
+            "description": "Lista de pagamentos da transacao.",
+            "items": {
+              "$ref": "#/components/schemas/PaymentProps"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Dados adicionais de estrutura livre associados a transacao.",
+            "additionalProperties": true,
+            "nullable": true
+          },
+          "_id": {
+            "type": "string",
+            "description": "Identificador unico da transacao."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Identificador da conta/loja dona da transacao."
+          },
+          "channelSlug": {
+            "type": "string",
+            "description": "Slug do canal de venda em que a transacao foi originada."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ERROR",
+              "CREATED",
+              "PRE-APPROVED",
+              "WAITING-PAYMENT",
+              "PAID",
+              "CANCELED",
+              "REFUNDED",
+              "EXPIRED",
+              "PARTIAL-PAID",
+              "APPROVED",
+              "DISAPPROVED",
+              "WAITING-ANALYSIS",
+              "ERROR-GATEWAY",
+              "ERROR-REFUND",
+              "PARTIALLY-REFUNDED"
+            ],
+            "description": "Status atual da transacao."
+          },
+          "pointsCurrencyAmount": {
+            "type": "number",
+            "description": "Valor em pontos utilizado na transacao."
+          },
+          "donation": {
+            "type": "number",
+            "description": "Valor de doacao incluido na transacao."
+          },
+          "event": {
+            "type": "object",
+            "description": "Ultimo evento de mudanca de estado da transacao.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Codigo do evento."
+              },
+              "description": {
+                "type": "string",
+                "description": "Descricao do evento."
+              }
+            }
+          },
+          "exceptionDetail": {
+            "type": "string",
+            "description": "Representacao em texto de eventuais erros ocorridos na transacao."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data e hora de criacao da transacao."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data e hora da ultima atualizacao da transacao."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "title": "Error",
+        "required": [
+          "message",
+          "exceptionType"
+        ],
+        "properties": {
+          "exceptionType": {
+            "type": "string",
+            "description": "Type of exception encountered (example: NotFoundError, IntegrationError, ValidationError)"
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of the error"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "1"
+        },
+        "description": "Page number for pagination"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "10"
+        },
+        "description": "Maximum number of items per page"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token Bearer (JWT) emitido pela plataforma Mkplace."
+      }
+    }
+  }
+}
