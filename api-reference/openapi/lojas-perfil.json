@@ -7,8 +7,8 @@
   },
   "servers": [
     {
-      "url": "https://<host-da-sua-aplicacao>",
-      "description": "Host exposto pela aplicação do parceiro (Customer Profile sob custódia)"
+      "url": "https://api.suaempresa.example.com",
+      "description": "Host exposto pela aplicação do parceiro (Customer Profile sob custódia). Substitua pelo endereço da sua aplicação."
     }
   ],
   "security": [
@@ -23,13 +23,13 @@
     }
   ],
   "paths": {
-    "/profile": {
+    "/customer/profile": {
       "get": {
         "tags": ["Perfil do cliente"],
         "summary": "Obter perfil do cliente",
         "operationId": "/profile/getCustomerProfile",
         "x-mint": { "href": "/api-reference/lojas-perfil/obter-perfil-do-cliente" },
-        "description": "## Description\n\nEndpoint to get all information from the logged client via authorization context.\n\n### Rules\n\n- Authorization is required;\n- Scope `customer/customer/get` is required;\n- `customerId` context is required;\n- `storeId` context is required;\n- `clientId` context is required;",
+        "description": "## Descrição\n\nEndpoint para obter todas as informações do cliente autenticado a partir do contexto de autorização.\n\n### Regras\n\n- Autenticação obrigatória;\n- Escopo `customer/customer/get` obrigatório;\n- Contexto `customerId` obrigatório;\n- Contexto `storeId` obrigatório;\n- Contexto `clientId` obrigatório;",
         "security": [
           {
             "bearerAuth": []
@@ -129,7 +129,7 @@
         "summary": "Atualizar perfil do cliente",
         "operationId": "/profile/updateCustomerProfile",
         "x-mint": { "href": "/api-reference/lojas-perfil/atualizar-perfil-do-cliente" },
-        "description": "## Description\n\nEndpoint to update informations of `name`, `phones` and `addressess` from the logged customer via authorization context.\n\n### Rules\n\n- Authorization is required;\n- Scope `customer/customer/update` is required;\n- CustomerId context is required;\n- Fields [ `name`, `phones`, `addressess`] are required;",
+        "description": "## Descrição\n\nEndpoint para atualizar as informações de `name`, `phones` e `addresses` do cliente autenticado a partir do contexto de autorização.\n\n### Regras\n\n- Autenticação obrigatória;\n- Escopo `customer/customer/update` obrigatório;\n- Contexto `customerId` obrigatório;\n- Campo `name` obrigatório;",
         "security": [
           {
             "bearerAuth": []
