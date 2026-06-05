@@ -77,22 +77,16 @@
             ]
           },
           {
-            "group": "Consumo do catálogo",
+            "group": "Perfil e carteira",
             "pages": [
-              "stores/catalogo"
+              "stores/perfil",
+              "stores/carteira"
             ]
           },
           {
-            "group": "Compra",
+            "group": "Webhooks",
             "pages": [
-              "stores/checkout",
-              "stores/pedidos"
-            ]
-          },
-          {
-            "group": "Integração de retorno",
-            "pages": [
-              "stores/eventos"
+              "stores/webhooks"
             ]
           }
         ]
