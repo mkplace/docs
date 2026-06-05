@@ -25,7 +25,7 @@
   "paths": {
     "/webhook": {
       "get": {
-        "summary": "List all Webhooks",
+        "summary": "Listar todos os webhooks",
         "tags": [
           "Webhooks de pagamentos"
         ],
@@ -103,7 +103,7 @@
             }
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Acesso negado",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,7 +127,7 @@
             }
           },
           "500": {
-            "description": "Internal Server Error",
+            "description": "Erro interno do servidor",
             "content": {
               "application/json": {
                 "schema": {
@@ -147,7 +147,7 @@
         },
         "operationId": "listarWebhooks",
         "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/listar-webhooks" },
-        "description": "## Description\nList all webhooks created to the store.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/list` is required;\n- Context `storeId` is required.",
+        "description": "## Descrição\nLista todos os webhooks criados para a loja.\n\n## Regras\n- Autenticação obrigatória;\n- Escopo `payment/webhook/list` obrigatório;\n- Contexto `storeId` obrigatório.",
         "parameters": [
           {
             "$ref": "#/components/parameters/page"
@@ -188,7 +188,7 @@
         ]
       },
       "post": {
-        "summary": "Create New Webhook",
+        "summary": "Criar novo webhook",
         "operationId": "criarWebhook",
         "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/criar-webhook" },
         "responses": {
@@ -220,7 +220,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Requisição inválida",
             "content": {
               "application/json": {
                 "schema": {
@@ -238,7 +238,7 @@
             }
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Acesso negado",
             "content": {
               "application/json": {
                 "schema": {
@@ -262,7 +262,7 @@
             }
           },
           "500": {
-            "description": "Internal Server Error",
+            "description": "Erro interno do servidor",
             "content": {
               "application/json": {
                 "schema": {
@@ -280,7 +280,7 @@
             }
           }
         },
-        "description": "## Description\nCreate a Webhook to pool information from the transaction's event changes, requesting the endpoint previously created linked to the store.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/create` is required;\n- Context `storeId` is required.",
+        "description": "## Descrição\nCria um webhook para receber informações das mudanças de evento da transação, acionando o endpoint previamente cadastrado e vinculado à loja.\n\n## Regras\n- Autenticação obrigatória;\n- Escopo `payment/webhook/create` obrigatório;\n- Contexto `storeId` obrigatório.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -327,11 +327,11 @@
           "name": "webhookId",
           "in": "path",
           "required": true,
-          "description": "Webhook unique identifier"
+          "description": "Identificador único do webhook"
         }
       ],
       "delete": {
-        "summary": "Delete Webhook by Id",
+        "summary": "Excluir webhook por Id",
         "operationId": "excluirWebhook",
         "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/excluir-webhook" },
         "responses": {
@@ -354,7 +354,7 @@
             }
           },
           "500": {
-            "description": "Internal Server Error",
+            "description": "Erro interno do servidor",
             "content": {
               "application/json": {
                 "schema": {
@@ -372,7 +372,7 @@
             }
           }
         },
-        "description": "## Description\nDelete a previously created Webhook by `id`.\n\n## Rules\n- Authorization is required;\n- Scope `payment/webhook/delete` is required;\n- Context `storeId` is required;\n- `webhookId` is required.",
+        "description": "## Descrição\nExclui um webhook previamente criado pelo `id`.\n\n## Regras\n- Autenticação obrigatória;\n- Escopo `payment/webhook/delete` obrigatório;\n- Contexto `storeId` obrigatório;\n- `webhookId` obrigatório.",
         "parameters": [],
         "tags": [
           "Webhooks de pagamentos"
@@ -392,12 +392,12 @@
           },
           "name": "transactionId",
           "in": "path",
-          "description": "Reference or Transaction ID",
+          "description": "Referência ou ID da transação",
           "required": true
         }
       ],
       "get": {
-        "summary": "Get Transaction by Id",
+        "summary": "Obter transação por Id",
         "responses": {
           "200": {
             "description": "OK",
@@ -816,7 +816,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Requisição inválida",
             "content": {
               "application/json": {
                 "schema": {
@@ -834,7 +834,7 @@
             }
           },
           "403": {
-            "description": "Forbidden",
+            "description": "Acesso negado",
             "content": {
               "application/json": {
                 "schema": {
@@ -858,7 +858,7 @@
             }
           },
           "404": {
-            "description": "Not Found",
+            "description": "Não encontrado",
             "content": {
               "application/json": {
                 "schema": {
@@ -876,7 +876,7 @@
             }
           },
           "500": {
-            "description": "Internal Server Error",
+            "description": "Erro interno do servidor",
             "content": {
               "application/json": {
                 "schema": {
@@ -896,7 +896,7 @@
         },
         "operationId": "obterTransacaoPorId",
         "x-mint": { "href": "/api-reference/lojas-webhooks-pagamentos/obter-transacao-por-id" },
-        "description": "## Description\nGet a transaction by `ref` or `id`.\n\n## Rules\n- Transaction must exists;\n- Authorization is required;\n- Scope `payment/transaction/read` is required;\n- `accountId` context is required;\n- `storeId` and `customerId` context are optional.\n",
+        "description": "## Descrição\nObtém uma transação pelo `ref` ou `id`.\n\n## Regras\n- A transação deve existir;\n- Autenticação obrigatória;\n- Escopo `payment/transaction/read` obrigatório;\n- Contexto `accountId` obrigatório;\n- Contextos `storeId` e `customerId` opcionais.\n",
         "tags": [
           "Webhooks de pagamentos"
         ],
@@ -991,33 +991,33 @@
         "properties": {
           "_id": {
             "type": "string",
-            "description": "Payment unique identifier"
+            "description": "Identificador único do pagamento"
           },
           "gatewayIdentify": {
             "type": "string",
-            "description": "Id that represents the payment alongside its provider"
+            "description": "Id que representa o pagamento junto ao provedor"
           },
           "provider": {
             "type": "string",
-            "description": "Provider's name"
+            "description": "Nome do provedor"
           },
           "amount": {
             "type": "number",
-            "description": "Payment's total amount"
+            "description": "Valor total do pagamento"
           },
           "paidAmount": {
             "type": "number",
             "default": 0,
-            "description": "Payment's total already paid amount"
+            "description": "Valor total já pago do pagamento"
           },
           "discount": {
             "type": "number",
             "default": 0,
-            "description": "Payment's discount"
+            "description": "Desconto do pagamento"
           },
           "discountReason": {
             "type": "string",
-            "description": "Payment's discount reason"
+            "description": "Motivo do desconto do pagamento"
           },
           "method": {
             "type": "string",
@@ -1026,7 +1026,7 @@
           "installments": {
             "type": "number",
             "default": 1,
-            "description": "Payment's number of installments"
+            "description": "Número de parcelas do pagamento"
           },
           "expiresIn": {
             "type": "string",
@@ -1055,19 +1055,19 @@
               "PARTIALLY-REFUNDED"
             ],
             "default": "CREATED",
-            "description": "Payment's current status"
+            "description": "Status atual do pagamento"
           },
           "errorDetail": {
             "type": "string",
-            "description": "Representation in text of any errors that payment could have"
+            "description": "Representação em texto de eventuais erros que o pagamento possa ter"
           },
           "exceptionDetail": {
             "type": "string",
-            "description": "Representation in text of any errors that payment could have"
+            "description": "Representação em texto de eventuais erros que o pagamento possa ter"
           },
           "split": {
             "type": "array",
-            "description": "Represents how the amount should be split among each receiver",
+            "description": "Representa como o valor deve ser dividido entre cada recebedor",
             "items": {
               "type": "object",
               "required": [
@@ -1079,23 +1079,23 @@
               "properties": {
                 "_id": {
                   "type": "string",
-                  "description": "Split unique identifier"
+                  "description": "Identificador único do split"
                 },
                 "amount": {
                   "type": "number",
-                  "description": "The split's absolute amount of payment's total amount"
+                  "description": "Valor absoluto do split em relação ao valor total do pagamento"
                 },
                 "receiverId": {
                   "type": "string",
-                  "description": "The reference to a previously created Receiver"
+                  "description": "Referência a um recebedor previamente criado"
                 },
                 "receiverRef": {
                   "type": "string",
-                  "description": "The reference to a previously created Receiver"
+                  "description": "Referência a um recebedor previamente criado"
                 },
                 "receiverName": {
                   "type": "string",
-                  "description": "The reference to a previously created Receiver"
+                  "description": "Referência a um recebedor previamente criado"
                 }
               }
             }
@@ -1131,15 +1131,15 @@
           },
           "createdAt": {
             "type": "string",
-            "description": "Date and time when the document was created"
+            "description": "Data e hora em que o documento foi criado"
           },
           "updatedAt": {
             "type": "string",
-            "description": "Date and time when the document was last updated"
+            "description": "Data e hora da última atualização do documento"
           },
           "__v": {
             "type": "number",
-            "description": "Version key used by Mongoose for handling document versions"
+            "description": "Chave de versão utilizada pelo Mongoose para controle de versões do documento"
           }
         }
       },
@@ -1450,7 +1450,7 @@
         "properties": {
           "ref": {
             "type": "string",
-            "description": "Reference to any service or third party orders"
+            "description": "Referência a pedidos de qualquer serviço ou de terceiros"
           },
           "refs": {
             "type": "array",
@@ -1461,18 +1461,18 @@
           },
           "amount": {
             "type": "number",
-            "description": "The total amount of a transaction",
+            "description": "Valor total da transação",
             "default": 0,
             "minimum": 0
           },
           "currency": {
             "type": "string",
-            "description": "The atual currency of the transaction",
+            "description": "Moeda atual da transação",
             "default": "BRL"
           },
           "taxes": {
             "type": "number",
-            "description": "Financial taxes of the transaction",
+            "description": "Taxas financeiras da transação",
             "default": 0
           },
           "items": {
@@ -1584,11 +1584,11 @@
         "properties": {
           "exceptionType": {
             "type": "string",
-            "description": "Type of exception encountered (example: NotFoundError, IntegrationError, ValidationError)"
+            "description": "Tipo de exceção encontrada (exemplo: NotFoundError, IntegrationError, ValidationError)"
           },
           "message": {
             "type": "string",
-            "description": "Description of the error"
+            "description": "Descrição do erro"
           }
         }
       }
@@ -1602,7 +1602,7 @@
           "type": "string",
           "default": "1"
         },
-        "description": "Page number for pagination"
+        "description": "Número da página para paginação"
       },
       "limit": {
         "name": "limit",
@@ -1612,7 +1612,7 @@
           "type": "string",
           "default": "10"
         },
-        "description": "Maximum number of items per page"
+        "description": "Número máximo de itens por página"
       }
     },
     "securitySchemes": {
