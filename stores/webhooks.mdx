@@ -19,7 +19,16 @@ Notificações sobre o ciclo de vida dos pedidos. Endpoints de gerenciamento:
 - [Atualizar webhook](/api-reference/lojas-webhooks-pedidos/atualizar-webhook)
 - [Remover webhook](/api-reference/lojas-webhooks-pedidos/remover-webhook)
 
-O **payload da notificação** corresponde ao recurso de pedido (schema `Order`), detalhado nos contratos acima.
+O **payload da notificação** é o objeto **Order** — o mesmo enviado no webhook de pedidos da Integração de Vendedores:
+
+<CardGroup cols={2}>
+  <Card title="Schema do pedido" icon="file-code" href="/sellers/pedido-schema">
+    Estrutura formal do objeto `Order`, com campos, tipos e obrigatoriedades.
+  </Card>
+  <Card title="Baixar exemplo de payload" icon="download" href="/examples/exemplo-pedido-sales.jsonc">
+    Pedido completo em `PRE-ORDER` (~64 KB, JSONC com comentários por campo).
+  </Card>
+</CardGroup>
 
 ## Pagamentos
 
