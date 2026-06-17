@@ -534,62 +534,6 @@
                 ]
             }
         },
-        "discounts": {
-            "description": "The representation of order's discounts",
-            "type": "array",
-            "default": [],
-            "items": {
-                "type": "object",
-                "properties": {
-                    "skuId": {
-                        "description": "Product's variant identification reference",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "couponSlug": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "default": null
-                    },
-                    "origin": {
-                        "description": "Discount's origin ",
-                        "type": "string",
-                        "enum": [
-                            "COUPON"
-                        ],
-                        "default": "COUPON"
-                    },
-                    "amount": {
-                        "description": "Discount's applied amount",
-                        "type": "number",
-                        "minimum": 0
-                    },
-                    "applyMethod": {
-                        "description": "Discount's applied method",
-                        "type": "string",
-                        "enum": [
-                            "order",
-                            "sku",
-                            "freight"
-                        ]
-                    },
-                    "isFreightFree": {
-                        "description": "Free shipping identifier",
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "origin",
-                    "amount",
-                    "applyMethod",
-                    "isFreightFree"
-                ]
-            }
-        },
         "shipments": {
             "description": "The representation of order's shipment",
             "type": "array",
