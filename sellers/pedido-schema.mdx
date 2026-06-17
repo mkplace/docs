@@ -28,7 +28,6 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | `deliveryAddress` | object | Sim | Endereço de entrega do pedido. |
 | `items` | array | Sim | Itens do pedido (SKU, quantidade, preços, frete e promoções por item). |
 | `promotions` | array \| null | Não | Promoções aplicadas ao pedido. Vazio/`null` quando não há promoção; caso contrário, cada item descreve uma promoção ou cupom aplicado. |
-| `discounts` | array | Não | Descontos legados (origem `COUPON`). As promoções atuais vêm em `promotions`. |
 | `payments` | array | Não | Tentativas/transações de pagamento do pedido. |
 | `shipments` | array | Não | Pacotes do pedido — surgem a partir do faturamento (nota fiscal, tracking, status e itens). |
 | `points` | array \| null | Não | Pontos de fidelidade aplicados, quando houver. |
@@ -181,16 +180,6 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
                 "updatedAt": "2022-08-03T17:16:05.394Z",
                 "provider": "provedor",
                 "gatewayIdentify": "Id do pagamento no provedor"
-            }
-        ],
-        "discounts": [
-            {
-                "origin": "COUPON", // Origem do desconto
-                "couponSlug": "10OFF", // Nome da promo ou cupom
-                "amount": 10, // Valor ou porcentagem
-                "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
-                "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku"
-                "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
             }
         ],
         "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
