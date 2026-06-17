@@ -1,0 +1,297 @@
+{
+  "_id": "AAA0123456789",
+  "orderRef": "abcDEF123",
+  "status": "PARTIALLY-DELIVERED",
+  "paymentStatus": "PAID",
+  "substatus": {
+    "code": "500",
+    "reason": "Delivered",
+    "description": ""
+  },
+  "summary": {
+    "items": 3,
+    "total": 399.7,
+    "totalPriceDiscount": 50,
+    "totalShippingCost": 28.8,
+    "totalShippingDiscount": 19.9,
+    "maxShippingTime": 9,
+    "ordersDiscount": 0,
+    "taxes": 0,
+    "finalPrice": 408.6
+  },
+  "promotions": [
+    {
+      "type": "cart",
+      "promotionId": "6650a1b2c3d4e5f600000001",
+      "promotionName": "Clube de Pontos",
+      "promotionType": "points",
+      "discountType": "fixed",
+      "value": 0,
+      "valueApplied": 0,
+      "sellerId": null,
+      "items": [],
+      "onlyRangeDiscount": false,
+      "campaignShare": null,
+      "coupon": {
+        "_id": "6650a1b2c3d4e5f600000002",
+        "type": "default",
+        "code": "PONTOS"
+      },
+      "metadata": {
+        "title": "6 pontos a cada R$ 1 gasto",
+        "subtitle": "Acúmulo automático para clientes do clube",
+        "collectionsSlug": "clube-pontos"
+      }
+    },
+    {
+      "type": "freight",
+      "promotionId": "6650a1b2c3d4e5f600000003",
+      "promotionName": "Frete grátis acima de R$ 199",
+      "discountType": "percentage",
+      "value": 100,
+      "valueApplied": 19.9,
+      "sellerId": null,
+      "items": [
+        "MKU-AAA111"
+      ]
+    },
+    {
+      "type": "item",
+      "promotionId": "6650a1b2c3d4e5f600000004",
+      "promotionName": "Oferta da semana",
+      "promotionType": "default",
+      "discountType": "fixed",
+      "value": 25,
+      "valueApplied": 50,
+      "sellerId": "BetaSeller2",
+      "items": [
+        "MKU-BBB222"
+      ]
+    }
+  ],
+  "discounts": [],
+  "customer": {
+    "ref": "abc123ref",
+    "name": "Cliente Exemplo",
+    "email": "cliente@exemplo.com.br",
+    "type": "individual",
+    "document": "12345678900",
+    "phone": {
+      "countryCode": "55",
+      "areaCode": "11",
+      "number": "988887777"
+    }
+  },
+  "deliveryAddress": {
+    "receiverName": "Cliente Exemplo",
+    "street": "Rua Exemplo",
+    "number": "100",
+    "complement": "Apartamento 10",
+    "neighborhood": "Centro",
+    "city": "São Paulo",
+    "state": "São Paulo",
+    "shortState": "SP",
+    "zipcode": "01001-000",
+    "countryCode": "BR"
+  },
+  "items": [
+    {
+      "offerId": "6650a1b2c3d4e5f600000010",
+      "skuId": "MKU-AAA111",
+      "sellerSkuId": "ALFA-0001",
+      "sellerId": "AlfaSeller1",
+      "sellerName": "Loja Alfa",
+      "productName": "Tênis Esportivo",
+      "productSlug": "tenis-esportivo",
+      "slug": "tenis-esportivo-preto-42",
+      "name": "Tênis Esportivo Preto 42",
+      "thumbnail": "https://mkplace-img.imgix.net/storage/png/exemplo-a.png",
+      "quantity": 1,
+      "attributes": {
+        "COR": "Preto",
+        "TAMANHO": "42"
+      },
+      "warehouses": [
+        {
+          "_id": "CD-SP",
+          "quantity": 1
+        }
+      ],
+      "unitOriginalPrice": 199.9,
+      "unitPrice": 199.9,
+      "originalPrice": 199.9,
+      "price": 199.9,
+      "priceDiscount": 0,
+      "finalPrice": 199.9,
+      "shippingCost": 19.9,
+      "shippingDiscount": 19.9,
+      "finalShippingCost": 0,
+      "unitFinancialDiscount": 0,
+      "unitReversalValue": 199.9,
+      "deliveryMethodName": "Transportadora Padrão",
+      "estimatedBusinessDays": 5,
+      "logisticProviderName": "JadLog",
+      "appliedPromotions": [
+        {
+          "promotionId": "6650a1b2c3d4e5f600000003",
+          "quantity": 1,
+          "valueApplied": 0
+        }
+      ],
+      "metadata": {
+        "categories": [
+          "Esporte",
+          "Calçados"
+        ],
+        "brand": "Marca Exemplo"
+      }
+    },
+    {
+      "offerId": "6650a1b2c3d4e5f600000011",
+      "skuId": "MKU-BBB222",
+      "sellerSkuId": "BETA-0002",
+      "sellerId": "BetaSeller2",
+      "sellerName": "Loja Beta",
+      "productName": "Camiseta Básica",
+      "productSlug": "camiseta-basica",
+      "slug": "camiseta-basica-branca-m",
+      "name": "Camiseta Básica Branca M",
+      "thumbnail": "https://mkplace-img.imgix.net/storage/png/exemplo-b.png",
+      "quantity": 2,
+      "attributes": {
+        "COR": "Branco",
+        "TAMANHO": "M"
+      },
+      "warehouses": [
+        {
+          "_id": "CD-RJ",
+          "quantity": 2
+        }
+      ],
+      "unitOriginalPrice": 124.9,
+      "unitPrice": 99.9,
+      "originalPrice": 249.8,
+      "price": 199.8,
+      "priceDiscount": 50,
+      "finalPrice": 208.7,
+      "shippingCost": 8.9,
+      "shippingDiscount": 0,
+      "finalShippingCost": 8.9,
+      "unitFinancialDiscount": 0,
+      "unitReversalValue": 99.9,
+      "deliveryMethodName": "Transportadora Padrão",
+      "estimatedBusinessDays": 9,
+      "logisticProviderName": "JadLog",
+      "appliedPromotions": [
+        {
+          "promotionId": "6650a1b2c3d4e5f600000004",
+          "quantity": 2,
+          "valueApplied": 50
+        }
+      ],
+      "metadata": {
+        "categories": [
+          "Moda",
+          "Camisetas"
+        ],
+        "brand": "Marca Exemplo"
+      }
+    }
+  ],
+  "payments": [
+    {
+      "method": "CREDITCARD",
+      "status": "PAID",
+      "amount": 408.6,
+      "paidAmount": 408.6,
+      "installments": 3,
+      "provider": "pagarme",
+      "metadata": {
+        "creditCard": {
+          "lastDigits": "1234",
+          "cardBrand": "visa",
+          "holderName": "CLIENTE EXEMPLO"
+        }
+      }
+    }
+  ],
+  "shipments": [
+    {
+      "sellerId": "AlfaSeller1",
+      "status": "DELIVERED",
+      "substatus": {
+        "code": "500",
+        "reason": "Delivered",
+        "description": ""
+      },
+      "billing": {
+        "protocol": null,
+        "accessKey": "35230000000000000000550010000000011000000000",
+        "number": "000123",
+        "serial": "1",
+        "issueDate": "2026-06-10T13:00:00.000Z",
+        "xmlContent": null
+      },
+      "tracking": {
+        "carrier": "Transportadora Exemplo",
+        "deliveryMethod": "Transportadora",
+        "sendDate": "2026-06-11T10:00:00.000Z",
+        "protocol": "TRK-ALFA-0001"
+      },
+      "deliveredDate": "2026-06-13T16:30:00.000Z",
+      "items": [
+        {
+          "skuId": "MKU-AAA111",
+          "sellerSkuId": "ALFA-0001",
+          "quantity": 1,
+          "status": "DELIVERED",
+          "substatus": {
+            "code": "500",
+            "reason": "Delivered",
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "sellerId": "BetaSeller2",
+      "status": "SENT",
+      "substatus": {
+        "code": "400",
+        "reason": "Sent",
+        "description": ""
+      },
+      "billing": {
+        "protocol": null,
+        "accessKey": "35230000000000000000550010000000022000000000",
+        "number": "000124",
+        "serial": "1",
+        "issueDate": "2026-06-11T09:00:00.000Z",
+        "xmlContent": null
+      },
+      "tracking": {
+        "carrier": "Transportadora Exemplo",
+        "deliveryMethod": "Transportadora",
+        "sendDate": "2026-06-12T11:00:00.000Z",
+        "protocol": "TRK-BETA-0002"
+      },
+      "deliveredDate": null,
+      "items": [
+        {
+          "skuId": "MKU-BBB222",
+          "sellerSkuId": "BETA-0002",
+          "quantity": 2,
+          "status": "SENT",
+          "substatus": {
+            "code": "400",
+            "reason": "Sent",
+            "description": ""
+          }
+        }
+      ]
+    }
+  ],
+  "transactionId": "tx_exemplo_0001",
+  "verifyToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.exemplo.token",
+  "metadata": null
+}

@@ -9,8 +9,8 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
   <Card title="Baixar JSON Schema completo" icon="file-code" href="/examples/pedido-schema.json">
     Schema formal do objeto `Order`, com todos os campos, tipos e obrigatoriedades.
   </Card>
-  <Card title="Baixar exemplo de payload" icon="download" href="/examples/exemplo-pedido-sales.jsonc">
-    Pedido completo em `PRE-ORDER` (~64 KB, JSONC com comentário por campo) para testar o parse do seu endpoint.
+  <Card title="Baixar exemplo de payload" icon="download" href="/examples/exemplo-pedido-sales.json">
+    Pedido de exemplo (multi-seller, `PARTIALLY-DELIVERED`) em JSON válido — com promoções, pagamentos, pacotes e notas fiscais — para testar o parse do seu endpoint.
   </Card>
 </CardGroup>
 
@@ -19,23 +19,40 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | `_id` | string | Sim | Identificador do pedido na Mkplace. |
+| `orderRef` | string \| null | Não | Referência pública do pedido. |
+| `status` | string | Sim | Status atual do pedido (ciclo de vida). Os valores são explicados em [Pedidos](/sellers/pedidos). |
+| `paymentStatus` | string | Sim | Status atual do pagamento do pedido. |
+| `substatus` | object \| null | Não | Último evento do ciclo de vida (`code`, `reason`, `description`). O `code` indica a família do evento — veja a tabela abaixo. |
 | `summary` | object | Sim | Resumo do pedido: quantidade de itens, totais, descontos e prazos. |
-| `deliveryAddress` | object | Sim | Endereço de entrega do pedido. |
 | `customer` | object | Sim | Dados do cliente final (nome, contato, documento). |
-| `items` | array | Sim | Itens do pedido (SKU, quantidade, preços, frete por item). |
-| `parentOrderId` | string | Não | Id do pedido que originou o atual (quando aplicável). |
-| `discounts` | array | Não | Descontos aplicados ao pedido (ex.: cupom). |
+| `deliveryAddress` | object | Sim | Endereço de entrega do pedido. |
+| `items` | array | Sim | Itens do pedido (SKU, quantidade, preços, frete e promoções por item). |
+| `promotions` | array \| null | Não | Promoções aplicadas ao pedido. Vazio/`null` quando não há promoção; caso contrário, cada item descreve uma promoção ou cupom aplicado. |
+| `discounts` | array | Não | Descontos legados (origem `COUPON`). As promoções atuais vêm em `promotions`. |
+| `payments` | array | Não | Tentativas/transações de pagamento do pedido. |
 | `shipments` | array | Não | Pacotes do pedido — surgem a partir do faturamento (nota fiscal, tracking, status e itens). |
+| `points` | array \| null | Não | Pontos de fidelidade aplicados, quando houver. |
+| `donations` | array \| null | Não | Doações vinculadas ao pedido, quando houver. |
 | `transactionId` | string | Não | Id da transação de pagamento. |
 | `verifyToken` | string | Não | Representação do pedido em forma encriptada. |
-| `exceptionDetails` | string | Não | Mensagem com informação de erro, quando houver. |
-| `promotions` | array \| null | Não | Informações de promoções. |
-| `event` | object \| null | Não | Informação do evento que originou a notificação (`code`, `description`). |
 | `metadata` | object \| null | Não | Dados adicionais livres. |
 
 <Note>
   O conceito de **status de pedido, pacote e item** (incluindo o modelo multi-seller) é explicado em [Pedidos](/sellers/pedidos). Os status possíveis aparecem nos blocos `shipments[].status` e `shipments[].items[].status` abaixo.
 </Note>
+
+O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do evento que originou a notificação:
+
+| `code` | Significado |
+| --- | --- |
+| `100` | Cancelado |
+| `200` | Pago |
+| `300` | Faturado |
+| `400` | Enviado |
+| `500` | Entregue |
+| `600` | Devolvido |
+| `700` | Reembolsado |
+| `900` | Substituído |
 
 ## Blocos principais
 
@@ -59,8 +76,37 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
     ```
   </Accordion>
 
+  <Accordion title="promotions[] — promoções aplicadas" icon="tag">
+    Cada elemento de `promotions` descreve uma promoção ou cupom aplicado ao pedido. O campo `value` é o desconto configurado (valor em R$ quando `fixed`, percentual quando `percentage`) e `valueApplied` é o quanto foi de fato abatido.
+
+    ```json
+    "promotions": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "type":          { "type": "string", "enum": ["cart", "item", "freight"] },
+          "promotionId":   { "type": "string" },
+          "promotionName": { "type": "string" },
+          "promotionType": { "type": ["string", "null"], "enum": ["default", "bonus", "cashback", "points", null] },
+          "discountType":  { "type": "string", "enum": ["fixed", "percentage"] },
+          "value":         { "type": "number" },
+          "valueApplied":  { "type": ["number", "null"] },
+          "sellerId":      { "type": ["string", "null"] },
+          "items":         { "type": ["array", "null"], "items": { "type": "string" } },
+          "coupon":        { "type": ["object", "null"], "properties": { "_id": {}, "type": {}, "code": {} } },
+          "metadata":      { "type": ["object", "null"] }
+        },
+        "required": ["type", "promotionId", "promotionName", "discountType", "value"]
+      }
+    }
+    ```
+
+    No nível do item, `items[].appliedPromotions[]` liga cada SKU às promoções que incidiram sobre ele: `{ "promotionId": string, "quantity": number, "valueApplied": number }`.
+  </Accordion>
+
   <Accordion title="items[] — itens do pedido (campos obrigatórios)" icon="box">
-    Cada item do array `items` traz, no mínimo, os campos abaixo. Veja o restante (frete por item, descontos unitários, `warehouses`, `attributes`) no schema completo.
+    Cada item do array `items` traz, no mínimo, os campos abaixo. Veja o restante (frete por item, descontos unitários, `appliedPromotions`, `warehouses`, `attributes`) no schema completo.
 
     ```json
     "items": {
@@ -79,7 +125,7 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
   </Accordion>
 
   <Accordion title="shipments[] — pacotes, nota fiscal e tracking" icon="truck">
-    Os pacotes surgem com o faturamento. Cada `shipment` tem `status`, `billing` (nota fiscal) e `items` obrigatórios, além de `tracking` e `event` opcionais.
+    Os pacotes surgem com o faturamento. Cada `shipment` tem `status`, `billing` (nota fiscal) e `items` obrigatórios, além de `tracking` e `substatus` opcionais. O `substatus` (`code`, `reason`, `description`) também aparece em cada `shipments[].items[]`.
 
     ```json
     "shipments": {
