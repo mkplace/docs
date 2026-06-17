@@ -1,297 +1,1657 @@
+// Pedido - PRE-ORDER
 {
-  "_id": "AAA0123456789",
-  "orderRef": "abcDEF123",
-  "status": "PARTIALLY-DELIVERED",
-  "paymentStatus": "PAID",
-  "substatus": {
-    "code": "500",
-    "reason": "Delivered",
-    "description": ""
-  },
-  "summary": {
-    "items": 3,
-    "total": 399.7,
-    "totalPriceDiscount": 50,
-    "totalShippingCost": 28.8,
-    "totalShippingDiscount": 19.9,
-    "maxShippingTime": 9,
-    "ordersDiscount": 0,
-    "taxes": 0,
-    "finalPrice": 408.6
-  },
-  "promotions": [
-    {
-      "type": "cart",
-      "promotionId": "6650a1b2c3d4e5f600000001",
-      "promotionName": "Clube de Pontos",
-      "promotionType": "points",
-      "discountType": "fixed",
-      "value": 0,
-      "valueApplied": 0,
-      "sellerId": null,
-      "items": [],
-      "onlyRangeDiscount": false,
-      "campaignShare": null,
-      "coupon": {
-        "_id": "6650a1b2c3d4e5f600000002",
-        "type": "default",
-        "code": "PONTOS"
-      },
-      "metadata": {
-        "title": "6 pontos a cada R$ 1 gasto",
-        "subtitle": "Acúmulo automático para clientes do clube",
-        "collectionsSlug": "clube-pontos"
-      }
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PRE-ORDER", // status do pagamento do pedido
+    "status": "PRE-ORDER", // status do Pedido
+    "payments": [],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
     },
-    {
-      "type": "freight",
-      "promotionId": "6650a1b2c3d4e5f600000003",
-      "promotionName": "Frete grátis acima de R$ 199",
-      "discountType": "percentage",
-      "value": 100,
-      "valueApplied": 19.9,
-      "sellerId": null,
-      "items": [
-        "MKU-AAA111"
-      ]
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual", // individual ou company
+        "document": "00673551024"
     },
-    {
-      "type": "item",
-      "promotionId": "6650a1b2c3d4e5f600000004",
-      "promotionName": "Oferta da semana",
-      "promotionType": "default",
-      "discountType": "fixed",
-      "value": 25,
-      "valueApplied": 50,
-      "sellerId": "BetaSeller2",
-      "items": [
-        "MKU-BBB222"
-      ]
-    }
-  ],
-  "discounts": [],
-  "customer": {
-    "ref": "abc123ref",
-    "name": "Cliente Exemplo",
-    "email": "cliente@exemplo.com.br",
-    "type": "individual",
-    "document": "12345678900",
-    "phone": {
-      "countryCode": "55",
-      "areaCode": "11",
-      "number": "988887777"
-    }
-  },
-  "deliveryAddress": {
-    "receiverName": "Cliente Exemplo",
-    "street": "Rua Exemplo",
-    "number": "100",
-    "complement": "Apartamento 10",
-    "neighborhood": "Centro",
-    "city": "São Paulo",
-    "state": "São Paulo",
-    "shortState": "SP",
-    "zipcode": "01001-000",
-    "countryCode": "BR"
-  },
-  "items": [
-    {
-      "offerId": "6650a1b2c3d4e5f600000010",
-      "skuId": "MKU-AAA111",
-      "sellerSkuId": "ALFA-0001",
-      "sellerId": "AlfaSeller1",
-      "sellerName": "Loja Alfa",
-      "productName": "Tênis Esportivo",
-      "productSlug": "tenis-esportivo",
-      "slug": "tenis-esportivo-preto-42",
-      "name": "Tênis Esportivo Preto 42",
-      "thumbnail": "https://mkplace-img.imgix.net/storage/png/exemplo-a.png",
-      "quantity": 1,
-      "attributes": {
-        "COR": "Preto",
-        "TAMANHO": "42"
-      },
-      "warehouses": [
-        {
-          "_id": "CD-SP",
-          "quantity": 1
-        }
-      ],
-      "unitOriginalPrice": 199.9,
-      "unitPrice": 199.9,
-      "originalPrice": 199.9,
-      "price": 199.9,
-      "priceDiscount": 0,
-      "finalPrice": 199.9,
-      "shippingCost": 19.9,
-      "shippingDiscount": 19.9,
-      "finalShippingCost": 0,
-      "unitFinancialDiscount": 0,
-      "unitReversalValue": 199.9,
-      "deliveryMethodName": "Transportadora Padrão",
-      "estimatedBusinessDays": 5,
-      "logisticProviderName": "JadLog",
-      "appliedPromotions": [
-        {
-          "promotionId": "6650a1b2c3d4e5f600000003",
-          "quantity": 1,
-          "valueApplied": 0
-        }
-      ],
-      "metadata": {
-        "categories": [
-          "Esporte",
-          "Calçados"
-        ],
-        "brand": "Marca Exemplo"
-      }
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
     },
-    {
-      "offerId": "6650a1b2c3d4e5f600000011",
-      "skuId": "MKU-BBB222",
-      "sellerSkuId": "BETA-0002",
-      "sellerId": "BetaSeller2",
-      "sellerName": "Loja Beta",
-      "productName": "Camiseta Básica",
-      "productSlug": "camiseta-basica",
-      "slug": "camiseta-basica-branca-m",
-      "name": "Camiseta Básica Branca M",
-      "thumbnail": "https://mkplace-img.imgix.net/storage/png/exemplo-b.png",
-      "quantity": 2,
-      "attributes": {
-        "COR": "Branco",
-        "TAMANHO": "M"
-      },
-      "warehouses": [
+    "items": [
         {
-          "_id": "CD-RJ",
-          "quantity": 2
-        }
-      ],
-      "unitOriginalPrice": 124.9,
-      "unitPrice": 99.9,
-      "originalPrice": 249.8,
-      "price": 199.8,
-      "priceDiscount": 50,
-      "finalPrice": 208.7,
-      "shippingCost": 8.9,
-      "shippingDiscount": 0,
-      "finalShippingCost": 8.9,
-      "unitFinancialDiscount": 0,
-      "unitReversalValue": 99.9,
-      "deliveryMethodName": "Transportadora Padrão",
-      "estimatedBusinessDays": 9,
-      "logisticProviderName": "JadLog",
-      "appliedPromotions": [
+            "shippingCost": 9.42, // Custo do frete rateado para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Valor total do frete para o pacote de itens
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouses": [
+                {
+                    "_id": "WarehouseId-uuid",
+                    "quantity": 1
+                }
+            ],
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
         {
-          "promotionId": "6650a1b2c3d4e5f600000004",
-          "quantity": 2,
-          "valueApplied": 50
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
         }
-      ],
-      "metadata": {
-        "categories": [
-          "Moda",
-          "Camisetas"
-        ],
-        "brand": "Marca Exemplo"
-      }
-    }
-  ],
-  "payments": [
-    {
-      "method": "CREDITCARD",
-      "status": "PAID",
-      "amount": 408.6,
-      "paidAmount": 408.6,
-      "installments": 3,
-      "provider": "pagarme",
-      "metadata": {
-        "creditCard": {
-          "lastDigits": "1234",
-          "cardBrand": "visa",
-          "holderName": "CLIENTE EXEMPLO"
-        }
-      }
-    }
-  ],
-  "shipments": [
-    {
-      "sellerId": "AlfaSeller1",
-      "status": "DELIVERED",
-      "substatus": {
-        "code": "500",
-        "reason": "Delivered",
-        "description": ""
-      },
-      "billing": {
-        "protocol": null,
-        "accessKey": "35230000000000000000550010000000011000000000",
-        "number": "000123",
-        "serial": "1",
-        "issueDate": "2026-06-10T13:00:00.000Z",
-        "xmlContent": null
-      },
-      "tracking": {
-        "carrier": "Transportadora Exemplo",
-        "deliveryMethod": "Transportadora",
-        "sendDate": "2026-06-11T10:00:00.000Z",
-        "protocol": "TRK-ALFA-0001"
-      },
-      "deliveredDate": "2026-06-13T16:30:00.000Z",
-      "items": [
+    ],
+    "shipments": [],
+    "createdAt": "2022-04-27T16:15:51.779+00:00", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00",
+    "metadata": {}
+}
+// PEDIDO - WAITING-PAYMENT
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "WAITING-PAYMENT", // status do pagamento do pedido
+    "status": "WAITING-PAYMENT", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de Boleto pois "Waiting-Payment" não acontece com cartão de crédito
         {
-          "skuId": "MKU-AAA111",
-          "sellerSkuId": "ALFA-0001",
-          "quantity": 1,
-          "status": "DELIVERED",
-          "substatus": {
-            "code": "500",
-            "reason": "Delivered",
-            "description": ""
-          }
+            "paidAmount": 0,
+            "discount": 10,
+            "installments": 1,
+            "status": "WAITING-PAYMENT",
+            "amount": 418.65,
+            "method": "BOLETO",
+            "metadata": { // Informações do provedor de pagamento
+                "creditCard": null,
+                "remoteStatus": "pending",
+                "boletoId": "ID do Boleto",
+                "boletoGatewayId": "GatewayId",
+                "boletoPdf": "URL de PDF",
+                "boletoUrl": "URL de pagamento",
+                "boletoLine": "23791.22928 50010.900129 92000.046901 9 90710000129433",
+                "boletoBarCode": "URL para imagem do código de barras",
+                "boletoQrCode": "URL para imagem do código QR"
+            },
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
         }
-      ]
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
     },
-    {
-      "sellerId": "BetaSeller2",
-      "status": "SENT",
-      "substatus": {
-        "code": "400",
-        "reason": "Sent",
-        "description": ""
-      },
-      "billing": {
-        "protocol": null,
-        "accessKey": "35230000000000000000550010000000022000000000",
-        "number": "000124",
-        "serial": "1",
-        "issueDate": "2026-06-11T09:00:00.000Z",
-        "xmlContent": null
-      },
-      "tracking": {
-        "carrier": "Transportadora Exemplo",
-        "deliveryMethod": "Transportadora",
-        "sendDate": "2026-06-12T11:00:00.000Z",
-        "protocol": "TRK-BETA-0002"
-      },
-      "deliveredDate": null,
-      "items": [
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
         {
-          "skuId": "MKU-BBB222",
-          "sellerSkuId": "BETA-0002",
-          "quantity": 2,
-          "status": "SENT",
-          "substatus": {
-            "code": "400",
-            "reason": "Sent",
-            "description": ""
-          }
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
         }
-      ]
-    }
-  ],
-  "transactionId": "tx_exemplo_0001",
-  "verifyToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.exemplo.token",
-  "metadata": null
+    ],
+    "shipments": [],
+    "createdAt": "2022-04-27T16:15:51.779+00:00", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - PAID
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "PAID", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [],
+    "createdAt": "2022-04-27T16:15:51.779+00:00", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - PARTIALLY-BILLED
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "PARTIALLY-BILLED", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        {
+            "status": "BILLED", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64", // Se houver
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "BILLED"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - BILLED
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "BILLED", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        { // Objeto para entrega somente do primeiro item
+            "status": "BILLED", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "BILLED"
+                }
+            ]
+        },
+        { // Objeto para entrega somente do segundo item
+            "status": "BILLED", // Status do faturamento
+            "sellerId": "SelleId-uuid2",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid2",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                    "quantity": 1,
+                    "status": "BILLED"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - PARTIALLY-SENT
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "PARTIALLY-SENT", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        { // Objeto para entrega somente do primeiro item
+            "status": "SENT", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "SENT"
+                }
+            ]
+        },
+        { // Objeto para entrega somente do segundo item
+            "status": "BILLED", // Status do faturamento
+            "sellerId": "SelleId-uuid2",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid2",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                    "quantity": 1,
+                    "status": "BILLED"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - SENT
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "SENT", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        { // Objeto para entrega somente do primeiro item
+            "status": "SENT", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "SENT"
+                }
+            ]
+        },
+        { // Objeto para entrega somente do segundo item
+            "status": "SENT", // Status do faturamento
+            "sellerId": "SelleId-uuid2",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid2",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                    "quantity": 1,
+                    "status": "SENT"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - PARTIALLY-DELIVERED
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "PARTIALLY-DELIVERED", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        { // Objeto para entrega somente do primeiro item
+            "status": "DELIVERED", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "deliveredDate": "2022-04-28T13:24:10.315+00:00", // Data de quando esta nota e seus itens foram entregues
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "DELIVERED"
+                }
+            ]
+        },
+        { // Objeto para entrega somente do segundo item
+            "status": "SENT", // Status do faturamento
+            "sellerId": "SelleId-uuid2",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid2",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                    "quantity": 1,
+                    "status": "BILLED"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
+}
+// PEDIDO - DELIVERED
+{
+    "_id": "OrderId", // Id do Pedido dentro da MkPlace
+    "paymentStatus": "PAID", // status do pagamento do pedido
+    "status": "DELIVERED", // status do Pedido
+    "transactionId": "transactionId-uuid", // Id da transação do pagamento
+    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+        {
+            "paidAmount": 408.65,
+            "discount": 10,
+            "installments": 1,
+            "status": "PAID",
+            "amount": 418.65,
+            "method": "CREDITCARD",
+            "metadata": {},
+            "_id": "PaymentId",
+            "createdAt": "2022-08-03T17:16:03.706Z",
+            "updatedAt": "2022-08-03T17:16:05.394Z",
+            "provider": "provedor",
+            "gatewayIdentify": "Id do pagamento no provedor"
+        }
+    ],
+    "discounts": [
+        {
+            "origin": "COUPON", // Origem do desconto
+            "couponSlug": "10OFF", // Nome da promo ou cupom
+            "amount": 10, // Valor ou porcentagem
+            "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+            "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku" 
+            "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+        }
+    ],
+    "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+        {
+            "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+            "promotionId": "PromotionId-uuid",
+            "promotionName": "10OFF", // nome legível da promoção
+            "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+            "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+            "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+            "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+            "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+            "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+            "coupon": { // presente quando a promoção exige cupom
+                "_id": "CouponId-uuid",
+                "type": "default",
+                "code": "10OFF"
+            }
+        }
+    ],
+    "summary": {
+        "items": 1, // quantidade de Itens do pedido
+        "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+        "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+        "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+        "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+        "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+        "ordersDiscount": 0, // Total de descontos sobre pedido
+    },
+    "customer": {
+        "phone": {
+            "countryCode": "55",
+            "areaCode": "11",
+            "number": "988885555"
+        },
+        "email": "teste@teste.com.br",
+        "ref": "CustomerReference",
+        "name": "Teste Teste", // Nome do consumidor final
+        "type": "individual",
+        "document": "00673551024"
+    },
+    "deliveryAddress": {
+        "number": "02",
+        "zipcode": "00123-000",
+        "countryCode": "BR",
+        "receiverName": "Teste Teste",
+        "street": "Rua Teste",
+        "city": "São Paulo",
+        "shortState": "SP",
+        "state": "São Paulo",
+        "complement": "Bloco 2",
+        "neighborhood": "Jardim Teste"
+    },
+    "items": [
+        {
+            "shippingCost": 9.42, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid",
+            "productName": "Produto de Teste",
+            "productSlug": "produto-de-teste",
+            "slug": "produto-de-teste-preto-unico",
+            "name": "Produto de Teste Preto Único",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "SellerName",
+            "sellerId": "SelleId-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 10, // Desconto sobre o item
+            "originalPrice": 299.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+            "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                {
+                    "promotionId": "PromotionId-uuid",
+                    "quantity": 1,
+                    "valueApplied": 10 // desconto em R$ concedido a este item
+                }
+            ],
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 4,
+            "logisticProviderName": "Correios"
+        },
+        {
+            "shippingCost": 9.43, // Custo do frete para este item
+            "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+            "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+            "skuId": "SkuId-uuid2",
+            "productName": "Produto de Teste2",
+            "productSlug": "produto-de-teste2",
+            "slug": "produto-de-teste-preto-unico2",
+            "name": "Produto de Teste Preto Único2",
+            "attributes": {
+                "COR": "Preto",
+                "TAMANHO": "Único"
+            },
+            "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+            "quantity": 1,
+            "offerId": "OfferId-uuid2",
+            "warehouseId": "WarehouseId-uuid",
+            "sellerName": "Parceiro-B",
+            "sellerId": "Parceiro-B-uuid",
+            "sellerSkuId": "SellerReferenceToProductId-uuid2",
+            "price": 199.9, // Preço do item
+            "priceDiscount": 0, // Desconto sobre o item
+            "originalPrice": 199.9, // Preço original (De/Por)
+            "unitPrice": 199.9, // Preço unitário
+            "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+            "deliveryMethodName": "Correios - Expressa",
+            "estimatedBusinessDays": 3,
+            "logisticProviderName": "Correios"
+        }
+    ],
+    "shipments": [
+        { // Objeto para entrega somente do primeiro item
+            "status": "DELIVERED", // Status do faturamento
+            "sellerId": "SelleId-uuid",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "deliveredDate": "2022-04-28T13:24:10.315+00:00", // Data de quando esta nota e seus itens foram entregues
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid",
+                    "quantity": 1,
+                    "status": "DELIVERED"
+                }
+            ]
+        },
+        { // Objeto para entrega somente do segundo item
+            "status": "DELIVERED", // Status do faturamento
+            "sellerId": "SelleId-uuid2",
+            "billing": { // Dados do Faturamento
+                "protocol": "ProtocoloDaNota",
+                "accessKey": "CódigoDeAcessoDaNota",
+                "number": "000000", // numero da nota
+                "serial": "2", // série da nota
+                "xmlContent": "XMLDaNotaEmBase64",
+                "issueDate": "2022-04-27T13:24:10.315+00:00"
+            },
+            "tracking": { // Dados de envio desta nota
+                "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                "carrier": "Correios",
+                "deliveryMethod": "Expressa"
+            },
+            "deliveredDate": "2022-04-29T13:24:10.315+00:00", // Data de quando esta nota e seus itens foram entregues
+            "items": [ // itens que compôem essa nota
+                {
+                    "skuId": "SkuId-uuid2",
+                    "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                    "quantity": 1,
+                    "status": "DELIVERED"
+                }
+            ]
+        }
+    ],
+    "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+    "updatedAt": "2022-04-27T16:15:51.779+00:00"
 }
