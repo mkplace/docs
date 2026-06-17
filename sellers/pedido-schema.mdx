@@ -158,6 +158,220 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
     }
     ```
   </Accordion>
+  <Accordion title="Exemplo anotado — pedido DELIVERED (todos os blocos)" icon="list-check">
+    Pedido completo no status `DELIVERED`, anotado campo a campo. É a mesma estrutura do arquivo de download — que traz os 9 status do ciclo (`PRE-ORDER` → `DELIVERED`) — aqui com comentários para ajudar na leitura.
+
+    ```jsonc
+    {
+        "_id": "OrderId", // Id do Pedido dentro da MkPlace
+        "paymentStatus": "PAID", // status do pagamento do pedido
+        "status": "DELIVERED", // status do Pedido
+        "transactionId": "transactionId-uuid", // Id da transação do pagamento
+        "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
+            {
+                "paidAmount": 408.65,
+                "discount": 10,
+                "installments": 1,
+                "status": "PAID",
+                "amount": 418.65,
+                "method": "CREDITCARD",
+                "metadata": {},
+                "_id": "PaymentId",
+                "createdAt": "2022-08-03T17:16:03.706Z",
+                "updatedAt": "2022-08-03T17:16:05.394Z",
+                "provider": "provedor",
+                "gatewayIdentify": "Id do pagamento no provedor"
+            }
+        ],
+        "discounts": [
+            {
+                "origin": "COUPON", // Origem do desconto
+                "couponSlug": "10OFF", // Nome da promo ou cupom
+                "amount": 10, // Valor ou porcentagem
+                "applyMethod": "sku", // Tipo de aplicação de desconto, "sku" indica que é um desconto para uma variável, "freight" indica que é um desconto sobre o frete, "order" indica que é um desconto sobre o pedido todo;
+                "skuId": "SkuId-uuid", // Variante na qual o desconto se aplica, apenas utilizado quando o "applyMethod" é igual a "sku"
+                "isFreightFree": false // Promoção ou cupom em conjunto com opção de frete gratis
+            }
+        ],
+        "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
+            {
+                "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
+                "promotionId": "PromotionId-uuid",
+                "promotionName": "10OFF", // nome legível da promoção
+                "promotionType": "default", // "default", "bonus", "cashback" ou "points"
+                "discountType": "fixed", // "fixed" (valor em R$) ou "percentage" (percentual)
+                "value": 10, // desconto configurado (R$ quando fixed, % quando percentage)
+                "valueApplied": 10, // valor em R$ efetivamente abatido por esta promoção
+                "sellerId": "SelleId-uuid", // seller dono da promoção; null para promoções da loja
+                "items": ["SkuId-uuid"], // SKUs afetados; vazio para promoções no nível do pedido
+                "coupon": { // presente quando a promoção exige cupom
+                    "_id": "CouponId-uuid",
+                    "type": "default",
+                    "code": "10OFF"
+                }
+            }
+        ],
+        "summary": {
+            "items": 1, // quantidade de Itens do pedido
+            "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
+            "totalPriceDiscount": 10, // Soma dos descontos sob preço dos itens
+            "totalShippingCost": 18.85, // Soma dos custos de frete de cada item
+            "totalShippingDiscount": 0, // Soma dos descontos sobre o frete
+            "maxShippingTime": 4, // Data estimada da entrega em dias úteis
+            "ordersDiscount": 0, // Total de descontos sobre pedido
+        },
+        "customer": {
+            "phone": {
+                "countryCode": "55",
+                "areaCode": "11",
+                "number": "988885555"
+            },
+            "email": "teste@teste.com.br",
+            "ref": "CustomerReference",
+            "name": "Teste Teste", // Nome do consumidor final
+            "type": "individual",
+            "document": "00673551024"
+        },
+        "deliveryAddress": {
+            "number": "02",
+            "zipcode": "00123-000",
+            "countryCode": "BR",
+            "receiverName": "Teste Teste",
+            "street": "Rua Teste",
+            "city": "São Paulo",
+            "shortState": "SP",
+            "state": "São Paulo",
+            "complement": "Bloco 2",
+            "neighborhood": "Jardim Teste"
+        },
+        "items": [
+            {
+                "shippingCost": 9.42, // Custo do frete para este item
+                "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+                "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+                "skuId": "SkuId-uuid",
+                "productName": "Produto de Teste",
+                "productSlug": "produto-de-teste",
+                "slug": "produto-de-teste-preto-unico",
+                "name": "Produto de Teste Preto Único",
+                "attributes": {
+                    "COR": "Preto",
+                    "TAMANHO": "Único"
+                },
+                "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+                "quantity": 1,
+                "offerId": "OfferId-uuid",
+                "warehouseId": "WarehouseId-uuid",
+                "sellerName": "SellerName",
+                "sellerId": "SelleId-uuid",
+                "sellerSkuId": "SellerReferenceToProductId-uuid",
+                "price": 199.9, // Preço do item
+                "priceDiscount": 10, // Desconto sobre o item
+                "originalPrice": 299.9, // Preço original (De/Por)
+                "unitPrice": 199.9, // Preço unitário
+                "unitOriginalPrice": 299.9, // Preço unitário original (De/Por)
+                "appliedPromotions": [ // Promoções que incidiram neste item (liga o SKU a "promotions")
+                    {
+                        "promotionId": "PromotionId-uuid",
+                        "quantity": 1,
+                        "valueApplied": 10 // desconto em R$ concedido a este item
+                    }
+                ],
+                "deliveryMethodName": "Correios - Expressa",
+                "estimatedBusinessDays": 4,
+                "logisticProviderName": "Correios"
+            },
+            {
+                "shippingCost": 9.43, // Custo do frete para este item
+                "shippingDiscount": 0, // Rateio do desconto sobre frete para este item
+                "finalShippingCost": 18.85, // Rateio do valor de frete sobre este item
+                "skuId": "SkuId-uuid2",
+                "productName": "Produto de Teste2",
+                "productSlug": "produto-de-teste2",
+                "slug": "produto-de-teste-preto-unico2",
+                "name": "Produto de Teste Preto Único2",
+                "attributes": {
+                    "COR": "Preto",
+                    "TAMANHO": "Único"
+                },
+                "thumbnail": "https://viamaison.com.br/wp-content/uploads/2020/06/produto-teste.png",
+                "quantity": 1,
+                "offerId": "OfferId-uuid2",
+                "warehouseId": "WarehouseId-uuid",
+                "sellerName": "Parceiro-B",
+                "sellerId": "Parceiro-B-uuid",
+                "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                "price": 199.9, // Preço do item
+                "priceDiscount": 0, // Desconto sobre o item
+                "originalPrice": 199.9, // Preço original (De/Por)
+                "unitPrice": 199.9, // Preço unitário
+                "unitOriginalPrice": 199.9, // Preço unitário original (De/Por)
+                "deliveryMethodName": "Correios - Expressa",
+                "estimatedBusinessDays": 3,
+                "logisticProviderName": "Correios"
+            }
+        ],
+        "shipments": [
+            { // Objeto para entrega somente do primeiro item
+                "status": "DELIVERED", // Status do faturamento
+                "sellerId": "SelleId-uuid",
+                "billing": { // Dados do Faturamento
+                    "protocol": "ProtocoloDaNota",
+                    "accessKey": "CódigoDeAcessoDaNota",
+                    "number": "000000", // numero da nota
+                    "serial": "2", // série da nota
+                    "xmlContent": "XMLDaNotaEmBase64",
+                    "issueDate": "2022-04-27T13:24:10.315+00:00"
+                },
+                "tracking": { // Dados de envio desta nota
+                    "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                    "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                    "carrier": "Correios",
+                    "deliveryMethod": "Expressa"
+                },
+                "deliveredDate": "2022-04-28T13:24:10.315+00:00", // Data de quando esta nota e seus itens foram entregues
+                "items": [ // itens que compôem essa nota
+                    {
+                        "skuId": "SkuId-uuid",
+                        "sellerSkuId": "SellerReferenceToProductId-uuid",
+                        "quantity": 1,
+                        "status": "DELIVERED"
+                    }
+                ]
+            },
+            { // Objeto para entrega somente do segundo item
+                "status": "DELIVERED", // Status do faturamento
+                "sellerId": "SelleId-uuid2",
+                "billing": { // Dados do Faturamento
+                    "protocol": "ProtocoloDaNota",
+                    "accessKey": "CódigoDeAcessoDaNota",
+                    "number": "000000", // numero da nota
+                    "serial": "2", // série da nota
+                    "xmlContent": "XMLDaNotaEmBase64",
+                    "issueDate": "2022-04-27T13:24:10.315+00:00"
+                },
+                "tracking": { // Dados de envio desta nota
+                    "sendDate": "2022-04-27T13:24:10.315+00:00", // Data de envio desta nota
+                    "protocol": "TrackingUrl or TrackingProtocol", // Protocolo de entrega ou url de "traqueamento"
+                    "carrier": "Correios",
+                    "deliveryMethod": "Expressa"
+                },
+                "deliveredDate": "2022-04-29T13:24:10.315+00:00", // Data de quando esta nota e seus itens foram entregues
+                "items": [ // itens que compôem essa nota
+                    {
+                        "skuId": "SkuId-uuid2",
+                        "sellerSkuId": "SellerReferenceToProductId-uuid2",
+                        "quantity": 1,
+                        "status": "DELIVERED"
+                    }
+                ]
+            }
+        ],
+        "createdAt": "27/04/2022", // Data de quando o pedido foi criado
+        "updatedAt": "2022-04-27T16:15:51.779+00:00"
+    }
+    ```
+  </Accordion>
 </AccordionGroup>
 
 A partir dessas informações, o vendedor consegue armazenar o pedido para faturá-lo, enviá-lo e executar as demais ações descritas em [Pedidos](/sellers/pedidos).
