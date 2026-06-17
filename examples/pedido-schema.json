@@ -180,10 +180,6 @@
                 "neighborhood"
             ]
         },
-        "parentOrderId": {
-            "description": "The id of the parent order that generated the current one.",
-            "type": "string"
-        },
         "customer": {
             "description": "The representation of order's customer",
             "type": "object",
@@ -483,6 +479,39 @@
                         "type": "object",
                         "properties": {},
                         "default": {}
+                    },
+                    "appliedPromotions": {
+                        "description": "Promotions applied to this item, linking it to entries in the order-level 'promotions' array.",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "promotionId": {
+                                    "description": "Reference to the applied promotion.",
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "quantity": {
+                                    "description": "Item quantity the promotion applied to.",
+                                    "type": [
+                                        "number",
+                                        "null"
+                                    ]
+                                },
+                                "valueApplied": {
+                                    "description": "Discount in BRL granted to this item by the promotion.",
+                                    "type": [
+                                        "number",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "required": [
@@ -594,8 +623,8 @@
                             "trim"
                         ]
                     },
-                    "event": {
-                        "description": "Shipment Event information",
+                    "substatus": {
+                        "description": "Shipment lifecycle event.",
                         "type": [
                             "object",
                             "null"
@@ -772,8 +801,8 @@
                                         "trim"
                                     ]
                                 },
-                                "event": {
-                                    "description": "Shipment Item Event information",
+                                "substatus": {
+                                    "description": "Shipment item lifecycle event.",
                                     "type": [
                                         "object",
                                         "null"
@@ -785,6 +814,13 @@
                                                 "null"
                                             ],
                                             "description": "Code referring to the Shipment Item Event."
+                                        },
+                                        "reason": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "description": "Short reason for the event."
                                         },
                                         "description": {
                                             "type": [
@@ -827,19 +863,147 @@
             "description": "Represents the Order in encrypted form",
             "type": "string"
         },
-        "exceptionDetails": {
-            "description": "Message containing error information",
-            "type": "string"
-        },
         "promotions": {
-            "description": "All promotion informations",
+            "description": "Promotions applied to the order. Empty or null when no promotion applies; otherwise each element describes one applied promotion or coupon.",
             "type": [
                 "array",
                 "null"
-            ]
+            ],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "description": "Scope where the discount applies.",
+                        "type": "string",
+                        "enum": [
+                            "cart",
+                            "item",
+                            "freight"
+                        ]
+                    },
+                    "promotionId": {
+                        "description": "Promotion configuration reference.",
+                        "type": "string"
+                    },
+                    "promotionName": {
+                        "description": "Human-readable promotion name.",
+                        "type": "string"
+                    },
+                    "promotionType": {
+                        "description": "Promotion appliance type.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "default",
+                            "bonus",
+                            "cashback",
+                            "points",
+                            null
+                        ]
+                    },
+                    "discountType": {
+                        "description": "How 'value' is interpreted.",
+                        "type": "string",
+                        "enum": [
+                            "fixed",
+                            "percentage"
+                        ]
+                    },
+                    "value": {
+                        "description": "Configured discount: amount in BRL when 'fixed', percentage when 'percentage'.",
+                        "type": "number"
+                    },
+                    "valueApplied": {
+                        "description": "Amount in BRL actually deducted from the order by this promotion.",
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "sellerId": {
+                        "description": "Seller that owns the promotion; null for marketplace-wide promotions.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "items": {
+                        "description": "SKU ids affected by this promotion; empty for order-level promotions.",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "onlyRangeDiscount": {
+                        "description": "Whether the discount applies only within a configured range/tier.",
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "campaignShare": {
+                        "description": "Cost split between store and seller on co-funded campaigns.",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "store": {
+                                "description": "Store's share.",
+                                "type": "number"
+                            },
+                            "seller": {
+                                "description": "Seller's share.",
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "coupon": {
+                        "description": "Coupon details when the promotion is coupon-based.",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "_id": {
+                                "description": "Coupon id.",
+                                "type": "string"
+                            },
+                            "type": {
+                                "description": "Coupon type.",
+                                "type": "string"
+                            },
+                            "code": {
+                                "description": "Coupon code entered by the customer.",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "metadata": {
+                        "description": "Free-form display metadata (e.g. title, subtitle, collectionsSlug).",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {}
+                    }
+                },
+                "required": [
+                    "type",
+                    "promotionId",
+                    "promotionName",
+                    "discountType",
+                    "value"
+                ]
+            }
         },
-        "event": {
-            "description": "Event information",
+        "substatus": {
+            "description": "Latest lifecycle event of the order. 'code' maps to a status family: 100 Canceled, 200 Paid, 300 Billed, 400 Sent, 500 Delivered, 600 Returned, 700 Refunded, 900 Replaced.",
             "type": [
                 "object",
                 "null"
@@ -852,14 +1016,111 @@
                     ],
                     "description": "Code referring to the event."
                 },
+                "reason": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Short reason for the event."
+                },
                 "description": {
                     "type": [
                         "string",
                         "null"
                     ],
-                    "description": "Description for the event"
+                    "description": "Additional description for the event."
                 }
             }
+        },
+        "status": {
+            "description": "Current order status.",
+            "type": "string",
+            "enum": [
+                "PRE-ORDER",
+                "WAITING-PAYMENT",
+                "IN-PROCESSING",
+                "EXPIRED",
+                "PARTIAL-PAID",
+                "PAID",
+                "PARTIALLY-BILLED",
+                "BILLED",
+                "PARTIALLY-SENT",
+                "SENT",
+                "PARTIALLY-DELIVERED",
+                "DELIVERED",
+                "REFUNDED",
+                "REPLACED",
+                "RETURNED",
+                "CANCELED"
+            ]
+        },
+        "paymentStatus": {
+            "description": "Current payment status of the order.",
+            "type": "string"
+        },
+        "orderRef": {
+            "description": "Public order reference.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "payments": {
+            "description": "Payment attempts/transactions for the order.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "method": {
+                        "description": "Payment method (e.g. CREDITCARD, PIX, BOLETO).",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Payment status.",
+                        "type": "string"
+                    },
+                    "amount": {
+                        "description": "Charged amount in BRL.",
+                        "type": "number"
+                    },
+                    "paidAmount": {
+                        "description": "Amount effectively paid in BRL.",
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "installments": {
+                        "description": "Number of installments.",
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "provider": {
+                        "description": "Payment provider.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            }
+        },
+        "points": {
+            "description": "Loyalty points applied to the order, when applicable.",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "donations": {
+            "description": "Donations attached to the order, when applicable.",
+            "type": [
+                "array",
+                "null"
+            ]
         }
     },
     "required": [
