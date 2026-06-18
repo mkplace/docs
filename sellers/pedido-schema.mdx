@@ -28,7 +28,7 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | `deliveryAddress` | object | Sim | Endereço de entrega do pedido. |
 | `items` | array | Sim | Itens do pedido (SKU, quantidade, preços, frete e promoções por item). |
 | `promotions` | array \| null | Não | Promoções aplicadas ao pedido. Vazio/`null` quando não há promoção; caso contrário, cada item descreve uma promoção ou cupom aplicado. |
-| `payments` | array | Não | Tentativas/transações de pagamento do pedido. |
+| `payments` | array \| null | Não | **Descontinuado.** Não é mais utilizado — vem sempre vazio (`[]` ou `null`). |
 | `shipments` | array | Não | Pacotes do pedido — surgem a partir do faturamento (nota fiscal, tracking, status e itens). |
 | `points` | array \| null | Não | Pontos de fidelidade aplicados, quando houver. |
 | `donations` | array \| null | Não | Doações vinculadas ao pedido, quando houver. |
@@ -166,22 +166,7 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
         "paymentStatus": "PAID", // status do pagamento do pedido
         "status": "DELIVERED", // status do Pedido
         "transactionId": "transactionId-uuid", // Id da transação do pagamento
-        "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-            {
-                "paidAmount": 408.65,
-                "discount": 10,
-                "installments": 1,
-                "status": "PAID",
-                "amount": 418.65,
-                "method": "CREDITCARD",
-                "metadata": {},
-                "_id": "PaymentId",
-                "createdAt": "2022-08-03T17:16:03.706Z",
-                "updatedAt": "2022-08-03T17:16:05.394Z",
-                "provider": "provedor",
-                "gatewayIdentify": "Id do pagamento no provedor"
-            }
-        ],
+        "payments": [], // deprecated — não é mais utilizado (sempre vazio: [] ou null)
         "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
             {
                 "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)

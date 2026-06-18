@@ -3,7 +3,7 @@
     "_id": "OrderId", // Id do Pedido dentro da MkPlace
     "paymentStatus": "PRE-ORDER", // status do pagamento do pedido
     "status": "PRE-ORDER", // status do Pedido
-    "payments": [],
+    "payments": [], // deprecated — não é mais utilizado
     "summary": {
         "items": 1, // quantidade de Itens do pedido
         "total": 399.8, // Soma dos Preços de cada item multiplicado pela quantidade
@@ -138,32 +138,7 @@
     "paymentStatus": "WAITING-PAYMENT", // status do pagamento do pedido
     "status": "WAITING-PAYMENT", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de Boleto pois "Waiting-Payment" não acontece com cartão de crédito
-        {
-            "paidAmount": 0,
-            "discount": 10,
-            "installments": 1,
-            "status": "WAITING-PAYMENT",
-            "amount": 418.65,
-            "method": "BOLETO",
-            "metadata": { // Informações do provedor de pagamento
-                "creditCard": null,
-                "remoteStatus": "pending",
-                "boletoId": "ID do Boleto",
-                "boletoGatewayId": "GatewayId",
-                "boletoPdf": "URL de PDF",
-                "boletoUrl": "URL de pagamento",
-                "boletoLine": "23791.22928 50010.900129 92000.046901 9 90710000129433",
-                "boletoBarCode": "URL para imagem do código de barras",
-                "boletoQrCode": "URL para imagem do código QR"
-            },
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -292,22 +267,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "PAID", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -436,22 +396,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "PARTIALLY-BILLED", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -601,22 +546,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "BILLED", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -786,22 +716,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "PARTIALLY-SENT", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -977,22 +892,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "SENT", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -1174,22 +1074,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "PARTIALLY-DELIVERED", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
@@ -1372,22 +1257,7 @@
     "paymentStatus": "PAID", // status do pagamento do pedido
     "status": "DELIVERED", // status do Pedido
     "transactionId": "transactionId-uuid", // Id da transação do pagamento
-    "payments": [ // Informações sobre o pagamento - exemplo de cartão de crédito
-        {
-            "paidAmount": 408.65,
-            "discount": 10,
-            "installments": 1,
-            "status": "PAID",
-            "amount": 418.65,
-            "method": "CREDITCARD",
-            "metadata": {},
-            "_id": "PaymentId",
-            "createdAt": "2022-08-03T17:16:03.706Z",
-            "updatedAt": "2022-08-03T17:16:05.394Z",
-            "provider": "provedor",
-            "gatewayIdentify": "Id do pagamento no provedor"
-        }
-    ],
+    "payments": [], // deprecated — não é mais utilizado
     "promotions": [ // Promoções aplicadas ao pedido (vazio/null quando não há)
         {
             "type": "item", // escopo: "cart" (pedido), "item" (SKU) ou "freight" (frete)
