@@ -1010,47 +1010,13 @@
             ]
         },
         "payments": {
-            "description": "Payment attempts/transactions for the order.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "type": "object",
-                "properties": {
-                    "method": {
-                        "description": "Payment method (e.g. CREDITCARD, PIX, BOLETO).",
-                        "type": "string"
-                    },
-                    "status": {
-                        "description": "Payment status.",
-                        "type": "string"
-                    },
-                    "amount": {
-                        "description": "Charged amount in BRL.",
-                        "type": "number"
-                    },
-                    "paidAmount": {
-                        "description": "Amount effectively paid in BRL.",
-                        "type": [
-                            "number",
-                            "null"
-                        ]
-                    },
-                    "installments": {
-                        "description": "Number of installments.",
-                        "type": [
-                            "number",
-                            "null"
-                        ]
-                    },
-                    "provider": {
-                        "description": "Payment provider.",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    }
-                }
-            }
+            "description": "Deprecated. No longer used; always empty ([] or null).",
+            "deprecated": true,
+            "type": [
+                "array",
+                "null"
+            ],
+            "default": []
         },
         "points": {
             "description": "Loyalty points applied to the order, when applicable.",
