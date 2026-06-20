@@ -8,6 +8,64 @@
           "description": "Order identifier for Mkplace",
           "type": "string"
         },
+        "clientId": {
+            "description": "Origin/client of the API that created the order.",
+            "type": "string"
+        },
+        "storeId": {
+            "description": "Store that owns the order.",
+            "type": "string"
+        },
+        "accountId": {
+            "description": "Account reference (multi-tenant).",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "type": {
+            "description": "Order type.",
+            "type": "string",
+            "enum": [
+                "ORDER",
+                "LOYALTY",
+                "SUBSCRIPTION"
+            ],
+            "default": "ORDER"
+        },
+        "cartId": {
+            "description": "Cart that originated the order.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "channelSlug": {
+            "description": "Sales channel slug.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "stockReservation": {
+            "description": "Whether stock was reserved for this order.",
+            "type": "boolean",
+            "default": true
+        },
+        "isOrderModified": {
+            "description": "Whether the order was modified after creation.",
+            "type": "boolean",
+            "default": false
+        },
+        "orderSource": {
+            "description": "Order origin metadata (e.g. device, utm).",
+            "type": [
+                "object",
+                "null"
+            ],
+            "properties": {},
+            "default": {}
+        },
         "summary": {
             "description": "The representation of order's summary",
             "type": "object",
@@ -69,6 +127,50 @@
                     "type": "number",
                     "minimum": 0,
                     "default": 0
+                },
+                "taxes": {
+                    "description": "Order taxes amount.",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "deliveryTimeType": {
+                    "description": "Unit of the delivery time fields (e.g. DAYS, MINUTES).",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "donationAmount": {
+                    "description": "Total donation amount in the order.",
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "minimum": 0,
+                    "default": 0
+                },
+                "points": {
+                    "description": "Loyalty/cashback points totals for the order.",
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "properties": {
+                        "currencyAmount": {
+                            "description": "Monetary value (BRL) of the points.",
+                            "type": "number",
+                            "minimum": 0
+                        },
+                        "amount": {
+                            "description": "Number of points.",
+                            "type": "number",
+                            "minimum": 0
+                        }
+                    }
                 }
             },
             "required": [
@@ -349,7 +451,7 @@
                         "type": "string"
                     },
                     "warehouses": {
-                        "description": "Seller's warehouses reference to the SKU",
+                        "description": "Seller's warehouses holding the SKU. Each entry is a warehouse with the quantity allocated from it.",
                         "type": [
                             "array",
                             "null"
@@ -358,15 +460,24 @@
                             "type": "object",
                             "properties": {
                                 "_id": {
-                                    "description": "The reference to SKU id",
+                                    "description": "Warehouse reference (commonly \"default\").",
                                     "type": "string",
                                     "transform": [
                                         "trim"
                                     ]
                                 },
                                 "quantity": {
-                                    "description": "The item quantity",
+                                    "description": "Quantity allocated from this warehouse.",
                                     "type": "number"
+                                },
+                                "metadata": {
+                                    "description": "Free-form warehouse metadata.",
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
+                                    "properties": {},
+                                    "default": {}
                                 }
                             },
                             "required": [
@@ -480,6 +591,156 @@
                         "properties": {},
                         "default": {}
                     },
+                    "isVirtual": {
+                        "description": "Whether the item is a virtual/digital product.",
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "financialDiscount": {
+                        "description": "Item's financial discount value.",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "sellerTransfer": {
+                        "description": "Amount transferred to the seller for this item (BRL).",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "commissionAmount": {
+                        "description": "Store commission amount charged on this item (BRL).",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "commission": {
+                        "description": "Commission breakdown for this item: amount transferred to the seller and the store commission.",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "sellerTransfer": {
+                                "description": "Amount transferred to the seller.",
+                                "type": "object",
+                                "properties": {
+                                    "total": {
+                                        "description": "Total transferred to the seller.",
+                                        "type": "number"
+                                    },
+                                    "details": {
+                                        "type": "object",
+                                        "properties": {
+                                            "grossTransfer": {
+                                                "description": "Gross amount transferred.",
+                                                "type": "number"
+                                            },
+                                            "netTransfer": {
+                                                "description": "Net amount transferred.",
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "storeCommission": {
+                                "description": "Store commission on this item.",
+                                "type": "object",
+                                "properties": {
+                                    "total": {
+                                        "description": "Total store commission.",
+                                        "type": "number"
+                                    },
+                                    "details": {
+                                        "type": "object",
+                                        "properties": {
+                                            "grossCommission": {
+                                                "description": "Gross commission.",
+                                                "type": "number"
+                                            },
+                                            "netCommission": {
+                                                "description": "Net commission.",
+                                                "type": "number"
+                                            },
+                                            "catalogCommissionPercentage": {
+                                                "description": "Catalog commission percentage.",
+                                                "type": "number"
+                                            },
+                                            "appliedCommissionCatalog": {
+                                                "description": "Catalog commission applied (BRL).",
+                                                "type": "number"
+                                            },
+                                            "freightCommissionPercentage": {
+                                                "description": "Freight commission percentage.",
+                                                "type": "number"
+                                            },
+                                            "appliedCommissionFreight": {
+                                                "description": "Freight commission applied (BRL).",
+                                                "type": "number"
+                                            },
+                                            "promotionCommissionPercentage": {
+                                                "description": "Promotion commission percentage.",
+                                                "type": "number"
+                                            },
+                                            "appliedCommissionPromotion": {
+                                                "description": "Promotion commission applied (BRL).",
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "estimatedTime": {
+                        "description": "Estimated delivery time (in 'deliveryTimeType' units).",
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "estimatedExactDateISO": {
+                        "description": "Estimated exact delivery date.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "deliveryTimeType": {
+                        "description": "Unit of the delivery time (e.g. DAYS, MINUTES).",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "deliveryType": {
+                        "description": "Delivery type (e.g. DELIVERY, PICKUP).",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "collectionSlugs": {
+                        "description": "Collections the product belongs to.",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": []
+                    },
                     "appliedPromotions": {
                         "description": "Promotions applied to this item, linking it to entries in the order-level 'promotions' array.",
                         "type": [
@@ -541,6 +802,10 @@
             "items": {
                 "type": "object",
                 "properties": {
+                    "_id": {
+                        "description": "Shipment identifier (generated by the system).",
+                        "type": "string"
+                    },
                     "sellerId": {
                         "type": "string",
                         "description": "Shipment´s sellerId"
@@ -643,6 +908,23 @@
                                     "string",
                                     "null"
                                 ]
+                            },
+                            "billingRequestedAt": {
+                                "description": "When billing was requested.",
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "metadata": {
+                                "description": "Free-form billing metadata.",
+                                "type": [
+                                    "object",
+                                    "null"
+                                ],
+                                "properties": {},
+                                "default": {}
                             }
                         },
                         "required": [
@@ -688,6 +970,14 @@
                                 "transform": [
                                     "trim"
                                 ]
+                            },
+                            "trackingRequestedAt": {
+                                "description": "When tracking was requested.",
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
                             }
                         },
                         "required": [
@@ -774,6 +1064,16 @@
                                             "description": "Description for the event"
                                         }
                                     }
+                                },
+                                "createdAt": {
+                                    "description": "Shipment item creation date.",
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "updatedAt": {
+                                    "description": "Shipment item last update date.",
+                                    "type": "string",
+                                    "format": "date-time"
                                 }
                             },
                             "required": [
@@ -783,6 +1083,33 @@
                                 "status"
                             ]
                         }
+                    },
+                    "deliveryRequestedAt": {
+                        "description": "When delivery was requested.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "metadata": {
+                        "description": "Free-form shipment metadata.",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {},
+                        "default": {}
+                    },
+                    "createdAt": {
+                        "description": "Shipment creation date.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "description": "Shipment last update date.",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
@@ -1031,13 +1358,29 @@
                 "array",
                 "null"
             ]
+        },
+        "createdAt": {
+            "description": "Order creation date.",
+            "type": "string",
+            "format": "date-time"
+        },
+        "updatedAt": {
+            "description": "Order last update date.",
+            "type": "string",
+            "format": "date-time"
         }
     },
     "required": [
         "_id",
+        "clientId",
+        "storeId",
+        "type",
+        "status",
         "items",
         "customer",
         "deliveryAddress",
-        "summary"
+        "summary",
+        "createdAt",
+        "updatedAt"
     ]
 }
