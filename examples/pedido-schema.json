@@ -724,7 +724,7 @@
                         ]
                     },
                     "deliveryType": {
-                        "description": "Delivery type (e.g. DELIVERY, PICKUP).",
+                        "description": "Delivery type. Known values: PICKUP, DELIVERY, STANDARD, DELIVERY_OWNER_STORE.",
                         "type": [
                             "string",
                             "null"
@@ -1330,7 +1330,7 @@
             "type": "string"
         },
         "orderRef": {
-            "description": "Public order reference.",
+            "description": "Internal order reference.",
             "type": [
                 "string",
                 "null"
@@ -1350,14 +1350,87 @@
             "type": [
                 "array",
                 "null"
-            ]
+            ],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "currencyAmount": {
+                        "description": "Monetary value (BRL) of the points used.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "amount": {
+                        "description": "Number of points used.",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "ref": {
+                        "description": "Reference to the campaign the points belong to.",
+                        "type": "string"
+                    },
+                    "wallets": {
+                        "description": "Wallets affected by the transaction.",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "currencyAmount": {
+                                    "description": "Wallet balance in BRL.",
+                                    "type": "number"
+                                },
+                                "activeUnits": {
+                                    "description": "Active units available in the wallet.",
+                                    "type": "number"
+                                },
+                                "currency": {
+                                    "description": "Wallet currency (e.g. BRL).",
+                                    "type": "string"
+                                },
+                                "sellerId": {
+                                    "description": "Seller that owns the wallet; null for store-wide wallets.",
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "currencyAmount",
+                    "amount",
+                    "ref"
+                ]
+            }
         },
         "donations": {
             "description": "Donations attached to the order, when applicable.",
             "type": [
                 "array",
                 "null"
-            ]
+            ],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "description": "Donated amount (BRL).",
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "campaignId": {
+                        "description": "Reference to the donation campaign.",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "value",
+                    "campaignId"
+                ]
+            }
         },
         "createdAt": {
             "description": "Order creation date.",

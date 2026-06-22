@@ -651,7 +651,7 @@
           "storeId": { "type": "string" },
           "accountId": { "type": "string" },
           "customer": { "$ref": "#/components/schemas/Customer" },
-          "orderRef": { "type": "string" },
+          "orderRef": { "type": "string", "description": "Referência interna do pedido." },
           "isOrderModified": { "type": "boolean" },
           "paymentStatus": {
             "type": "string",
@@ -1047,7 +1047,7 @@
           "attributes": { "type": "object" },
           "estimatedExactDateISO": { "type": "string", "format": "date-time" },
           "estimatedTime": { "type": "integer" },
-          "deliveryType": { "type": "string" },
+          "deliveryType": { "type": "string", "description": "Tipo de entrega. Valores conhecidos: PICKUP, DELIVERY, STANDARD, DELIVERY_OWNER_STORE." },
           "deliveryTimeType": { "type": "string" },
           "deliveryMethodRef": { "type": "string" },
           "logisticProviderDocument": { "type": "string" },
