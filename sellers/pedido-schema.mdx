@@ -26,7 +26,7 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | `status` | string | Sim | Status atual do pedido (ciclo de vida). Os valores são explicados em [Pedidos](/sellers/pedidos). |
 | `paymentStatus` | string | Não | Status atual do pagamento (default `PRE-ORDER`); sempre presente. |
 | `substatus` | object \| null | Não | Último evento do ciclo de vida (`code`, `reason`, `description`). O `code` indica a família do evento — veja a tabela abaixo. |
-| `orderRef` | string \| null | Não | Referência externa/pública do pedido. |
+| `orderRef` | string \| null | Não | Referência interna do pedido (uso interno da Mkplace; não é uma referência externa/pública). |
 | `cartId` | string \| null | Não | Carrinho que originou o pedido. |
 | `channelSlug` | string \| null | Não | Canal de venda. |
 | `summary` | object | Sim | Resumo do pedido: quantidade de itens, totais, descontos, impostos e prazos. |
@@ -36,8 +36,8 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | `promotions` | array \| null | Não | Promoções aplicadas ao pedido. Vazio/`null` quando não há promoção; caso contrário, cada elemento descreve uma promoção ou cupom aplicado. |
 | `shipments` | array | Não | Pacotes do pedido — surgem a partir do faturamento (nota fiscal, tracking, status e itens). |
 | `payments` | array \| null | Não | **Descontinuado.** Não é mais utilizado — vem sempre vazio (`[]` ou `null`). |
-| `points` | array \| null | Não | Pontos de fidelidade aplicados, quando houver. |
-| `donations` | array \| null | Não | Doações vinculadas ao pedido, quando houver. |
+| `points` | array \| null | Não | Pontos de fidelidade aplicados, quando houver. Cada elemento traz `currencyAmount` (valor em R$), `amount` (quantidade de pontos), `ref` (campanha de origem) e `wallets` (carteiras afetadas). |
+| `donations` | array \| null | Não | Doações vinculadas ao pedido, quando houver. Cada elemento traz `value` (valor doado em R$) e `campaignId` (campanha da doação). |
 | `orderSource` | object \| null | Não | Origem do pedido (device/utm). |
 | `stockReservation` | boolean | Não | Indica se houve reserva de estoque (default `true`). |
 | `isOrderModified` | boolean | Não | Indica se o pedido foi modificado após a criação (default `false`). |
@@ -186,7 +186,7 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
         "paymentStatus": "PAID", // status do pagamento do pedido
         "substatus": { "code": "500", "reason": "Delivered" }, // evento atual; cada faixa tem sub-códigos (100 cancel, 200 pago, 300 faturado, 400 enviado, 500 entregue, 600 devolvido, 700 estornado, 900 trocado)
         "transactionId": "transactionId-uuid", // Id da transação do pagamento
-        "orderRef": "REF-0001", // referência externa do pedido
+        "orderRef": "REF-0001", // referência interna do pedido
         "cartId": "cart-uuid-0001", // carrinho que originou o pedido
         "channelSlug": null, // canal de venda
         "verifyToken": "verify-token-uuid", // representação do pedido em forma cifrada
@@ -207,8 +207,12 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
                 "coupon": { "_id": "CouponId-uuid", "type": "default", "code": "10OFF" } // presente quando exige cupom
             }
         ],
-        "points": [], // pontos de fidelidade aplicados, quando houver
-        "donations": [], // doações vinculadas ao pedido, quando houver
+        "points": [ // pontos de fidelidade aplicados, quando houver
+            { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        ],
+        "donations": [ // doações vinculadas ao pedido, quando houver
+            { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        ],
         "orderSource": {}, // origem do pedido (device/utm)
         "summary": {
             "items": 2, // quantidade de itens do pedido
@@ -221,8 +225,8 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
             "deliveryTimeType": "DAYS", // unidade do prazo: DAYS | MINUTES
             "taxes": 0, // impostos
             "finalPrice": 408.65, // preço final (total - descontos + frete + impostos)
-            "donationAmount": 0, // total de doações
-            "points": { "currencyAmount": 0, "amount": 0 } // pontos/cashback do pedido
+            "donationAmount": 5, // total de doações
+            "points": { "currencyAmount": 15, "amount": 150 } // pontos/cashback do pedido
         },
         "customer": { // dados do cliente (fictícios; sem PII real)
             "name": "Cliente Teste",
@@ -286,7 +290,7 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
                 "estimatedTime": 4, // prazo estimado (na unidade de deliveryTimeType)
                 "estimatedExactDateISO": "2022-05-03T13:24:10.315Z",
                 "deliveryTimeType": "DAYS", // DAYS | MINUTES
-                "deliveryType": "DELIVERY", // DELIVERY | PICKUP
+                "deliveryType": "DELIVERY", // PICKUP | DELIVERY | STANDARD | DELIVERY_OWNER_STORE
                 "collectionSlugs": [],
                 "metadata": {}
             },
@@ -330,7 +334,7 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
                 "estimatedTime": 4, // prazo estimado (na unidade de deliveryTimeType)
                 "estimatedExactDateISO": "2022-05-03T13:24:10.315Z",
                 "deliveryTimeType": "DAYS", // DAYS | MINUTES
-                "deliveryType": "DELIVERY", // DELIVERY | PICKUP
+                "deliveryType": "DELIVERY", // PICKUP | DELIVERY | STANDARD | DELIVERY_OWNER_STORE
                 "collectionSlugs": [],
                 "metadata": {}
             }
