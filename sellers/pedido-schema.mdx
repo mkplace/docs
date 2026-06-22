@@ -26,7 +26,7 @@ Esta página descreve a estrutura do objeto **Order** (`$id: https://schema.mkpl
 | `status` | string | Sim | Status atual do pedido (ciclo de vida). Os valores são explicados em [Pedidos](/sellers/pedidos). |
 | `paymentStatus` | string | Não | Status atual do pagamento (default `PRE-ORDER`); sempre presente. |
 | `substatus` | object \| null | Não | Último evento do ciclo de vida (`code`, `reason`, `description`). O `code` indica a família do evento — veja a tabela abaixo. |
-| `orderRef` | string \| null | Não | Referência interna do pedido (uso interno da Mkplace; não é uma referência externa/pública). |
+| `orderRef` | string \| null | Não | Referência interna do pedido. |
 | `cartId` | string \| null | Não | Carrinho que originou o pedido. |
 | `channelSlug` | string \| null | Não | Canal de venda. |
 | `summary` | object | Sim | Resumo do pedido: quantidade de itens, totais, descontos, impostos e prazos. |
@@ -208,10 +208,10 @@ O `substatus.code` (na raiz, no pacote e no item do pacote) indica a família do
             }
         ],
         "points": [ // pontos de fidelidade aplicados, quando houver
-            { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+            { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
         ],
         "donations": [ // doações vinculadas ao pedido, quando houver
-            { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+            { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
         ],
         "orderSource": {}, // origem do pedido (device/utm)
         "summary": {

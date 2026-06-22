@@ -1,5 +1,5 @@
 // Walkthrough do objeto Order nos status do ciclo de vida (PRE-ORDER -> DELIVERED, + CANCELED e EXPIRED).
-// Arquivo de referência comentado campo a campo. Os comentarios (//) tornam este arquivo um JSONC (não é JSON puro).
+// Arquivo de referência comentado campo a campo.
 
 // Pedido - PRE-ORDER
 {
@@ -32,10 +32,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -201,10 +201,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -371,10 +371,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -541,10 +541,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -742,10 +742,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -973,10 +973,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -1211,10 +1211,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -1456,10 +1456,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -1703,10 +1703,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -1952,10 +1952,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {
@@ -2120,10 +2120,10 @@
         }
     ],
     "points": [ // pontos de fidelidade aplicados, quando houver
-        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha de origem (ex.: "mk-loyalty", "cpn-loyalty"); wallets: carteiras de fidelidade afetadas (estrutura livre: currencyAmount, activeUnits, currency, sellerId)
+        { "currencyAmount": 15, "amount": 150, "ref": "mk-loyalty", "wallets": [ { "currencyAmount": 1500, "activeUnits": 1500, "currency": "BRL", "sellerId": null } ] } // currencyAmount: valor em R$; amount: qtd de pontos; ref: campanha; wallets: carteiras de fidelidade afetadas (currencyAmount, activeUnits, currency, sellerId)
     ],
     "donations": [ // doações vinculadas ao pedido, quando houver
-        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação. Origem: token de simulação (checkout). Obs.: opcional e raramente preenchido na prática.
+        { "value": 5, "campaignId": "doacao-campanha" } // value: valor doado (R$); campaignId: campanha da doação
     ],
     "orderSource": {}, // origem do pedido (device/utm)
     "summary": {

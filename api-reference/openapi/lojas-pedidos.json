@@ -651,7 +651,7 @@
           "storeId": { "type": "string" },
           "accountId": { "type": "string" },
           "customer": { "$ref": "#/components/schemas/Customer" },
-          "orderRef": { "type": "string", "description": "Referência interna do pedido (uso interno da Mkplace; não é referência externa/pública)." },
+          "orderRef": { "type": "string", "description": "Referência interna do pedido." },
           "isOrderModified": { "type": "boolean" },
           "paymentStatus": {
             "type": "string",

@@ -1330,7 +1330,7 @@
             "type": "string"
         },
         "orderRef": {
-            "description": "Internal order reference (Mkplace internal use; not a public/external reference).",
+            "description": "Internal order reference.",
             "type": [
                 "string",
                 "null"
@@ -1369,11 +1369,35 @@
                         "type": "string"
                     },
                     "wallets": {
-                        "description": "Wallets affected by the transaction (free-form).",
+                        "description": "Wallets affected by the transaction.",
                         "type": [
                             "array",
                             "null"
-                        ]
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "currencyAmount": {
+                                    "description": "Wallet balance in BRL.",
+                                    "type": "number"
+                                },
+                                "activeUnits": {
+                                    "description": "Active units available in the wallet.",
+                                    "type": "number"
+                                },
+                                "currency": {
+                                    "description": "Wallet currency (e.g. BRL).",
+                                    "type": "string"
+                                },
+                                "sellerId": {
+                                    "description": "Seller that owns the wallet; null for store-wide wallets.",
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "required": [
