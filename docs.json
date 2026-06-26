@@ -72,8 +72,14 @@
           {
             "group": "Começando",
             "pages": [
-              "stores/index",
-              "stores/autenticacao"
+              "stores/index"
+            ]
+          },
+          {
+            "group": "Autenticação",
+            "pages": [
+              "stores/autenticacao",
+              "stores/login-oidc"
             ]
           },
           {
@@ -87,12 +93,6 @@
             "group": "Webhooks",
             "pages": [
               "stores/webhooks"
-            ]
-          },
-          {
-            "group": "Anexo",
-            "pages": [
-              "stores/login-oidc"
             ]
           },
           {

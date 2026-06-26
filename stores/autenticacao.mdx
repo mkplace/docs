@@ -6,8 +6,8 @@ description: "Como assinar o token JWT com a sua chave privada RS256 e enviá-lo
 A integração usa autenticação por **JWT (JSON Web Token)** assinado com o algoritmo assimétrico **RS256**. A sua aplicação **assina** o token com a Chave Privada fornecida pela Mkplace, e a Mkplace **valida** a assinatura com a chave pública correspondente, identificada pelo `kid`.
 
 <Note>
-  **Nova forma de autenticação:** além da autenticação por JWT auto-assinado
-  descrita nesta página, há agora o anexo
+  **Outro método de autenticação:** além da autenticação por JWT auto-assinado
+  descrita nesta página, há também o
   **[Login de usuário via OIDC (Authorization Code + PKCE)](/stores/login-oidc)** —
   login interativo do usuário pelo IDP da Mkplace, com a sessão entregue por
   token/cookie (sem nada na querystring).
