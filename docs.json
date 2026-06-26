@@ -24,8 +24,7 @@
             "group": "Começando",
             "pages": [
               "sellers/index",
-              "sellers/autenticacao",
-              "sellers/login-oidc"
+              "sellers/autenticacao"
             ]
           },
           {
@@ -88,6 +87,12 @@
             "group": "Webhooks",
             "pages": [
               "stores/webhooks"
+            ]
+          },
+          {
+            "group": "Anexo",
+            "pages": [
+              "stores/login-oidc"
             ]
           },
           {
