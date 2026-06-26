@@ -24,7 +24,8 @@
             "group": "Começando",
             "pages": [
               "sellers/index",
-              "sellers/autenticacao"
+              "sellers/autenticacao",
+              "sellers/login-oidc"
             ]
           },
           {
