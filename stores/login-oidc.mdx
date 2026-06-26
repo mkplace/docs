@@ -209,6 +209,58 @@ Os endpoints reais do seu realm estão sempre em
   </Accordion>
 </AccordionGroup>
 
+## Formato padrão do token
+
+Após o login, o usuário recebe um `access_token` (JWT assinado em `RS256` pelo
+Keycloak) com a estrutura abaixo. Os valores entre `<...>` variam por loja/usuário.
+
+```json
+{
+  "iss": "https://idp.mkplace.com.br/realms/<realm>",
+  "azp": "front-store",
+  "typ": "Bearer",
+  "sub": "<id do usuário no Keycloak>",
+  "sid": "<id da sessão>",
+  "clientId": "customer-services",
+  "scope": "profile email",
+  "realm_access": {
+    "roles": [
+      "profile:roles=STORE",
+      "profile:accountId=<accountId>",
+      "profile:storeId=<storeId>",
+      "profile:clientId=<clientId>"
+    ]
+  },
+  "customerId": "<customerId>",
+  "storeId": "<storeId>",
+  "salesman": "<salesman>",
+  "preferred_username": "<email do usuário>",
+  "email": "<email do usuário>"
+}
+```
+
+| Claim | O que é | Origem |
+|---|---|---|
+| `iss` | Emissor — Keycloak da Mkplace, no realm da sua loja | Mkplace |
+| `azp` | Client que emitiu o token (storefront) → `front-store` | Mkplace |
+| `sub` / `sid` | ID do usuário e da sessão no Keycloak | Mkplace |
+| `clientId` | Serviço de origem → `customer-services` | Mkplace |
+| `customerId` | ID do comprador | **Você (loja) fornece** |
+| `storeId` | ID da loja | **Você fornece** |
+| `salesman` | Vendedor associado | **Você fornece** |
+| `profile:roles=STORE` | Perfil do usuário (tipo STORE) | Provisionamento Mkplace |
+| `profile:accountId=…` | Conta — derivado do `accountId` | **Você fornece** |
+| `profile:storeId=…` | Loja — derivado do `storeId` | **Você fornece** |
+| `profile:clientId=…` | Integração — derivado do `clientId` | **Você fornece** |
+| `preferred_username` / `email` | Dados cadastrais do usuário | Você fornece |
+
+### O que você precisa garantir do lado da loja
+
+- Fornecer os identificadores do usuário: `customerId`, `storeId`, `salesman`,
+  `accountId`, `clientId`.
+- Garantir que o usuário exista no IDP com esses **atributos** e a **role `STORE`** —
+  é isso que faz os claims acima aparecerem no token.
+
 ## Erros comuns
 
 <AccordionGroup>
