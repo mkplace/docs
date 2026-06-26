@@ -72,8 +72,14 @@
           {
             "group": "Começando",
             "pages": [
-              "stores/index",
-              "stores/autenticacao"
+              "stores/index"
+            ]
+          },
+          {
+            "group": "Autenticação",
+            "pages": [
+              "stores/autenticacao",
+              "stores/login-oidc"
             ]
           },
           {
