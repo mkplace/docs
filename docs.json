@@ -106,6 +106,17 @@
             "openapi": "api-reference/openapi/lojas-pagamentos.json"
           }
         ]
+      },
+      {
+        "tab": "Meus Projetos",
+        "groups": [
+          {
+            "group": "Começando",
+            "pages": [
+              "meus-projetos/index"
+            ]
+          }
+        ]
       }
     ],
     "global": {
